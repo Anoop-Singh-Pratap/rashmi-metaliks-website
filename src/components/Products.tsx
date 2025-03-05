@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from 'react';
 import RevealText from './ui/RevealText';
 import ProductViewer from './ui/ProductViewer';
@@ -28,7 +27,8 @@ const productData: Product[] = [
     name: "DI Fittings",
     description: "High-quality ductile iron fittings that complement our DI pipe systems for complete water management solutions.",
     features: ["Perfect compatibility", "Same durability", "Diverse joints", "Pressure capable"],
-    image: "https://images.unsplash.com/photo-1582655432787-c7b89f741cc4?ixlib=rb-4.0.3&auto=format&fit=crop&q=80"
+    image: "https://images.unsplash.com/photo-1582655432787-c7b89f741cc4?ixlib=rb-4.0.3&auto=format&fit=crop&q=80",
+    link: "/di-fittings"
   },
   {
     id: 3,
@@ -88,7 +88,10 @@ const Products = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* 3D Product Viewer */}
           <div className="order-2 lg:order-1">
-            <ProductViewer className="w-full h-[400px] max-w-lg mx-auto" productName={activeProduct.name} />
+            <ProductViewer 
+              className="w-full h-[400px] max-w-lg mx-auto" 
+              productName={activeProduct.name} 
+            />
           </div>
           
           {/* Product Information */}
