@@ -1,40 +1,38 @@
 
 import React, { useEffect, useRef } from 'react';
 import RevealText from './ui/RevealText';
+import { ArrowRight } from 'lucide-react';
 
-const Hero: React.FC = () => {
+const Hero = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const heroRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
+  // Parallel video playback when in view
   useEffect(() => {
-    if (!videoRef.current) return;
-
-    const handleIntersection = (entries: IntersectionObserverEntry[]) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          videoRef.current?.play();
-        } else {
-          videoRef.current?.pause();
-        }
-      });
-    };
-
-    const observer = new IntersectionObserver(handleIntersection, {
-      threshold: 0.1
-    });
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && videoRef.current) {
+            videoRef.current.play().catch(e => console.error("Video play error:", e));
+          } else if (videoRef.current) {
+            videoRef.current.pause();
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
 
     if (videoRef.current) {
       observer.observe(videoRef.current);
     }
 
     return () => {
-      if (videoRef.current) {
-        observer.unobserve(videoRef.current);
-      }
+      if (videoRef.current) observer.unobserve(videoRef.current);
     };
   }, []);
 
-  const handleScroll = () => {
+  // Smooth scroll to About section
+  const handleScrollDown = () => {
     const aboutSection = document.getElementById('about');
     if (aboutSection) {
       aboutSection.scrollIntoView({ behavior: 'smooth' });
@@ -42,73 +40,74 @@ const Hero: React.FC = () => {
   };
 
   return (
-    <section id="home" ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative w-full h-screen overflow-hidden">
       {/* Video Background */}
-      <div className="absolute inset-0 overflow-hidden">
+      <div className="absolute inset-0 w-full h-full">
+        <div className="absolute inset-0 bg-gradient-to-r from-rashmi-dark/80 via-rashmi-dark/60 to-rashmi-dark/80 z-10"></div>
         <video
           ref={videoRef}
-          autoPlay
+          className="w-full h-full object-cover"
           muted
           loop
           playsInline
-          className="absolute w-full h-full object-cover"
           poster="https://images.unsplash.com/photo-1618761299062-ba2dbbcebd92?ixlib=rb-4.0.3&auto=format&fit=crop&q=80"
         >
-          {/* Fallback video URL - in a real implementation, you would use your own video */}
-          <source src="https://assets.mixkit.co/videos/preview/mixkit-molten-metal-being-poured-into-a-mold-43264-large.mp4" type="video/mp4" />
+          <source 
+            src="https://player.vimeo.com/external/520434915.sd.mp4?s=c7d7c1ddd90c5b89c831aade33c363f84d0bb5cf&profile_id=165&oauth2_token_id=57447761" 
+            type="video/mp4" 
+          />
           Your browser does not support the video tag.
         </video>
-        <div className="absolute inset-0 bg-gradient-to-r from-rashmi-dark/90 via-rashmi-dark/60 to-rashmi-dark/90"></div>
       </div>
 
       {/* Hero Content */}
-      <div className="relative container mx-auto px-4 py-20 text-center text-white z-10 mt-16">
-        <div className="max-w-3xl mx-auto">
-          <div className="inline-block px-4 py-2 border border-rashmi-red/30 rounded-full bg-rashmi-dark/50 backdrop-blur-sm mb-6 animate-fade-in">
-            <span className="text-sm font-medium text-rashmi-red">Excellence in steel, cement, power and beyond</span>
-          </div>
-          
+      <div className="container mx-auto px-4 relative z-20 h-full flex flex-col justify-center">
+        <div className="max-w-3xl animate-fade-in">
           <RevealText
-            text="Industrial Strength Meets Modern Innovation"
+            text="Excellence in Steel"
             as="h1"
-            className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-6 text-white"
-            staggerDelay={0.03}
+            className="text-4xl md:text-6xl font-display font-bold text-white mb-4"
+            staggerDelay={0.08}
           />
-          
           <RevealText
-            text="Pioneering manufacturing of integrated Iron & Steel Products, Cement, Power and Ferro Alloys & Mining."
-            as="p"
-            className="text-lg md:text-xl text-gray-300 mb-10 max-w-2xl mx-auto text-balance"
-            staggerDelay={0.01}
+            text="Cement, Power and Beyond"
+            as="h2"
+            className="text-2xl md:text-4xl font-display text-white/90 mb-6"
+            staggerDelay={0.05}
             initialDelay={0.5}
           />
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-10 animate-fade-in" style={{ animationDelay: '0.8s' }}>
-            <button 
-              className="metal-button py-3 px-8 rounded-md text-lg font-medium text-white 
-                       bg-gradient-to-r from-rashmi-red to-rashmi-red/80 border-none
-                       hover:shadow-rashmi-red/20 hover:shadow-lg transition-all duration-300
-                       hover:-translate-y-1 magnetic-hover"
+          <p className="text-white/80 text-lg max-w-2xl mb-8 animate-fade-in" style={{ animationDelay: '1s' }}>
+            Rashmi Group is one of the fastest growing Business Conglomerates in the eastern region of India, 
+            pioneer in manufacturing of integrated Iron & Steel Products, Cement, Power and Ferro Alloys & Mining.
+          </p>
+          <div className="flex flex-wrap gap-4 animate-fade-in" style={{ animationDelay: '1.2s' }}>
+            <button
+              className="bg-rashmi-red text-white px-6 py-3 rounded-md hover:bg-rashmi-red/90 transition-colors 
+                         shadow-lg hover:shadow-rashmi-red/20 flex items-center group"
             >
-              Discover Our Products
+              <span>Explore Products</span>
+              <ArrowRight className="ml-2 transition-transform group-hover:translate-x-1" size={18} />
             </button>
-            <button 
-              onClick={handleScroll}
-              className="metal-button py-3 px-8 rounded-md text-lg font-medium
-                       bg-white/10 backdrop-blur-md border border-white/20
-                       hover:bg-white/20 transition-all duration-300
-                       hover:-translate-y-1 magnetic-hover"
+            <button
+              className="bg-transparent border border-white/30 text-white px-6 py-3 rounded-md 
+                         hover:bg-white/10 transition-all"
             >
-              Learn More
+              Our Journey
             </button>
           </div>
         </div>
-        
-        {/* Scroll Indicator */}
-        <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-          </svg>
+      </div>
+
+      {/* Scroll Down Indicator */}
+      <div 
+        ref={scrollRef}
+        onClick={handleScrollDown}
+        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 text-white flex flex-col items-center 
+                   cursor-pointer animate-float"
+      >
+        <span className="text-sm mb-2">Scroll Down</span>
+        <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center">
+          <div className="w-1.5 h-3 bg-white rounded-full mt-2 animate-float"></div>
         </div>
       </div>
     </section>

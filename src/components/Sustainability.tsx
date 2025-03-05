@@ -1,179 +1,279 @@
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import RevealText from './ui/RevealText';
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { Leaf, Droplets, Wind, XCircle, BarChartIcon, PieChartIcon, LineChartIcon } from 'lucide-react';
 
-const metrics = [
-  { id: 1, label: 'Carbon Footprint Reduction', value: 45, target: 60, unit: '%', color: 'from-green-500 to-green-300' },
-  { id: 2, label: 'Water Recycling', value: 75, target: 90, unit: '%', color: 'from-blue-500 to-blue-300' },
-  { id: 3, label: 'Renewable Energy Usage', value: 35, target: 50, unit: '%', color: 'from-yellow-500 to-yellow-300' },
-  { id: 4, label: 'Waste Reduction', value: 65, target: 80, unit: '%', color: 'from-purple-500 to-purple-300' },
+const emissionsData = [
+  { year: '2018', value: 100 },
+  { year: '2019', value: 85 },
+  { year: '2020', value: 70 },
+  { year: '2021', value: 55 },
+  { year: '2022', value: 45 },
+  { year: '2023', value: 35 },
 ];
 
-const Sustainability: React.FC = () => {
-  const [isInView, setIsInView] = useState(false);
-  const [animatedValues, setAnimatedValues] = useState(metrics.map(() => 0));
-  const sectionRef = useRef<HTMLDivElement>(null);
+const energySourceData = [
+  { name: 'Solar', value: 35 },
+  { name: 'Wind', value: 25 },
+  { name: 'Hydroelectric', value: 15 },
+  { name: 'Biomass', value: 10 },
+  { name: 'Traditional', value: 15 },
+];
 
+const waterUsageData = [
+  { month: 'Jan', recycled: 40, fresh: 60 },
+  { month: 'Mar', recycled: 45, fresh: 55 },
+  { month: 'May', recycled: 55, fresh: 45 },
+  { month: 'Jul', recycled: 65, fresh: 35 },
+  { month: 'Sep', recycled: 70, fresh: 30 },
+  { month: 'Nov', recycled: 75, fresh: 25 },
+];
+
+const COLORS = ['#22c55e', '#3b82f6', '#6366f1', '#f59e0b', '#64748b'];
+
+const chartTypes = ['emissions', 'energy', 'water'] as const;
+type ChartType = typeof chartTypes[number];
+
+const Sustainability = () => {
+  const [activeChart, setActiveChart] = useState<ChartType>('emissions');
+  const [isInView, setIsInView] = useState(false);
+  const [animateChart, setAnimateChart] = useState(false);
+  
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        const [entry] = entries;
-        if (entry.isIntersecting) {
+        if (entries[0].isIntersecting) {
           setIsInView(true);
+          setTimeout(() => setAnimateChart(true), 500);
         }
       },
-      { threshold: 0.2 }
+      { threshold: 0.3 }
     );
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-
+    
+    const section = document.getElementById('sustainability');
+    if (section) observer.observe(section);
+    
     return () => {
-      if (sectionRef.current) {
-        observer.unobserve(sectionRef.current);
-      }
+      if (section) observer.unobserve(section);
     };
   }, []);
 
-  useEffect(() => {
-    if (!isInView) return;
-
-    const intervals = metrics.map((metric, index) => {
-      return setInterval(() => {
-        setAnimatedValues((prev) => {
-          const newValues = [...prev];
-          if (newValues[index] < metric.value) {
-            newValues[index] += 1;
-          } else {
-            clearInterval(intervals[index]);
-          }
-          return newValues;
-        });
-      }, 30);
-    });
-
-    return () => {
-      intervals.forEach((interval) => clearInterval(interval));
-    };
-  }, [isInView]);
-
   return (
-    <section id="sustainability" ref={sectionRef} className="bg-background py-20 relative overflow-hidden">
-      {/* Background Elements */}
-      <div className="absolute top-40 right-20 w-72 h-72 rounded-full bg-green-500/5 blur-3xl"></div>
-      <div className="absolute bottom-20 left-20 w-48 h-48 rounded-full bg-blue-500/5 blur-3xl"></div>
+    <section id="sustainability" className="py-20 md:py-32 bg-background relative overflow-hidden">
+      {/* Background Decorations */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-64 h-64 rounded-full bg-rashmi-red/5 animate-pulse-slow"></div>
+        <div className="absolute bottom-20 right-10 w-96 h-96 rounded-full bg-green-500/5 animate-pulse-slow" style={{ animationDelay: '1s' }}></div>
+      </div>
       
-      <div className="section-container">
-        <div className="text-center mb-16">
-          <div className="inline-block px-4 py-2 border border-green-500/30 rounded-full bg-secondary/50 backdrop-blur-sm mb-6">
-            <span className="text-sm font-medium text-green-600 dark:text-green-400">Environmental Responsibility</span>
+      <div className="container mx-auto px-4 relative z-10">
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <div className="text-rashmi-red font-medium mb-3">
+            <RevealText text="Sustainability" />
           </div>
-          
           <RevealText
-            text="Sustainability at Our Core"
+            text="Our Commitment to the Environment"
             as="h2"
-            className="section-title mx-auto"
-            staggerDelay={0.03}
+            className="text-3xl md:text-4xl font-display font-bold mb-6 text-foreground"
           />
-          
-          <RevealText
-            text="Building a greener future with eco-friendly production processes and responsible resource management"
-            as="p"
-            className="section-subtitle mx-auto max-w-3xl"
-            staggerDelay={0.01}
-            initialDelay={0.3}
+          <p className="text-muted-foreground">
+            At Rashmi Metaliks, sustainability is not just a goal but a commitment. We continuously 
+            strive to reduce our environmental footprint while maintaining the highest quality standards.
+          </p>
+        </div>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+          <SustainabilityCard 
+            icon={<Leaf className="h-6 w-6" />}
+            title="Environmental Protection"
+            description="Our advanced filtration systems minimize emissions and promote cleaner production processes."
+            isInView={isInView}
+            delay={0}
+          />
+          <SustainabilityCard 
+            icon={<Droplets className="h-6 w-6" />}
+            title="Water Conservation"
+            description="We've implemented water recycling systems that have reduced our fresh water consumption by 65%."
+            isInView={isInView}
+            delay={0.2}
+          />
+          <SustainabilityCard 
+            icon={<Wind className="h-6 w-6" />}
+            title="Renewable Energy"
+            description="Our facilities increasingly rely on renewable energy sources, including our own 300MW power plant."
+            isInView={isInView}
+            delay={0.4}
           />
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Left - Metrics */}
-          <div className="glass-card p-8 rounded-xl">
-            <h3 className="text-2xl font-display font-semibold mb-8">Our Environmental Impact</h3>
-            
-            <div className="space-y-8">
-              {metrics.map((metric, index) => (
-                <div key={metric.id} className="relative">
-                  <div className="flex justify-between mb-2">
-                    <span className="text-sm font-medium">{metric.label}</span>
-                    <span className="text-sm font-semibold">
-                      {animatedValues[index]}{metric.unit} of {metric.target}{metric.unit} Target
-                    </span>
-                  </div>
-                  
-                  <div className="h-2.5 bg-secondary/50 rounded-full overflow-hidden">
-                    <div 
-                      className={`h-full rounded-full bg-gradient-to-r ${metric.color} transition-all duration-1000 ease-out`}
-                      style={{ width: `${(animatedValues[index] / metric.target) * 100}%` }}
-                    ></div>
-                  </div>
-                </div>
-              ))}
-            </div>
-            
-            <div className="mt-10">
-              <button className="metal-button py-2 px-6 rounded-md font-medium text-white 
-                              bg-gradient-to-r from-green-600 to-green-500 border-none
-                              hover:shadow-green-500/20 hover:shadow-lg transition-all duration-300
-                              hover:-translate-y-1 magnetic-hover">
-                Download Sustainability Report
-              </button>
-            </div>
+        {/* Interactive Charts */}
+        <div className="bg-card/30 border border-border/40 rounded-xl p-6 md:p-8">
+          <div className="flex flex-wrap gap-4 mb-8">
+            <ChartButton 
+              icon={<LineChartIcon size={18} />}
+              label="Emissions Reduction"
+              active={activeChart === 'emissions'}
+              onClick={() => setActiveChart('emissions')}
+            />
+            <ChartButton 
+              icon={<PieChartIcon size={18} />}
+              label="Energy Sources"
+              active={activeChart === 'energy'}
+              onClick={() => setActiveChart('energy')}
+            />
+            <ChartButton 
+              icon={<BarChartIcon size={18} />}
+              label="Water Usage"
+              active={activeChart === 'water'}
+              onClick={() => setActiveChart('water')}
+            />
           </div>
           
-          {/* Right - Initiatives */}
-          <div className="flex flex-col gap-6">
-            <div className="glass-card p-6 rounded-xl">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500 shrink-0">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4M20 12a8 8 0 01-8 8m8-8a8 8 0 00-8-8m8 8h4m-4-8v4m0 8v4" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="text-xl font-display font-semibold mb-2">Water Conservation</h3>
-                  <p className="text-muted-foreground">
-                    Our state-of-the-art water recycling system reduces freshwater consumption by 75% compared to industry standards.
-                  </p>
-                </div>
+          <div className="h-[400px] w-full">
+            {activeChart === 'emissions' && (
+              <div className={`transition-opacity duration-700 h-full ${animateChart ? 'opacity-100' : 'opacity-0'}`}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart
+                    data={emissionsData}
+                    margin={{ top: 20, right: 30, left: 0, bottom: 20 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.3} />
+                    <XAxis dataKey="year" stroke="var(--muted-foreground)" />
+                    <YAxis stroke="var(--muted-foreground)" />
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: 'var(--card)', 
+                        borderColor: 'var(--border)', 
+                        color: 'var(--foreground)' 
+                      }} 
+                      labelStyle={{ color: 'var(--foreground)' }}
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="value" 
+                      stroke="#E7251F" 
+                      strokeWidth={3}
+                      name="CO₂ Emissions (% of 2018 baseline)"
+                      activeDot={{ r: 8 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
               </div>
-            </div>
+            )}
             
-            <div className="glass-card p-6 rounded-xl">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-full bg-yellow-500/10 flex items-center justify-center text-yellow-500 shrink-0">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="text-xl font-display font-semibold mb-2">Renewable Energy</h3>
-                  <p className="text-muted-foreground">
-                    Our facilities are increasingly powered by renewable energy sources, including solar panels and waste heat recovery systems.
-                  </p>
-                </div>
+            {activeChart === 'energy' && (
+              <div className={`transition-opacity duration-700 h-full ${animateChart ? 'opacity-100' : 'opacity-0'}`}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={energySourceData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={80}
+                      outerRadius={140}
+                      fill="#8884d8"
+                      paddingAngle={5}
+                      dataKey="value"
+                      nameKey="name"
+                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                      labelLine={false}
+                    >
+                      {energySourceData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: 'var(--card)', 
+                        borderColor: 'var(--border)', 
+                        color: 'var(--foreground)' 
+                      }}
+                      formatter={(value) => [`${value}%`, 'Percentage']}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
               </div>
-            </div>
+            )}
             
-            <div className="glass-card p-6 rounded-xl">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-full bg-green-500/10 flex items-center justify-center text-green-500 shrink-0">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="text-xl font-display font-semibold mb-2">Circular Economy</h3>
-                  <p className="text-muted-foreground">
-                    We've implemented a waste management system that recycles production byproducts back into the manufacturing process.
-                  </p>
-                </div>
+            {activeChart === 'water' && (
+              <div className={`transition-opacity duration-700 h-full ${animateChart ? 'opacity-100' : 'opacity-0'}`}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={waterUsageData}
+                    margin={{ top: 20, right: 30, left: 0, bottom: 20 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.3} />
+                    <XAxis dataKey="month" stroke="var(--muted-foreground)" />
+                    <YAxis stroke="var(--muted-foreground)" />
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: 'var(--card)', 
+                        borderColor: 'var(--border)', 
+                        color: 'var(--foreground)' 
+                      }}
+                    />
+                    <Bar dataKey="recycled" name="Recycled Water (%)" stackId="a" fill="#3b82f6" />
+                    <Bar dataKey="fresh" name="Fresh Water (%)" stackId="a" fill="#64748b" />
+                  </BarChart>
+                </ResponsiveContainer>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
     </section>
+  );
+};
+
+interface SustainabilityCardProps {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  isInView: boolean;
+  delay: number;
+}
+
+const SustainabilityCard: React.FC<SustainabilityCardProps> = ({ icon, title, description, isInView, delay }) => {
+  return (
+    <div 
+      className={`p-6 bg-card/30 border border-border/40 rounded-xl transition-all duration-1000 ${
+        isInView 
+          ? 'opacity-100 translate-y-0' 
+          : 'opacity-0 translate-y-10'
+      }`}
+      style={{ transitionDelay: `${delay}s` }}
+    >
+      <div className="w-12 h-12 flex items-center justify-center rounded-full bg-green-500/10 text-green-500 mb-4">
+        {icon}
+      </div>
+      <h3 className="text-xl font-semibold mb-3">{title}</h3>
+      <p className="text-muted-foreground">{description}</p>
+    </div>
+  );
+};
+
+interface ChartButtonProps {
+  icon: React.ReactNode;
+  label: string;
+  active: boolean;
+  onClick: () => void;
+}
+
+const ChartButton: React.FC<ChartButtonProps> = ({ icon, label, active, onClick }) => {
+  return (
+    <button
+      onClick={onClick}
+      className={`flex items-center space-x-2 px-4 py-2 rounded-md transition-colors ${
+        active 
+          ? 'bg-rashmi-red text-white' 
+          : 'bg-muted/50 text-muted-foreground hover:bg-muted'
+      }`}
+    >
+      {icon}
+      <span>{label}</span>
+      {active && <XCircle size={16} className="ml-2" />}
+    </button>
   );
 };
 

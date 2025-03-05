@@ -1,134 +1,149 @@
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import RevealText from './ui/RevealText';
 import ProductViewer from './ui/ProductViewer';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-const products = [
+interface Product {
+  id: number;
+  name: string;
+  description: string;
+  features: string[];
+  image: string;
+}
+
+const productData: Product[] = [
   {
     id: 1,
-    name: 'Ductile Iron Pipes',
-    description: 'Premium quality DI pipes with excellent corrosion resistance and mechanical properties.',
-    specs: ['Diameter: 80mm-1000mm', 'Class: K7, K8, K9, K10', 'Length: 5.5m, 6m'],
+    name: "Ductile Iron Pipe",
+    description: "Premium quality DI Pipes with ISO certification, designed for durability and longevity.",
+    features: ["Corrosion resistant", "High tensile strength", "Long service life", "Easy installation"],
+    image: "https://images.unsplash.com/photo-1618761299062-ba2dbbcebd92?ixlib=rb-4.0.3&auto=format&fit=crop&q=80"
   },
   {
     id: 2,
-    name: 'TMT Bars',
-    description: 'High-strength TMT bars with superior ductility and bendability for construction needs.',
-    specs: ['Diameter: 8mm-32mm', 'Grade: Fe 500, Fe 550, Fe 600', 'Length: 12m'],
+    name: "TMT Bars",
+    description: "High strength thermo-mechanically treated bars perfect for construction applications.",
+    features: ["Earthquake resistant", "High yield strength", "Better ductility", "Optimal bonding"],
+    image: "https://plus.unsplash.com/premium_photo-1682092618361-e785db230079?ixlib=rb-4.0.3&auto=format&fit=crop&q=80"
   },
   {
     id: 3,
-    name: 'Wire Rods',
-    description: 'Wire rods for various industrial applications with precise dimensions and properties.',
-    specs: ['Diameter: 5.5mm-12mm', 'Grade: SAE 1008-1010', 'Carbon: 0.06-0.12%'],
+    name: "Wire Rods",
+    description: "Versatile wire rods suitable for various industrial applications.",
+    features: ["Precise dimensions", "Excellent surface quality", "Wide range of grades", "Consistent mechanical properties"],
+    image: "https://images.unsplash.com/photo-1620283085634-a10c02034ad5?ixlib=rb-4.0.3&auto=format&fit=crop&q=80"
   },
   {
     id: 4,
-    name: 'Pig Iron',
-    description: 'High-grade foundry-grade pig iron with controlled silicon and manganese content.',
-    specs: ['Carbon: 3.8-4.2%', 'Silicon: 1.8-2.2%', 'Manganese: 0.5-0.8%'],
+    name: "Pig Iron",
+    description: "High-grade pig iron for foundries and steel manufacturing.",
+    features: ["Low phosphorus content", "Controlled silicon", "Consistent quality", "Custom specifications available"],
+    image: "https://images.unsplash.com/photo-1535813547-99c456a42798?ixlib=rb-4.0.3&auto=format&fit=crop&q=80"
   },
 ];
 
-const Products: React.FC = () => {
-  const [activeProduct, setActiveProduct] = useState(products[0]);
-  const [isTransitioning, setIsTransitioning] = useState(false);
-
-  const handleProductChange = (product: typeof products[0]) => {
-    if (product.id === activeProduct.id) return;
-    
-    setIsTransitioning(true);
-    setTimeout(() => {
-      setActiveProduct(product);
-      setIsTransitioning(false);
-    }, 300);
+const Products = () => {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const productRefs = useRef<(HTMLDivElement | null)[]>([]);
+  
+  const nextProduct = () => {
+    setActiveIndex((prev) => (prev + 1) % productData.length);
+  };
+  
+  const prevProduct = () => {
+    setActiveIndex((prev) => (prev - 1 + productData.length) % productData.length);
   };
 
   return (
-    <section id="products" className="bg-secondary py-20 relative overflow-hidden">
-      {/* Background Elements */}
-      <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-rashmi-red/5 blur-3xl"></div>
-      <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full bg-rashmi-red/5 blur-3xl"></div>
-      
-      <div className="section-container">
-        <div className="text-center mb-16">
-          <div className="inline-block px-4 py-2 border border-rashmi-red/30 rounded-full bg-background/50 backdrop-blur-sm mb-6">
-            <span className="text-sm font-medium text-rashmi-red">Our Premium Offerings</span>
+    <section id="products" className="py-20 md:py-32 bg-muted/30">
+      <div className="container mx-auto px-4">
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <div className="text-rashmi-red font-medium mb-3">
+            <RevealText text="Our Products" />
           </div>
-          
           <RevealText
-            text="Industry-Leading Steel Products"
+            text="Premium Quality Steel Products"
             as="h2"
-            className="section-title mx-auto"
-            staggerDelay={0.03}
+            className="text-3xl md:text-4xl font-display font-bold mb-6 text-foreground"
           />
-          
-          <RevealText
-            text="Precision-engineered steel products meeting global quality standards"
-            as="p"
-            className="section-subtitle mx-auto"
-            staggerDelay={0.01}
-            initialDelay={0.3}
-          />
+          <p className="text-muted-foreground">
+            Explore our diverse range of high-quality steel products manufactured with cutting-edge technology 
+            and meeting international standards.
+          </p>
         </div>
         
-        <div className="flex flex-col lg:flex-row items-center gap-16">
-          {/* Left - Product Selector */}
-          <div className="w-full lg:w-1/2">
-            <div className="space-y-4">
-              {products.map((product) => (
-                <button
-                  key={product.id}
-                  onClick={() => handleProductChange(product)}
-                  className={`w-full text-left p-4 rounded-lg transition-all duration-300 magnetic-hover border ${
-                    activeProduct.id === product.id
-                      ? 'bg-gradient-to-r from-rashmi-red/10 to-transparent border-rashmi-red/20'
-                      : 'glass-card hover:border-rashmi-red/20'
-                  }`}
-                >
-                  <h3 className={`text-xl font-display font-medium transition-colors duration-300 ${
-                    activeProduct.id === product.id ? 'text-rashmi-red' : 'text-foreground'
-                  }`}>
-                    {product.name}
-                  </h3>
-                  <p className="text-sm text-muted-foreground mt-1">{product.description}</p>
-                </button>
-              ))}
-            </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          {/* 3D Product Viewer */}
+          <div className="order-2 lg:order-1">
+            <ProductViewer className="w-full h-[400px] max-w-lg mx-auto" />
           </div>
           
-          {/* Right - Product Viewer */}
-          <div className="w-full lg:w-1/2">
-            <div className={`rounded-2xl overflow-hidden transition-opacity duration-300 ${
-              isTransitioning ? 'opacity-0' : 'opacity-100'
-            }`}>
-              <ProductViewer className="mb-8" />
-              
-              <div className="glass-card p-6 rounded-lg">
-                <h3 className="text-2xl font-display font-semibold text-foreground mb-4">{activeProduct.name}</h3>
-                
-                <p className="text-muted-foreground mb-4">{activeProduct.description}</p>
-                
-                <div className="mt-6">
-                  <h4 className="text-sm font-medium uppercase text-muted-foreground mb-3">Specifications</h4>
-                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {activeProduct.specs.map((spec, index) => (
-                      <li key={index} className="flex items-center">
-                        <span className="inline-block w-2 h-2 bg-rashmi-red rounded-full mr-2"></span>
-                        <span className="text-sm text-foreground">{spec}</span>
-                      </li>
+          {/* Product Information */}
+          <div className="order-1 lg:order-2">
+            <div className="relative">
+              {productData.map((product, index) => (
+                <div
+                  key={product.id}
+                  ref={(el) => (productRefs.current[index] = el)}
+                  className={`transition-all duration-500 ${
+                    activeIndex === index
+                      ? 'opacity-100 translate-y-0'
+                      : 'opacity-0 translate-y-8 absolute top-0 left-0 right-0'
+                  }`}
+                >
+                  <h3 className="text-2xl md:text-3xl font-display font-bold mb-4">{product.name}</h3>
+                  <p className="text-muted-foreground mb-6">{product.description}</p>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                    {product.features.map((feature, idx) => (
+                      <div 
+                        key={idx}
+                        className="flex items-center p-3 bg-card/50 rounded-lg border border-border/30"
+                      >
+                        <div className="w-2 h-2 rounded-full bg-rashmi-red mr-3"></div>
+                        <span>{feature}</span>
+                      </div>
                     ))}
-                  </ul>
-                </div>
-                
-                <div className="mt-8">
-                  <button className="metal-button py-2 px-6 rounded-md font-medium text-white 
-                                    bg-gradient-to-r from-rashmi-red to-rashmi-red/80 border-none
-                                    hover:shadow-rashmi-red/20 hover:shadow-lg transition-all duration-300
-                                    hover:-translate-y-1 magnetic-hover">
-                    Request Brochure
+                  </div>
+                  
+                  <button className="bg-rashmi-red text-white px-6 py-3 rounded-md hover:bg-rashmi-red/90 transition-colors">
+                    Get Specifications
                   </button>
                 </div>
+              ))}
+            </div>
+            
+            {/* Product Navigation */}
+            <div className="flex justify-between items-center mt-12">
+              <div className="flex space-x-2">
+                {productData.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setActiveIndex(index)}
+                    className={`w-3 h-3 rounded-full transition-all ${
+                      activeIndex === index ? 'bg-rashmi-red w-6' : 'bg-muted'
+                    }`}
+                    aria-label={`View product ${index + 1}`}
+                  />
+                ))}
+              </div>
+              
+              <div className="flex space-x-3">
+                <button
+                  onClick={prevProduct}
+                  className="w-10 h-10 rounded-full flex items-center justify-center border border-border hover:bg-card transition-colors"
+                  aria-label="Previous product"
+                >
+                  <ChevronLeft size={20} />
+                </button>
+                <button
+                  onClick={nextProduct}
+                  className="w-10 h-10 rounded-full flex items-center justify-center border border-border hover:bg-card transition-colors"
+                  aria-label="Next product"
+                >
+                  <ChevronRight size={20} />
+                </button>
               </div>
             </div>
           </div>
