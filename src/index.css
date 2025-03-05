@@ -47,6 +47,10 @@
     --sidebar-ring: 354 78% 51%;
     
     --radius: 0.5rem;
+    
+    /* Rashmi Colors */
+    --rashmi-red: 354 78% 51%;
+    --rashmi-dark: 225 10% 10%;
   }
  
   .dark {
@@ -88,6 +92,10 @@
     --sidebar-muted-foreground: 225 5% 65%;
     --sidebar-border: 225 10% 20%;
     --sidebar-ring: 354 78% 51%;
+    
+    /* Rashmi Colors */
+    --rashmi-red: 354 78% 51%;
+    --rashmi-dark: 0 0% 93%;
   }
 }
  
@@ -102,6 +110,42 @@
   
   html {
     scroll-behavior: smooth;
+  }
+  
+  /* Enhanced table styling for dark mode visibility */
+  .dark .prose table {
+    @apply text-foreground;
+  }
+  
+  .dark .prose table thead {
+    @apply text-foreground;
+  }
+  
+  .dark .prose table tr {
+    @apply border-border;
+  }
+  
+  .dark .prose a {
+    @apply text-rashmi-red hover:text-rashmi-red/80;
+  }
+  
+  /* Fix for table visibility in dark mode */
+  .dark .prose table th,
+  .dark .prose table td {
+    @apply text-foreground border-border;
+  }
+  
+  /* Add styling for prose content */
+  .prose {
+    @apply max-w-none;
+  }
+  
+  .prose h1, .prose h2, .prose h3, .prose h4 {
+    @apply text-foreground font-display;
+  }
+  
+  .prose p, .prose ul, .prose ol {
+    @apply text-muted-foreground;
   }
 }
 
@@ -118,6 +162,19 @@
   .dark .metal-surface {
     background: linear-gradient(135deg, #3a3a3a 0%, #303030 50%, #282828 51%, #383838 100%);
   }
+  
+  .animate-spin-slow {
+    animation: spin 12s linear infinite;
+  }
+  
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  .animate-fade-in {
+    opacity: 0;
+    animation: fadeIn 0.6s ease-out forwards;
+  }
 }
 
 /* Animations */
@@ -128,4 +185,32 @@
   50% {
     transform: translateY(-10px);
   }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Remove default App.css styles that might conflict */
+#root {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  text-align: left;
 }

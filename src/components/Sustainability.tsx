@@ -59,6 +59,36 @@ const Sustainability = () => {
     };
   }, []);
 
+  // Custom tooltip content styles for dark mode compatibility
+  const getTooltipContentStyle = () => {
+    return { 
+      backgroundColor: 'var(--card)', 
+      borderColor: 'var(--border)', 
+      color: 'var(--foreground)',
+      fontWeight: 'bold',
+      padding: '8px 12px',
+      borderRadius: '6px',
+      boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
+    };
+  };
+
+  // Custom tooltip label styles for improved visibility
+  const getTooltipLabelStyle = () => {
+    return { 
+      color: 'var(--rashmi-red, #E7251F)',
+      fontWeight: 'bold',
+      marginBottom: '4px'
+    };
+  };
+
+  // Custom tooltip item name for consistent styling
+  const getTooltipItemStyle = () => {
+    return { 
+      color: 'var(--foreground)',
+      padding: '3px 0'
+    };
+  };
+
   return (
     <section id="sustainability" className="py-20 md:py-32 bg-background relative overflow-hidden">
       {/* Background Decorations */}
@@ -142,12 +172,9 @@ const Sustainability = () => {
                     <XAxis dataKey="year" stroke="var(--muted-foreground)" />
                     <YAxis stroke="var(--muted-foreground)" />
                     <Tooltip 
-                      contentStyle={{ 
-                        backgroundColor: 'var(--card)', 
-                        borderColor: 'var(--border)', 
-                        color: 'var(--foreground)' 
-                      }} 
-                      labelStyle={{ color: 'var(--foreground)' }}
+                      contentStyle={getTooltipContentStyle()} 
+                      labelStyle={getTooltipLabelStyle()}
+                      itemStyle={getTooltipItemStyle()}
                     />
                     <Line 
                       type="monotone" 
@@ -184,11 +211,9 @@ const Sustainability = () => {
                       ))}
                     </Pie>
                     <Tooltip 
-                      contentStyle={{ 
-                        backgroundColor: 'var(--card)', 
-                        borderColor: 'var(--border)', 
-                        color: 'var(--foreground)' 
-                      }}
+                      contentStyle={getTooltipContentStyle()}
+                      labelStyle={getTooltipLabelStyle()}
+                      itemStyle={getTooltipItemStyle()}
                       formatter={(value) => [`${value}%`, 'Percentage']}
                     />
                   </PieChart>
@@ -207,11 +232,9 @@ const Sustainability = () => {
                     <XAxis dataKey="month" stroke="var(--muted-foreground)" />
                     <YAxis stroke="var(--muted-foreground)" />
                     <Tooltip 
-                      contentStyle={{ 
-                        backgroundColor: 'var(--card)', 
-                        borderColor: 'var(--border)', 
-                        color: 'var(--foreground)' 
-                      }}
+                      contentStyle={getTooltipContentStyle()}
+                      labelStyle={getTooltipLabelStyle()}
+                      itemStyle={getTooltipItemStyle()}
                     />
                     <Bar dataKey="recycled" name="Recycled Water (%)" stackId="a" fill="#3b82f6" />
                     <Bar dataKey="fresh" name="Fresh Water (%)" stackId="a" fill="#64748b" />

@@ -3,9 +3,10 @@ import React, { useEffect, useRef } from 'react';
 
 interface ProductViewerProps {
   className?: string;
+  productName?: string;
 }
 
-const ProductViewer: React.FC<ProductViewerProps> = ({ className }) => {
+const ProductViewer: React.FC<ProductViewerProps> = ({ className, productName = "Ductile Iron Pipe" }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
@@ -54,6 +55,21 @@ const ProductViewer: React.FC<ProductViewerProps> = ({ className }) => {
     };
   }, []);
   
+  const getDisplayName = () => {
+    if (productName.includes("Pipe")) {
+      return "DI Pipe";
+    } else if (productName.includes("Fittings")) {
+      return "DI Fitting";
+    } else if (productName.includes("TMT")) {
+      return "TMT Bar";
+    } else if (productName.includes("Wire")) {
+      return "Wire Rod";
+    } else if (productName.includes("Pig")) {
+      return "Pig Iron";
+    }
+    return productName;
+  };
+  
   return (
     <div ref={containerRef} className={`perspective-1000 transition-transform duration-300 ease-out ${className}`}>
       <div className="w-full h-full transform-gpu metal-surface rounded-lg p-6 flex flex-col items-center justify-center">
@@ -61,12 +77,12 @@ const ProductViewer: React.FC<ProductViewerProps> = ({ className }) => {
           <div className="absolute inset-4 rounded-full border-4 border-rashmi-red/20 border-t-rashmi-red"></div>
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="w-32 h-24 bg-gradient-to-br from-gray-300 to-gray-100 rounded-md shadow-inner transform rotate-12 flex items-center justify-center">
-              <span className="font-bold text-rashmi-dark text-sm">DI Pipe</span>
+              <span className="font-bold text-rashmi-dark text-sm">{getDisplayName()}</span>
             </div>
           </div>
         </div>
         <div className="mt-8 text-center">
-          <h3 className="text-xl font-display font-semibold">Ductile Iron Pipe</h3>
+          <h3 className="text-xl font-display font-semibold">{productName}</h3>
           <p className="text-sm text-muted-foreground mt-2">Premium quality with ISO certification</p>
         </div>
       </div>

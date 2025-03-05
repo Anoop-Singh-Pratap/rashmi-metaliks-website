@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Home } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 import { Link } from 'react-router-dom';
 
@@ -40,8 +40,16 @@ const Header = () => {
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
+          <Link to="/" className="relative font-medium text-foreground/80 hover:text-foreground transition-colors duration-300 group overflow-hidden">
+            <span className="flex items-center"><Home size={16} className="mr-1" /> Home</span>
+            <span className="absolute bottom-0 left-0 w-full h-0.5 bg-rashmi-red transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
+          </Link>
           <NavLink href="#about">About</NavLink>
           <NavLink href="#products">Products</NavLink>
+          <Link to="/di-pipes" className="relative font-medium text-foreground/80 hover:text-foreground transition-colors duration-300 group overflow-hidden">
+            <span>DI Pipes</span>
+            <span className="absolute bottom-0 left-0 w-full h-0.5 bg-rashmi-red transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
+          </Link>
           <NavLink href="#sustainability">Sustainability</NavLink>
           <NavLink href="#contact">Contact</NavLink>
           <ThemeToggle />
@@ -68,11 +76,17 @@ const Header = () => {
       >
         <div className="container mx-auto px-4 py-4">
           <div className="flex flex-col space-y-4">
+            <MobileNavLink href="/" onClick={() => setIsMenuOpen(false)}>
+              <Home size={16} className="mr-1" /> Home
+            </MobileNavLink>
             <MobileNavLink href="#about" onClick={() => setIsMenuOpen(false)}>
               About
             </MobileNavLink>
             <MobileNavLink href="#products" onClick={() => setIsMenuOpen(false)}>
               Products
+            </MobileNavLink>
+            <MobileNavLink href="/di-pipes" onClick={() => setIsMenuOpen(false)}>
+              DI Pipes
             </MobileNavLink>
             <MobileNavLink href="#sustainability" onClick={() => setIsMenuOpen(false)}>
               Sustainability
@@ -108,6 +122,21 @@ const MobileNavLink: React.FC<{
   onClick: () => void;
   children: React.ReactNode;
 }> = ({ href, onClick, children }) => {
+  // Check if it's an internal link or a section link
+  const isInternalLink = !href.startsWith('#');
+  
+  if (isInternalLink) {
+    return (
+      <Link
+        to={href}
+        onClick={onClick}
+        className="block py-2 text-lg font-medium text-foreground/80 hover:text-foreground hover:bg-muted/30 px-4 rounded-md transition-colors duration-200"
+      >
+        <span className="flex items-center">{children}</span>
+      </Link>
+    );
+  }
+  
   return (
     <a
       href={href}

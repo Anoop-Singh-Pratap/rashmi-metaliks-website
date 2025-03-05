@@ -3,6 +3,7 @@ import React, { useState, useRef } from 'react';
 import RevealText from './ui/RevealText';
 import ProductViewer from './ui/ProductViewer';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 interface Product {
   id: number;
@@ -10,6 +11,7 @@ interface Product {
   description: string;
   features: string[];
   image: string;
+  link?: string;
 }
 
 const productData: Product[] = [
@@ -18,24 +20,32 @@ const productData: Product[] = [
     name: "Ductile Iron Pipe",
     description: "Premium quality DI Pipes with ISO certification, designed for durability and longevity.",
     features: ["Corrosion resistant", "High tensile strength", "Long service life", "Easy installation"],
-    image: "https://images.unsplash.com/photo-1618761299062-ba2dbbcebd92?ixlib=rb-4.0.3&auto=format&fit=crop&q=80"
+    image: "https://images.unsplash.com/photo-1618761299062-ba2dbbcebd92?ixlib=rb-4.0.3&auto=format&fit=crop&q=80",
+    link: "/di-pipes"
   },
   {
     id: 2,
+    name: "DI Fittings",
+    description: "High-quality ductile iron fittings that complement our DI pipe systems for complete water management solutions.",
+    features: ["Perfect compatibility", "Same durability", "Diverse joints", "Pressure capable"],
+    image: "https://images.unsplash.com/photo-1582655432787-c7b89f741cc4?ixlib=rb-4.0.3&auto=format&fit=crop&q=80"
+  },
+  {
+    id: 3,
     name: "TMT Bars",
     description: "High strength thermo-mechanically treated bars perfect for construction applications.",
     features: ["Earthquake resistant", "High yield strength", "Better ductility", "Optimal bonding"],
     image: "https://plus.unsplash.com/premium_photo-1682092618361-e785db230079?ixlib=rb-4.0.3&auto=format&fit=crop&q=80"
   },
   {
-    id: 3,
+    id: 4,
     name: "Wire Rods",
     description: "Versatile wire rods suitable for various industrial applications.",
     features: ["Precise dimensions", "Excellent surface quality", "Wide range of grades", "Consistent mechanical properties"],
     image: "https://images.unsplash.com/photo-1620283085634-a10c02034ad5?ixlib=rb-4.0.3&auto=format&fit=crop&q=80"
   },
   {
-    id: 4,
+    id: 5,
     name: "Pig Iron",
     description: "High-grade pig iron for foundries and steel manufacturing.",
     features: ["Low phosphorus content", "Controlled silicon", "Consistent quality", "Custom specifications available"],
@@ -54,6 +64,8 @@ const Products = () => {
   const prevProduct = () => {
     setActiveIndex((prev) => (prev - 1 + productData.length) % productData.length);
   };
+
+  const activeProduct = productData[activeIndex];
 
   return (
     <section id="products" className="py-20 md:py-32 bg-muted/30">
@@ -76,7 +88,7 @@ const Products = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* 3D Product Viewer */}
           <div className="order-2 lg:order-1">
-            <ProductViewer className="w-full h-[400px] max-w-lg mx-auto" />
+            <ProductViewer className="w-full h-[400px] max-w-lg mx-auto" productName={activeProduct.name} />
           </div>
           
           {/* Product Information */}
@@ -107,9 +119,15 @@ const Products = () => {
                     ))}
                   </div>
                   
-                  <button className="bg-rashmi-red text-white px-6 py-3 rounded-md hover:bg-rashmi-red/90 transition-colors">
-                    Get Specifications
-                  </button>
+                  {product.link ? (
+                    <Link to={product.link} className="bg-rashmi-red text-white px-6 py-3 rounded-md hover:bg-rashmi-red/90 transition-colors inline-block">
+                      Learn More
+                    </Link>
+                  ) : (
+                    <button className="bg-rashmi-red text-white px-6 py-3 rounded-md hover:bg-rashmi-red/90 transition-colors">
+                      Get Specifications
+                    </button>
+                  )}
                 </div>
               ))}
             </div>
