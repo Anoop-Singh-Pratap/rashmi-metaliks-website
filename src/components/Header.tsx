@@ -33,10 +33,10 @@ const Header = () => {
     if (isHovering) {
       setProductsDropdownOpen(true);
     } else {
-      // Add delay before closing dropdown
+      // Add delay before closing dropdown - improved timing for better UX
       hoverTimeoutRef.current = window.setTimeout(() => {
         setProductsDropdownOpen(false);
-      }, 600);
+      }, 300);
     }
   };
 
@@ -50,10 +50,10 @@ const Header = () => {
     if (isHovering) {
       setDownloadsDropdownOpen(true);
     } else {
-      // Add delay before closing dropdown
+      // Add delay before closing dropdown - improved timing for better UX
       downloadHoverTimeoutRef.current = window.setTimeout(() => {
         setDownloadsDropdownOpen(false);
-      }, 600);
+      }, 300);
     }
   };
 
@@ -115,7 +115,10 @@ const Header = () => {
               className="relative font-medium text-foreground/80 hover:text-foreground transition-colors duration-300 group overflow-hidden flex items-center"
             >
               <span>Products</span>
-              <ChevronDown size={16} className={`ml-1 transition-transform duration-200 ${productsDropdownOpen ? 'rotate-180' : ''}`} />
+              <ChevronDown 
+                size={16} 
+                className={`ml-1 transition-transform duration-200 ${productsDropdownOpen ? 'rotate-180' : ''}`} 
+              />
               <span className="absolute bottom-0 left-0 w-full h-0.5 bg-rashmi-red transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
             </a>
             
@@ -128,11 +131,23 @@ const Header = () => {
               onMouseLeave={() => handleProductsHover(false)}
             >
               <div className="py-1">
-                <Link to="/di-pipes" className="block px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors duration-200">
+                <Link 
+                  to="/di-pipes" 
+                  className="block px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors duration-200"
+                >
                   DI Pipes
                 </Link>
-                <Link to="/di-fittings" className="block px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors duration-200">
+                <Link 
+                  to="/di-fittings" 
+                  className="block px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors duration-200"
+                >
                   DI Fittings
+                </Link>
+                <Link 
+                  to="/tmt-bar" 
+                  className="block px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors duration-200"
+                >
+                  TMT Bar
                 </Link>
               </div>
             </div>
@@ -152,7 +167,10 @@ const Header = () => {
               className="relative font-medium text-foreground/80 hover:text-foreground transition-colors duration-300 group overflow-hidden flex items-center"
             >
               <span>Downloads</span>
-              <ChevronDown size={16} className={`ml-1 transition-transform duration-200 ${downloadsDropdownOpen ? 'rotate-180' : ''}`} />
+              <ChevronDown 
+                size={16} 
+                className={`ml-1 transition-transform duration-200 ${downloadsDropdownOpen ? 'rotate-180' : ''}`} 
+              />
               <span className="absolute bottom-0 left-0 w-full h-0.5 bg-rashmi-red transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
             </a>
             
@@ -165,7 +183,10 @@ const Header = () => {
               onMouseLeave={() => handleDownloadsHover(false)}
             >
               <div className="py-1">
-                <Link to="/certifications" className="block px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors duration-200 flex items-center">
+                <Link 
+                  to="/certifications" 
+                  className="block px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors duration-200 flex items-center"
+                >
                   <FileText size={16} className="mr-2" />
                   Certifications
                 </Link>
@@ -219,6 +240,9 @@ const Header = () => {
                 </MobileNavLink>
                 <MobileNavLink href="/di-fittings" onClick={() => setIsMenuOpen(false)}>
                   DI Fittings
+                </MobileNavLink>
+                <MobileNavLink href="/tmt-bar" onClick={() => setIsMenuOpen(false)}>
+                  TMT Bar
                 </MobileNavLink>
               </div>
             </div>
