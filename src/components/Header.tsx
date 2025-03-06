@@ -1,6 +1,6 @@
 
-import React, { useState, useEffect } from 'react';
-import { Menu, X, Home, ChevronDown } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Menu, X, Home, ChevronDown, Download, FileText } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 import { Link } from 'react-router-dom';
 
@@ -8,6 +8,11 @@ const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [productsDropdownOpen, setProductsDropdownOpen] = useState(false);
+  const [downloadsDropdownOpen, setDownloadsDropdownOpen] = useState(false);
+  const productsDropdownRef = useRef<HTMLDivElement>(null);
+  const downloadsDropdownRef = useRef<HTMLDivElement>(null);
+  const hoverTimeoutRef = useRef<number | null>(null);
+  const downloadHoverTimeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -16,6 +21,57 @@ const Header = () => {
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const handleProductsHover = (isHovering: boolean) => {
+    // Clear any existing timeout
+    if (hoverTimeoutRef.current !== null) {
+      window.clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
+    }
+
+    if (isHovering) {
+      setProductsDropdownOpen(true);
+    } else {
+      // Add delay before closing dropdown
+      hoverTimeoutRef.current = window.setTimeout(() => {
+        setProductsDropdownOpen(false);
+      }, 600);
+    }
+  };
+
+  const handleDownloadsHover = (isHovering: boolean) => {
+    // Clear any existing timeout
+    if (downloadHoverTimeoutRef.current !== null) {
+      window.clearTimeout(downloadHoverTimeoutRef.current);
+      downloadHoverTimeoutRef.current = null;
+    }
+
+    if (isHovering) {
+      setDownloadsDropdownOpen(true);
+    } else {
+      // Add delay before closing dropdown
+      downloadHoverTimeoutRef.current = window.setTimeout(() => {
+        setDownloadsDropdownOpen(false);
+      }, 600);
+    }
+  };
+
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (productsDropdownRef.current && !productsDropdownRef.current.contains(event.target as Node)) {
+        setProductsDropdownOpen(false);
+      }
+      if (downloadsDropdownRef.current && !downloadsDropdownRef.current.contains(event.target as Node)) {
+        setDownloadsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, []);
 
   return (
@@ -48,12 +104,11 @@ const Header = () => {
           <NavLink href="#about">About</NavLink>
           
           {/* Products Dropdown - improved hover experience */}
-          <div className="relative group" 
-            onMouseEnter={() => setProductsDropdownOpen(true)}
-            onMouseLeave={() => {
-              // Add delay before closing dropdown
-              setTimeout(() => setProductsDropdownOpen(false), 300);
-            }}
+          <div 
+            className="relative group" 
+            ref={productsDropdownRef}
+            onMouseEnter={() => handleProductsHover(true)}
+            onMouseLeave={() => handleProductsHover(false)}
           >
             <a 
               href="#products" 
@@ -69,8 +124,8 @@ const Header = () => {
               className={`absolute top-full left-0 mt-2 w-48 rounded-md bg-background shadow-lg ring-1 ring-black ring-opacity-5 transition-all duration-300 ${
                 productsDropdownOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'
               }`}
-              onMouseEnter={() => setProductsDropdownOpen(true)}
-              onMouseLeave={() => setProductsDropdownOpen(false)}
+              onMouseEnter={() => handleProductsHover(true)}
+              onMouseLeave={() => handleProductsHover(false)}
             >
               <div className="py-1">
                 <Link to="/di-pipes" className="block px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors duration-200">
@@ -84,6 +139,40 @@ const Header = () => {
           </div>
           
           <NavLink href="#sustainability">Sustainability</NavLink>
+
+          {/* Downloads Dropdown */}
+          <div 
+            className="relative group" 
+            ref={downloadsDropdownRef}
+            onMouseEnter={() => handleDownloadsHover(true)}
+            onMouseLeave={() => handleDownloadsHover(false)}
+          >
+            <a 
+              href="#downloads" 
+              className="relative font-medium text-foreground/80 hover:text-foreground transition-colors duration-300 group overflow-hidden flex items-center"
+            >
+              <span>Downloads</span>
+              <ChevronDown size={16} className={`ml-1 transition-transform duration-200 ${downloadsDropdownOpen ? 'rotate-180' : ''}`} />
+              <span className="absolute bottom-0 left-0 w-full h-0.5 bg-rashmi-red transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
+            </a>
+            
+            {/* Downloads Dropdown Menu */}
+            <div 
+              className={`absolute top-full left-0 mt-2 w-48 rounded-md bg-background shadow-lg ring-1 ring-black ring-opacity-5 transition-all duration-300 ${
+                downloadsDropdownOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'
+              }`}
+              onMouseEnter={() => handleDownloadsHover(true)}
+              onMouseLeave={() => handleDownloadsHover(false)}
+            >
+              <div className="py-1">
+                <Link to="/certifications" className="block px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors duration-200 flex items-center">
+                  <FileText size={16} className="mr-2" />
+                  Certifications
+                </Link>
+              </div>
+            </div>
+          </div>
+          
           <NavLink href="#contact">Contact</NavLink>
           <ThemeToggle />
         </nav>
@@ -117,10 +206,13 @@ const Header = () => {
             </MobileNavLink>
             
             {/* Products (Mobile) */}
-            <div>
-              <MobileNavLink href="#products" onClick={() => {}}>
+            <div className="mb-2">
+              <button
+                onClick={() => {}}
+                className="flex items-center w-full py-2 text-lg font-medium text-foreground/80 hover:text-foreground hover:bg-muted/30 px-4 rounded-md transition-colors duration-200"
+              >
                 Products <ChevronDown size={16} className="ml-1" />
-              </MobileNavLink>
+              </button>
               <div className="pl-4 mt-2 border-l-2 border-rashmi-red/30 space-y-2">
                 <MobileNavLink href="/di-pipes" onClick={() => setIsMenuOpen(false)}>
                   DI Pipes
@@ -134,6 +226,22 @@ const Header = () => {
             <MobileNavLink href="#sustainability" onClick={() => setIsMenuOpen(false)}>
               Sustainability
             </MobileNavLink>
+
+            {/* Downloads (Mobile) */}
+            <div className="mb-2">
+              <button
+                onClick={() => {}}
+                className="flex items-center w-full py-2 text-lg font-medium text-foreground/80 hover:text-foreground hover:bg-muted/30 px-4 rounded-md transition-colors duration-200"
+              >
+                Downloads <ChevronDown size={16} className="ml-1" />
+              </button>
+              <div className="pl-4 mt-2 border-l-2 border-rashmi-red/30 space-y-2">
+                <MobileNavLink href="/certifications" onClick={() => setIsMenuOpen(false)}>
+                  <FileText size={16} className="mr-2" /> Certifications
+                </MobileNavLink>
+              </div>
+            </div>
+            
             <MobileNavLink href="#contact" onClick={() => setIsMenuOpen(false)}>
               Contact
             </MobileNavLink>

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
@@ -47,6 +46,45 @@ const floatingAnimation = {
     repeat: Infinity,
     repeatType: "mirror" as const,
     ease: "easeInOut"
+  }
+};
+
+const bounceAnimation = {
+  initial: { y: 0 },
+  animate: { 
+    y: [0, 10, 0], 
+    transition: { 
+      duration: 2, 
+      repeat: Infinity, 
+      repeatType: "loop" as const, 
+      ease: "easeInOut" 
+    } 
+  }
+};
+
+const scrollAnimation = {
+  initial: { y: 0 },
+  animate: { 
+    y: [0, 10, 0], 
+    transition: { 
+      duration: 2, 
+      repeat: Infinity, 
+      repeatType: "loop" as const, 
+      ease: "easeInOut" 
+    } 
+  }
+};
+
+const waterAnimation = {
+  initial: { y: 0 },
+  animate: { 
+    y: [0, 10, 0], 
+    transition: { 
+      duration: 2, 
+      repeat: Infinity, 
+      repeatType: "loop" as const, 
+      ease: "easeInOut" 
+    } 
   }
 };
 
@@ -739,13 +777,14 @@ const DiPipes = () => {
           font-weight: 600;
         }
         
-        @keyframes pulse {
-          0%, 100% {
-            opacity: 1;
-          }
-          50% {
-            opacity: 0.6;
-          }
+        @keyframes float {
+          0% { transform: translateY(0px); }
+          50% { transform: translateY(-10px); }
+          100% { transform: translateY(0px); }
+        }
+        
+        .floating-stats {
+          animation: float 3s ease-in-out infinite;
         }
       `}
       </style>

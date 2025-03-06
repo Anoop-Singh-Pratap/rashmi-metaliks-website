@@ -8,6 +8,7 @@ import { ThemeProvider } from "@/context/ThemeContext";
 import Index from "./pages/Index";
 import DiPipes from "./pages/DiPipes";
 import DiFittings from "./pages/DiFittings";
+import Certifications from "./pages/Certifications";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -23,6 +24,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/di-pipes" element={<DiPipes />} />
             <Route path="/di-fittings" element={<DiFittings />} />
+            <Route path="/certifications" element={<Certifications />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
