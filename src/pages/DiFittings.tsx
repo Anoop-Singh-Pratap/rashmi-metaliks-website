@@ -144,6 +144,28 @@ const DiFittings = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Transform property and value arrays into headers and rows for SpecificationTable
+  const getHeadersAndRows = (data: Array<{property: string, value: string}>) => {
+    return {
+      headers: ["Property", "Value"],
+      rows: data.map(item => ({
+        Property: item.property,
+        Value: item.value
+      }))
+    };
+  };
+
+  // Prepare angular deflection data for SpecificationTable
+  const getAngularDeflectionHeadersAndRows = () => {
+    return {
+      headers: ["Diameter Range", "Angular Deflection"],
+      rows: angularDeflectionData.map(item => ({
+        "Diameter Range": item.range,
+        "Angular Deflection": item.deflection
+      }))
+    };
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -427,20 +449,26 @@ const DiFittings = () => {
             
             <div className="mb-16">
               <h3 className="text-2xl font-semibold mb-6">Mechanical Properties of DI Fittings</h3>
-              <SpecificationTable data={mechanicalProperties} />
+              <SpecificationTable 
+                headers={getHeadersAndRows(mechanicalProperties).headers} 
+                rows={getHeadersAndRows(mechanicalProperties).rows} 
+              />
             </div>
             
             <div className="mb-16">
               <h3 className="text-2xl font-semibold mb-6">Technical Specifications of DI Fittings</h3>
-              <SpecificationTable data={technicalSpecifications} />
+              <SpecificationTable 
+                headers={getHeadersAndRows(technicalSpecifications).headers} 
+                rows={getHeadersAndRows(technicalSpecifications).rows} 
+              />
             </div>
             
             <div>
               <h3 className="text-2xl font-semibold mb-6">Angular Deflection of DI Fittings</h3>
-              <SpecificationTable data={angularDeflectionData.map(item => ({
-                property: item.range,
-                value: item.deflection
-              }))} />
+              <SpecificationTable 
+                headers={getAngularDeflectionHeadersAndRows().headers} 
+                rows={getAngularDeflectionHeadersAndRows().rows} 
+              />
             </div>
           </motion.div>
         </section>

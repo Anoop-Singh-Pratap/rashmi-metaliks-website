@@ -39,16 +39,14 @@ const staggerContainer = {
   }
 };
 
+// Fixed animation objects with proper type for repeatType
 const floatingAnimation = {
-  initial: { y: 0 },
-  animate: {
-    y: [0, -10, 0],
-    transition: {
-      duration: 4,
-      repeat: Infinity,
-      repeatType: "reverse",
-      ease: "easeInOut"
-    }
+  y: [0, -10, 0],
+  transition: {
+    duration: 4,
+    repeat: Infinity,
+    repeatType: "mirror" as const,
+    ease: "easeInOut"
   }
 };
 
@@ -145,9 +143,7 @@ const DiPipes = () => {
             <div className="flex flex-wrap justify-center gap-6 mb-10">
               <motion.div 
                 className="stat-badge bg-rashmi-red/80 text-white px-4 py-2 rounded-lg shadow-lg"
-                variants={floatingAnimation}
-                initial="initial"
-                animate="animate"
+                animate={floatingAnimation}
               >
                 <span className="block text-2xl font-bold">62%</span>
                 <span className="text-xs">CAGR</span>
@@ -155,10 +151,11 @@ const DiPipes = () => {
               
               <motion.div 
                 className="stat-badge bg-slate-800 text-white px-4 py-2 rounded-lg shadow-lg dark:bg-slate-700"
-                variants={floatingAnimation}
-                initial="initial"
-                animate="animate"
-                transition={{ delay: 0.5 }}
+                animate={floatingAnimation}
+                transition={{ 
+                  ...floatingAnimation.transition,
+                  delay: 0.5 
+                }}
               >
                 <span className="block text-2xl font-bold">7.7L MT</span>
                 <span className="text-xs">Annual Capacity</span>
@@ -166,10 +163,11 @@ const DiPipes = () => {
               
               <motion.div 
                 className="stat-badge bg-amber-500 text-white px-4 py-2 rounded-lg shadow-lg"
-                variants={floatingAnimation}
-                initial="initial"
-                animate="animate"
-                transition={{ delay: 1 }}
+                animate={floatingAnimation}
+                transition={{ 
+                  ...floatingAnimation.transition,
+                  delay: 1 
+                }}
               >
                 <span className="block text-2xl font-bold">ISO</span>
                 <span className="text-xs">8329:2000 Certified</span>
@@ -729,7 +727,8 @@ const DiPipes = () => {
       <Footer />
       
       {/* Custom CSS for term highlighting */}
-      <style jsx="true">{`
+      <style>
+        {`
         .highlight-term {
           position: relative;
           transition: all 0.3s ease;
@@ -748,7 +747,8 @@ const DiPipes = () => {
             opacity: 0.6;
           }
         }
-      `}</style>
+      `}
+      </style>
     </div>
   );
 };
