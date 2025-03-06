@@ -39,6 +39,9 @@ const Sustainability = () => {
   const [activeChart, setActiveChart] = useState<ChartType>('emissions');
   const [isInView, setIsInView] = useState(false);
   const [animateChart, setAnimateChart] = useState(false);
+  const [animatedWaterData, setAnimatedWaterData] = useState(
+    waterUsageData.map(item => ({ ...item, animatedRecycled: 0, animatedFresh: 0 }))
+  );
   
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -59,35 +62,108 @@ const Sustainability = () => {
     };
   }, []);
 
-  // Custom tooltip content styles for dark mode compatibility
-  const getTooltipContentStyle = () => {
-    return { 
-      backgroundColor: 'var(--card)', 
-      borderColor: 'var(--border)', 
-      color: 'var(--foreground)',
-      fontWeight: 'bold',
-      padding: '8px 12px',
-      borderRadius: '6px',
-      boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
-    };
+  // Animate water data when chart becomes visible
+  useEffect(() => {
+    if (animateChart && activeChart === 'water') {
+      // Reset animation data
+      setAnimatedWaterData(
+        waterUsageData.map(item => ({ ...item, animatedRecycled: 0, animatedFresh: 0 }))
+      );
+      
+      // Animate the water filling effect
+      const animationDuration = 1500; // 1.5 seconds
+      const steps = 20; // Number of animation steps
+      const stepDuration = animationDuration / steps;
+      
+      let step = 0;
+      
+      const animateStep = () => {
+        if (step < steps) {
+          setAnimatedWaterData(prev => 
+            prev.map((item, idx) => {
+              const progress = (step + 1) / steps;
+              return {
+                ...item,
+                animatedRecycled: item.recycled * progress,
+                animatedFresh: item.fresh * progress
+              };
+            })
+          );
+          
+          step++;
+          setTimeout(animateStep, stepDuration);
+        }
+      };
+      
+      // Start animation
+      animateStep();
+    }
+  }, [animateChart, activeChart]);
+
+  // Custom tooltip content for better dark mode visibility
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="custom-tooltip bg-background border border-border p-4 rounded shadow-md">
+          <p className="text-rashmi-red font-semibold">{label}</p>
+          {payload.map((entry: any, index: number) => (
+            <p key={`item-${index}`} className="text-foreground">
+              {entry.name}: {entry.value}{entry.unit || '%'}
+            </p>
+          ))}
+        </div>
+      );
+    }
+    return null;
   };
 
-  // Custom tooltip label styles for improved visibility
-  const getTooltipLabelStyle = () => {
-    return { 
-      color: 'var(--rashmi-red, #E7251F)',
-      fontWeight: 'bold',
-      marginBottom: '4px'
-    };
-  };
-
-  // Custom tooltip item name for consistent styling
-  const getTooltipItemStyle = () => {
-    return { 
-      color: 'var(--foreground)',
-      padding: '3px 0'
-    };
-  };
+  // Custom water bar component
+  const WaterBar = React.memo(({ x, y, width, height, fill, dataKey, name, value }: any) => {
+    const barHeight = height;
+    const waveHeight = 5;
+    
+    return (
+      <g>
+        {/* Background bar */}
+        <rect
+          x={x}
+          y={y}
+          width={width}
+          height={barHeight}
+          fill={fill}
+          fillOpacity={0.9}
+          rx={2}
+        />
+        
+        {/* Wave effect at the top */}
+        <path
+          d={`
+            M ${x} ${y + barHeight - waveHeight}
+            Q ${x + width * 0.25} ${y + barHeight}, ${x + width * 0.5} ${y + barHeight - waveHeight}
+            T ${x + width} ${y + barHeight - waveHeight}
+            V ${y + barHeight}
+            H ${x}
+            Z
+          `}
+          fill={fill}
+          fillOpacity={1}
+        />
+        
+        {/* Value label */}
+        <text
+          x={x + width / 2}
+          y={y + barHeight / 2}
+          fill="#fff"
+          textAnchor="middle"
+          dominantBaseline="central"
+          fontSize={12}
+          fontWeight="bold"
+        >
+          {value}%
+        </text>
+      </g>
+    );
+  });
 
   return (
     <section id="sustainability" className="py-20 md:py-32 bg-background relative overflow-hidden">
@@ -169,19 +245,23 @@ const Sustainability = () => {
                     margin={{ top: 20, right: 30, left: 0, bottom: 20 }}
                   >
                     <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.3} />
-                    <XAxis dataKey="year" stroke="var(--muted-foreground)" />
-                    <YAxis stroke="var(--muted-foreground)" />
-                    <Tooltip 
-                      contentStyle={getTooltipContentStyle()} 
-                      labelStyle={getTooltipLabelStyle()}
-                      itemStyle={getTooltipItemStyle()}
+                    <XAxis 
+                      dataKey="year" 
+                      stroke="var(--foreground)" 
+                      tick={{ fill: 'var(--foreground)' }}
                     />
+                    <YAxis 
+                      stroke="var(--foreground)" 
+                      tick={{ fill: 'var(--foreground)' }}
+                    />
+                    <Tooltip content={<CustomTooltip />} />
                     <Line 
                       type="monotone" 
                       dataKey="value" 
                       stroke="#E7251F" 
                       strokeWidth={3}
-                      name="CO₂ Emissions (% of 2018 baseline)"
+                      name="CO₂ Emissions"
+                      unit="%"
                       activeDot={{ r: 8 }}
                     />
                   </LineChart>
@@ -210,12 +290,7 @@ const Sustainability = () => {
                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                       ))}
                     </Pie>
-                    <Tooltip 
-                      contentStyle={getTooltipContentStyle()}
-                      labelStyle={getTooltipLabelStyle()}
-                      itemStyle={getTooltipItemStyle()}
-                      formatter={(value) => [`${value}%`, 'Percentage']}
-                    />
+                    <Tooltip content={<CustomTooltip />} />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
@@ -225,19 +300,34 @@ const Sustainability = () => {
               <div className={`transition-opacity duration-700 h-full ${animateChart ? 'opacity-100' : 'opacity-0'}`}>
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart
-                    data={waterUsageData}
+                    data={animatedWaterData}
                     margin={{ top: 20, right: 30, left: 0, bottom: 20 }}
                   >
                     <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.3} />
-                    <XAxis dataKey="month" stroke="var(--muted-foreground)" />
-                    <YAxis stroke="var(--muted-foreground)" />
-                    <Tooltip 
-                      contentStyle={getTooltipContentStyle()}
-                      labelStyle={getTooltipLabelStyle()}
-                      itemStyle={getTooltipItemStyle()}
+                    <XAxis 
+                      dataKey="month" 
+                      stroke="var(--foreground)" 
+                      tick={{ fill: 'var(--foreground)' }}
                     />
-                    <Bar dataKey="recycled" name="Recycled Water (%)" stackId="a" fill="#3b82f6" />
-                    <Bar dataKey="fresh" name="Fresh Water (%)" stackId="a" fill="#64748b" />
+                    <YAxis 
+                      stroke="var(--foreground)" 
+                      tick={{ fill: 'var(--foreground)' }}
+                    />
+                    <Tooltip content={<CustomTooltip />} />
+                    <Bar 
+                      dataKey="animatedRecycled" 
+                      name="Recycled Water" 
+                      stackId="a" 
+                      fill="#3b82f6" 
+                      shape={<WaterBar />}
+                    />
+                    <Bar 
+                      dataKey="animatedFresh" 
+                      name="Fresh Water" 
+                      stackId="a" 
+                      fill="#64748b" 
+                      shape={<WaterBar />}
+                    />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -245,6 +335,47 @@ const Sustainability = () => {
           </div>
         </div>
       </div>
+      
+      {/* Add custom CSS for animations and effects */}
+      <style>
+        {`
+          /* Custom chart tooltip styles for dark mode */
+          .recharts-tooltip-cursor {
+            stroke: var(--foreground) !important;
+          }
+          
+          .recharts-cartesian-axis-tick-value {
+            fill: var(--foreground) !important;
+          }
+          
+          /* Water animation effect */
+          @keyframes wave {
+            0% {
+              transform: translateX(-100%);
+            }
+            100% {
+              transform: translateX(100%);
+            }
+          }
+          
+          .water-effect {
+            position: relative;
+            overflow: hidden;
+          }
+          
+          .water-effect::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 0;
+            width: 200%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: wave 3s linear infinite;
+          }
+        `}
+      </style>
     </section>
   );
 };

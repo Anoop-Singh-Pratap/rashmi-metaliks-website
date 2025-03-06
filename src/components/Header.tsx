@@ -47,21 +47,31 @@ const Header = () => {
           </Link>
           <NavLink href="#about">About</NavLink>
           
-          {/* Products Dropdown */}
+          {/* Products Dropdown - improved hover experience */}
           <div className="relative group" 
             onMouseEnter={() => setProductsDropdownOpen(true)}
-            onMouseLeave={() => setProductsDropdownOpen(false)}
+            onMouseLeave={() => {
+              // Add delay before closing dropdown
+              setTimeout(() => setProductsDropdownOpen(false), 300);
+            }}
           >
-            <a href="#products" className="relative font-medium text-foreground/80 hover:text-foreground transition-colors duration-300 group overflow-hidden flex items-center">
+            <a 
+              href="#products" 
+              className="relative font-medium text-foreground/80 hover:text-foreground transition-colors duration-300 group overflow-hidden flex items-center"
+            >
               <span>Products</span>
               <ChevronDown size={16} className={`ml-1 transition-transform duration-200 ${productsDropdownOpen ? 'rotate-180' : ''}`} />
               <span className="absolute bottom-0 left-0 w-full h-0.5 bg-rashmi-red transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
             </a>
             
-            {/* Dropdown Menu */}
-            <div className={`absolute top-full left-0 mt-2 w-48 rounded-md bg-background shadow-lg ring-1 ring-black ring-opacity-5 transition-all duration-200 ${
-              productsDropdownOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'
-            }`}>
+            {/* Dropdown Menu - improved hover experience */}
+            <div 
+              className={`absolute top-full left-0 mt-2 w-48 rounded-md bg-background shadow-lg ring-1 ring-black ring-opacity-5 transition-all duration-300 ${
+                productsDropdownOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'
+              }`}
+              onMouseEnter={() => setProductsDropdownOpen(true)}
+              onMouseLeave={() => setProductsDropdownOpen(false)}
+            >
               <div className="py-1">
                 <Link to="/di-pipes" className="block px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors duration-200">
                   DI Pipes
