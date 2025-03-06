@@ -1,3 +1,4 @@
+
 import React, { useState, useRef } from 'react';
 import RevealText from './ui/RevealText';
 import ProductViewer from './ui/ProductViewer';
@@ -35,21 +36,40 @@ const productData: Product[] = [
     name: "TMT Bars",
     description: "High strength thermo-mechanically treated bars perfect for construction applications.",
     features: ["Earthquake resistant", "High yield strength", "Better ductility", "Optimal bonding"],
-    image: "https://plus.unsplash.com/premium_photo-1682092618361-e785db230079?ixlib=rb-4.0.3&auto=format&fit=crop&q=80"
+    image: "https://plus.unsplash.com/premium_photo-1682092618361-e785db230079?ixlib=rb-4.0.3&auto=format&fit=crop&q=80",
+    link: "/tmt-bar"
   },
   {
     id: 4,
-    name: "Wire Rods",
-    description: "Versatile wire rods suitable for various industrial applications.",
-    features: ["Precise dimensions", "Excellent surface quality", "Wide range of grades", "Consistent mechanical properties"],
-    image: "https://images.unsplash.com/photo-1620283085634-a10c02034ad5?ixlib=rb-4.0.3&auto=format&fit=crop&q=80"
+    name: "Sponge Iron",
+    description: "Highest quality Sponge Iron produced in our Jhargram facility with superior production process.",
+    features: ["Precision process", "Superior quality", "Controlled production", "Best-in-class result"],
+    image: "https://images.unsplash.com/photo-1620283085634-a10c02034ad5?ixlib=rb-4.0.3&auto=format&fit=crop&q=80",
+    link: "/sponge-iron"
   },
   {
     id: 5,
     name: "Pig Iron",
-    description: "High-grade pig iron for foundries and steel manufacturing.",
-    features: ["Low phosphorus content", "Controlled silicon", "Consistent quality", "Custom specifications available"],
-    image: "https://images.unsplash.com/photo-1535813547-99c456a42798?ixlib=rb-4.0.3&auto=format&fit=crop&q=80"
+    description: "High-grade pig iron for foundries and steel manufacturing with low sulfur and phosphorus content.",
+    features: ["Low phosphorus content", "Controlled silicon", "Consistent quality", "Custom specifications"],
+    image: "https://images.unsplash.com/photo-1535813547-99c456a42798?ixlib=rb-4.0.3&auto=format&fit=crop&q=80",
+    link: "/pig-iron"
+  },
+  {
+    id: 6,
+    name: "Iron Ore Pellet",
+    description: "First manufacturer of pellets in West Bengal with significant production capacity.",
+    features: ["Superior quality", "Corrosion resistant", "Faster reduction", "High metallization"],
+    image: "https://images.unsplash.com/photo-1518241353330-0f7941c2d9b5?ixlib=rb-4.0.3&auto=format&fit=crop&q=80",
+    link: "/iron-ore-pellet"
+  },
+  {
+    id: 7,
+    name: "Sinter",
+    description: "Essential component for blast furnace operations with perfect chemical composition.",
+    features: ["Perfect composition", "Blast furnace ready", "Controlled production", "High quality standards"],
+    image: "https://images.unsplash.com/photo-1552252220-f85a018c1726?ixlib=rb-4.0.3&auto=format&fit=crop&q=80",
+    link: "/sinter"
   },
 ];
 
