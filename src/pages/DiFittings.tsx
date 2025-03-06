@@ -1,4 +1,4 @@
-<lov-code>
+
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Link as RouterLink } from 'react-router-dom';
@@ -685,4 +685,16 @@ const DiFittings = () => {
                     <BookOpen size={24} className="text-rashmi-red" />
                   </div>
                   <h4 className="font-medium">{cert}</h4>
-                  <p className="text-sm text
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        </section>
+      </div>
+      
+      <Footer />
+    </div>
+  );
+};
+
+export default DiFittings;
