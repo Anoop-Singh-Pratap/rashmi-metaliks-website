@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import RevealText from './ui/RevealText';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 import { Leaf, Droplets, Wind, XCircle, BarChartIcon, PieChartIcon, LineChartIcon } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { useTheme } from '@/context/ThemeContext';
 
 const emissionsData = [
   { year: '2018', value: 100 },
@@ -36,12 +38,17 @@ const chartTypes = ['emissions', 'energy', 'water'] as const;
 type ChartType = typeof chartTypes[number];
 
 const Sustainability = () => {
+  const { theme } = useTheme();
   const [activeChart, setActiveChart] = useState<ChartType>('emissions');
   const [isInView, setIsInView] = useState(false);
   const [animateChart, setAnimateChart] = useState(false);
   const [animatedWaterData, setAnimatedWaterData] = useState(
     waterUsageData.map(item => ({ ...item, animatedRecycled: 0, animatedFresh: 0 }))
   );
+  
+  // Dynamic color based on theme
+  const textColor = theme === 'dark' ? '#fff' : '#000';
+  const axisColor = theme === 'dark' ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)';
   
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -197,7 +204,7 @@ const Sustainability = () => {
           <div className="h-[400px] w-full">
             {activeChart === 'emissions' && (
               <div className={`transition-opacity duration-700 h-full ${animateChart ? 'opacity-100' : 'opacity-0'}`}>
-                <h3 className="text-xl md:text-2xl font-semibold text-center mb-4">CO₂ Emissions Reduction (2018-2023)</h3>
+                <h3 className="text-xl md:text-2xl font-semibold text-center mb-4 text-foreground">CO₂ Emissions Reduction (2018-2023)</h3>
                 <ResponsiveContainer width="100%" height="90%">
                   <LineChart
                     data={emissionsData}
@@ -224,6 +231,17 @@ const Sustainability = () => {
                       name="CO₂ Emissions"
                       unit="%"
                       activeDot={{ r: 8 }}
+                      label={({ x, y, value }) => (
+                        <text 
+                          x={x} 
+                          y={y-10} 
+                          fill="var(--foreground)" 
+                          textAnchor="middle"
+                          fontSize={12}
+                        >
+                          {value}%
+                        </text>
+                      )}
                     />
                   </LineChart>
                 </ResponsiveContainer>
@@ -232,7 +250,10 @@ const Sustainability = () => {
             
             {activeChart === 'energy' && (
               <div className={`transition-opacity duration-700 h-full ${animateChart ? 'opacity-100' : 'opacity-0'}`}>
-                <h3 className="text-xl md:text-2xl font-semibold text-center mb-4">Energy Sources Distribution</h3>
+                <div className="text-center mb-4">
+                  <h3 className="text-xl md:text-2xl font-semibold text-foreground">Energy Sources Distribution</h3>
+                  <p className="text-muted-foreground text-sm">Current energy mix (2023)</p>
+                </div>
                 <ResponsiveContainer width="100%" height="90%">
                   <PieChart>
                     <Pie
@@ -249,11 +270,17 @@ const Sustainability = () => {
                       labelLine={false}
                     >
                       {energySourceData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        <Cell 
+                          key={`cell-${index}`} 
+                          fill={COLORS[index % COLORS.length]} 
+                        />
                       ))}
                     </Pie>
                     <Tooltip content={<CustomTooltip />} />
                     <Legend 
+                      layout="horizontal"
+                      verticalAlign="bottom"
+                      align="center"
                       formatter={(value, entry, index) => (
                         <span className="text-foreground">{value}</span>
                       )}
@@ -265,7 +292,10 @@ const Sustainability = () => {
             
             {activeChart === 'water' && (
               <div className={`transition-opacity duration-700 h-full ${animateChart ? 'opacity-100' : 'opacity-0'}`}>
-                <h3 className="text-xl md:text-2xl font-semibold text-center mb-4">Water Usage Efficiency (Recycled vs Fresh)</h3>
+                <div className="text-center mb-4">
+                  <h3 className="text-xl md:text-2xl font-semibold text-foreground">Water Usage Efficiency (2023)</h3>
+                  <p className="text-muted-foreground text-sm">Recycled vs Fresh Water Consumption</p>
+                </div>
                 <ResponsiveContainer width="100%" height="90%">
                   <BarChart
                     data={animatedWaterData}
@@ -291,6 +321,9 @@ const Sustainability = () => {
                       formatter={(value) => [`${value}%`, '']}
                     />
                     <Legend
+                      layout="horizontal"
+                      verticalAlign="bottom"
+                      align="center"
                       formatter={(value, entry, index) => (
                         <span className="text-foreground">{value}</span>
                       )}
@@ -307,6 +340,7 @@ const Sustainability = () => {
                           key={`text-${index}`} 
                           x={0} 
                           y={0} 
+                          fill="white"
                           className="text-white font-medium"
                           textAnchor="middle" 
                           dominantBaseline="middle"
@@ -327,6 +361,7 @@ const Sustainability = () => {
                           key={`text-${index}`} 
                           x={0} 
                           y={0} 
+                          fill="white"
                           className="text-white font-medium"
                           textAnchor="middle" 
                           dominantBaseline="middle"
@@ -343,7 +378,7 @@ const Sustainability = () => {
         </div>
       </div>
       
-      {/* Add custom CSS for animations and effects - Fix the JSX style issue */}
+      {/* Add custom CSS for animations and effects */}
       <style dangerouslySetInnerHTML={{
         __html: `
         /* Custom chart tooltip styles for dark mode */
@@ -357,6 +392,10 @@ const Sustainability = () => {
         
         .recharts-text {
           fill: var(--foreground) !important;
+        }
+        
+        .recharts-legend-item-text {
+          color: var(--foreground) !important;
         }
         
         /* Water animation effect */
@@ -415,7 +454,7 @@ const SustainabilityCard: React.FC<SustainabilityCardProps> = ({ icon, title, de
       <div className="w-12 h-12 flex items-center justify-center rounded-full bg-green-500/10 text-green-500 mb-4 group-hover:scale-110 transition-all duration-300">
         {icon}
       </div>
-      <h3 className="text-xl font-semibold mb-3">{title}</h3>
+      <h3 className="text-xl font-semibold mb-3 text-foreground">{title}</h3>
       <p className="text-muted-foreground">{description}</p>
     </motion.div>
   );
@@ -446,8 +485,5 @@ const ChartButton: React.FC<ChartButtonProps> = ({ icon, label, active, onClick 
     </motion.button>
   );
 };
-
-// Add the motion import at the top
-import { motion } from 'framer-motion';
 
 export default Sustainability;

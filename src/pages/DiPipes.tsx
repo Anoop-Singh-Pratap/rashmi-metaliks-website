@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { ArrowDown, Check, Ruler, Pipette, Waves, ShieldCheck, ChevronDown } from 'lucide-react';
+import { ArrowDown, Check, Ruler, Pipette, Waves, ShieldCheck, ChevronDown, BookOpen, ArrowRight } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import ProductViewer from '../components/ui/ProductViewer';
@@ -110,6 +110,9 @@ const DiPipes = () => {
   };
 
   useEffect(() => {
+    // Scroll to top when component mounts
+    window.scrollTo(0, 0);
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -221,6 +224,26 @@ const DiPipes = () => {
               onClick={() => scrollToSection('features')}
             />
           </motion.div>
+          
+          {/* "Why Rashmi DI Pipes" Link */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 1 }}
+            className="flex justify-center mt-10"
+          >
+            <Link to="/why-rashmi-di-pipes">
+              <motion.button
+                whileHover={{ scale: 1.05, x: 5 }}
+                whileTap={{ scale: 0.95 }}
+                className="inline-flex items-center gap-2 px-6 py-3 bg-card shadow-md border border-border rounded-lg text-foreground hover:bg-card/80 transition-all"
+              >
+                <BookOpen size={18} className="text-rashmi-red" />
+                <span>Why Rashmi DI Pipes</span>
+                <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
+              </motion.button>
+            </Link>
+          </motion.div>
         </div>
         
         <motion.div 
@@ -232,27 +255,32 @@ const DiPipes = () => {
           <div className="bg-rashmi-red/20 rounded-full w-[600px] h-[600px] blur-[150px] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
         </motion.div>
 
-        {/* Explore process button with improved microinteraction */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-center z-10">
-          <div className="flex flex-col items-center">
-            <span className="text-sm text-muted-foreground mb-3">Explore Key Features</span>
+        {/* Explore key features button with improved microinteraction */}
+        <div className="absolute left-1/2 -translate-x-1/2 bottom-8 flex flex-col items-center z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 1.2 }}
+            className="text-center flex flex-col items-center"
+          >
+            <span className="text-sm text-muted-foreground mb-2">Explore Key Features</span>
             <motion.button
               onClick={() => scrollToSection('features')}
               variants={exploreButtonVariants}
               initial="initial"
               whileHover="hover"
               whileTap="tap"
-              className="bg-rashmi-red hover:bg-rashmi-red/90 rounded-full w-12 h-12 flex items-center justify-center shadow-lg group transition-all duration-300"
+              className="bg-rashmi-red hover:bg-rashmi-red/90 rounded-full w-12 h-12 flex items-center justify-center shadow-lg transition-all duration-300"
             >
               <motion.div
                 variants={arrowVariants}
                 initial="initial"
                 animate="animate"
               >
-                <ChevronDown size={24} className="text-white group-hover:scale-110 transition-transform" />
+                <ChevronDown size={24} className="text-white" />
               </motion.div>
             </motion.button>
-          </div>
+          </motion.div>
         </div>
       </section>
       
@@ -570,19 +598,39 @@ const DiPipes = () => {
                 Contact us today to learn more about our ductile iron pipes and how they can benefit your next project.
               </motion.p>
               
-              <motion.a
-                href="#contact"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.4 }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.98 }}
-                className="inline-flex items-center px-6 py-3 bg-rashmi-red text-white font-medium rounded-lg transition-all duration-300 hover:bg-rashmi-red/90 shadow-md hover:shadow-lg"
-              >
-                Request a Quote
-                <ArrowDown className="ml-2 rotate-[-90deg]" size={18} />
-              </motion.a>
+              <div className="flex flex-wrap gap-4 justify-center">
+                <motion.a
+                  href="#contact"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: 0.4 }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="inline-flex items-center px-6 py-3 bg-rashmi-red text-white font-medium rounded-lg transition-all duration-300 hover:bg-rashmi-red/90 shadow-md hover:shadow-lg"
+                >
+                  Request a Quote
+                  <ArrowDown className="ml-2 rotate-[-90deg]" size={18} />
+                </motion.a>
+                
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: 0.5 }}
+                >
+                  <Link to="/why-rashmi-di-pipes">
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="inline-flex items-center px-6 py-3 bg-card border border-border text-foreground font-medium rounded-lg transition-all duration-300 hover:bg-card/80 shadow-md hover:shadow-lg"
+                    >
+                      <BookOpen size={18} className="mr-2 text-rashmi-red" />
+                      Why Choose Rashmi
+                    </motion.button>
+                  </Link>
+                </motion.div>
+              </div>
             </div>
           </motion.div>
         </div>

@@ -15,6 +15,7 @@ import PigIron from "./pages/PigIron";
 import IronOrePellet from "./pages/IronOrePellet";
 import Sinter from "./pages/Sinter";
 import Certifications from "./pages/Certifications";
+import WhyRashmiDiPipes from "./pages/WhyRashmiDiPipes";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -51,6 +52,7 @@ const App = () => (
             <Route path="/iron-ore-pellet" element={<IronOrePellet />} />
             <Route path="/sinter" element={<Sinter />} />
             <Route path="/certifications" element={<Certifications />} />
+            <Route path="/why-rashmi-di-pipes" element={<WhyRashmiDiPipes />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
