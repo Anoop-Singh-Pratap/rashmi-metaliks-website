@@ -343,8 +343,9 @@ const Sustainability = () => {
         </div>
       </div>
       
-      {/* Add custom CSS for animations and effects */}
-      <style jsx>{`
+      {/* Add custom CSS for animations and effects - Fix the JSX style issue */}
+      <style dangerouslySetInnerHTML={{
+        __html: `
         /* Custom chart tooltip styles for dark mode */
         .recharts-tooltip-cursor {
           stroke: var(--foreground) !important;
@@ -384,7 +385,8 @@ const Sustainability = () => {
           border-radius: 50%;
           animation: wave 3s linear infinite;
         }
-      `}</style>
+      `
+      }} />
     </section>
   );
 };
