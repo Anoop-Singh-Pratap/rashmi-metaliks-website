@@ -1,5 +1,6 @@
 
 import React, { useEffect } from 'react';
+import { Helmet } from 'react-helmet';
 import Header from '@/components/Header';
 import Hero from '@/components/Hero';
 import About from '@/components/About';
@@ -23,6 +24,17 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
+      <Helmet>
+        <title>Rashmi Metaliks - Premium Steel Products & Solutions</title>
+        <meta name="description" content="Rashmi Metaliks - Leading manufacturer of high-quality steel products including DI Pipes, TMT Bars, Pig Iron, and more with industry-leading quality standards." />
+        <meta name="keywords" content="Rashmi Metaliks, Steel Products, DI Pipes, TMT Bars, Sponge Iron, Pig Iron, Iron Ore Pellet, Sinter" />
+        <meta name="author" content="Rashmi Metaliks" />
+        <meta property="og:title" content="Rashmi Metaliks - Premium Steel Products" />
+        <meta property="og:description" content="Leading manufacturer of high-quality steel products with industry-leading quality standards." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://www.rashmi.com" />
+        <meta property="og:image" content="https://www.rashmi.com/og-image.png" />
+      </Helmet>
       <Header />
       <main>
         <Hero />

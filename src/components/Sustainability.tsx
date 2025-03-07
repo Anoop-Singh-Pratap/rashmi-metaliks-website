@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import RevealText from './ui/RevealText';
-import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 import { Leaf, Droplets, Wind, XCircle, BarChartIcon, PieChartIcon, LineChartIcon } from 'lucide-react';
 
 const emissionsData = [
@@ -84,8 +84,8 @@ const Sustainability = () => {
               const progress = (step + 1) / steps;
               return {
                 ...item,
-                animatedRecycled: item.recycled * progress,
-                animatedFresh: item.fresh * progress
+                animatedRecycled: Math.round(item.recycled * progress),
+                animatedFresh: Math.round(item.fresh * progress)
               };
             })
           );
@@ -117,53 +117,11 @@ const Sustainability = () => {
     return null;
   };
 
-  // Custom water bar component
-  const WaterBar = React.memo(({ x, y, width, height, fill, dataKey, name, value }: any) => {
-    const barHeight = height;
-    const waveHeight = 5;
-    
-    return (
-      <g>
-        {/* Background bar */}
-        <rect
-          x={x}
-          y={y}
-          width={width}
-          height={barHeight}
-          fill={fill}
-          fillOpacity={0.9}
-          rx={2}
-        />
-        
-        {/* Wave effect at the top */}
-        <path
-          d={`
-            M ${x} ${y + barHeight - waveHeight}
-            Q ${x + width * 0.25} ${y + barHeight}, ${x + width * 0.5} ${y + barHeight - waveHeight}
-            T ${x + width} ${y + barHeight - waveHeight}
-            V ${y + barHeight}
-            H ${x}
-            Z
-          `}
-          fill={fill}
-          fillOpacity={1}
-        />
-        
-        {/* Value label */}
-        <text
-          x={x + width / 2}
-          y={y + barHeight / 2}
-          fill="#fff"
-          textAnchor="middle"
-          dominantBaseline="central"
-          fontSize={12}
-          fontWeight="bold"
-        >
-          {value}%
-        </text>
-      </g>
-    );
-  });
+  // Format percentage values without decimals
+  const formatPercentage = (value: number) => `${Math.round(value)}%`;
+
+  // Axis tick formatter for better visibility
+  const axisTickFormatter = (value: any) => value.toString();
 
   return (
     <section id="sustainability" className="py-20 md:py-32 bg-background relative overflow-hidden">
@@ -239,7 +197,8 @@ const Sustainability = () => {
           <div className="h-[400px] w-full">
             {activeChart === 'emissions' && (
               <div className={`transition-opacity duration-700 h-full ${animateChart ? 'opacity-100' : 'opacity-0'}`}>
-                <ResponsiveContainer width="100%" height="100%">
+                <h3 className="text-xl md:text-2xl font-semibold text-center mb-4">CO₂ Emissions Reduction (2018-2023)</h3>
+                <ResponsiveContainer width="100%" height="90%">
                   <LineChart
                     data={emissionsData}
                     margin={{ top: 20, right: 30, left: 0, bottom: 20 }}
@@ -249,10 +208,12 @@ const Sustainability = () => {
                       dataKey="year" 
                       stroke="var(--foreground)" 
                       tick={{ fill: 'var(--foreground)' }}
+                      tickFormatter={axisTickFormatter}
                     />
                     <YAxis 
                       stroke="var(--foreground)" 
                       tick={{ fill: 'var(--foreground)' }}
+                      tickFormatter={value => `${value}%`}
                     />
                     <Tooltip content={<CustomTooltip />} />
                     <Line 
@@ -271,7 +232,8 @@ const Sustainability = () => {
             
             {activeChart === 'energy' && (
               <div className={`transition-opacity duration-700 h-full ${animateChart ? 'opacity-100' : 'opacity-0'}`}>
-                <ResponsiveContainer width="100%" height="100%">
+                <h3 className="text-xl md:text-2xl font-semibold text-center mb-4">Energy Sources Distribution</h3>
+                <ResponsiveContainer width="100%" height="90%">
                   <PieChart>
                     <Pie
                       data={energySourceData}
@@ -291,6 +253,11 @@ const Sustainability = () => {
                       ))}
                     </Pie>
                     <Tooltip content={<CustomTooltip />} />
+                    <Legend 
+                      formatter={(value, entry, index) => (
+                        <span className="text-foreground">{value}</span>
+                      )}
+                    />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
@@ -298,36 +265,76 @@ const Sustainability = () => {
             
             {activeChart === 'water' && (
               <div className={`transition-opacity duration-700 h-full ${animateChart ? 'opacity-100' : 'opacity-0'}`}>
-                <ResponsiveContainer width="100%" height="100%">
+                <h3 className="text-xl md:text-2xl font-semibold text-center mb-4">Water Usage Efficiency (Recycled vs Fresh)</h3>
+                <ResponsiveContainer width="100%" height="90%">
                   <BarChart
                     data={animatedWaterData}
                     margin={{ top: 20, right: 30, left: 0, bottom: 20 }}
+                    stackOffset="expand"
+                    barSize={40}
                   >
                     <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.3} />
                     <XAxis 
                       dataKey="month" 
                       stroke="var(--foreground)" 
                       tick={{ fill: 'var(--foreground)' }}
+                      tickFormatter={axisTickFormatter}
                     />
                     <YAxis 
                       stroke="var(--foreground)" 
                       tick={{ fill: 'var(--foreground)' }}
+                      tickFormatter={formatPercentage}
+                      domain={[0, 100]}
                     />
-                    <Tooltip content={<CustomTooltip />} />
+                    <Tooltip 
+                      content={<CustomTooltip />}
+                      formatter={(value) => [`${value}%`, '']}
+                    />
+                    <Legend
+                      formatter={(value, entry, index) => (
+                        <span className="text-foreground">{value}</span>
+                      )}
+                    />
                     <Bar 
                       dataKey="animatedRecycled" 
                       name="Recycled Water" 
                       stackId="a" 
-                      fill="#3b82f6" 
-                      shape={<WaterBar />}
-                    />
+                      fill="#3b82f6"
+                      radius={[4, 4, 0, 0]}
+                    >
+                      {animatedWaterData.map((entry, index) => (
+                        <text 
+                          key={`text-${index}`} 
+                          x={0} 
+                          y={0} 
+                          className="text-white font-medium"
+                          textAnchor="middle" 
+                          dominantBaseline="middle"
+                        >
+                          {Math.round(entry.animatedRecycled)}%
+                        </text>
+                      ))}
+                    </Bar>
                     <Bar 
                       dataKey="animatedFresh" 
                       name="Fresh Water" 
                       stackId="a" 
-                      fill="#64748b" 
-                      shape={<WaterBar />}
-                    />
+                      fill="#64748b"
+                      radius={[4, 4, 0, 0]}
+                    >
+                      {animatedWaterData.map((entry, index) => (
+                        <text 
+                          key={`text-${index}`} 
+                          x={0} 
+                          y={0} 
+                          className="text-white font-medium"
+                          textAnchor="middle" 
+                          dominantBaseline="middle"
+                        >
+                          {Math.round(entry.animatedFresh)}%
+                        </text>
+                      ))}
+                    </Bar>
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -337,45 +344,47 @@ const Sustainability = () => {
       </div>
       
       {/* Add custom CSS for animations and effects */}
-      <style>
-        {`
-          /* Custom chart tooltip styles for dark mode */
-          .recharts-tooltip-cursor {
-            stroke: var(--foreground) !important;
+      <style jsx>{`
+        /* Custom chart tooltip styles for dark mode */
+        .recharts-tooltip-cursor {
+          stroke: var(--foreground) !important;
+        }
+        
+        .recharts-cartesian-axis-tick-value {
+          fill: var(--foreground) !important;
+        }
+        
+        .recharts-text {
+          fill: var(--foreground) !important;
+        }
+        
+        /* Water animation effect */
+        @keyframes wave {
+          0% {
+            transform: translateX(-100%);
           }
-          
-          .recharts-cartesian-axis-tick-value {
-            fill: var(--foreground) !important;
+          100% {
+            transform: translateX(100%);
           }
-          
-          /* Water animation effect */
-          @keyframes wave {
-            0% {
-              transform: translateX(-100%);
-            }
-            100% {
-              transform: translateX(100%);
-            }
-          }
-          
-          .water-effect {
-            position: relative;
-            overflow: hidden;
-          }
-          
-          .water-effect::after {
-            content: '';
-            position: absolute;
-            top: -10px;
-            left: 0;
-            width: 200%;
-            height: 10px;
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            animation: wave 3s linear infinite;
-          }
-        `}
-      </style>
+        }
+        
+        .water-effect {
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .water-effect::after {
+          content: '';
+          position: absolute;
+          top: -10px;
+          left: 0;
+          width: 200%;
+          height: 10px;
+          background: rgba(255, 255, 255, 0.3);
+          border-radius: 50%;
+          animation: wave 3s linear infinite;
+        }
+      `}</style>
     </section>
   );
 };
@@ -390,20 +399,23 @@ interface SustainabilityCardProps {
 
 const SustainabilityCard: React.FC<SustainabilityCardProps> = ({ icon, title, description, isInView, delay }) => {
   return (
-    <div 
-      className={`p-6 bg-card/30 border border-border/40 rounded-xl transition-all duration-1000 ${
-        isInView 
-          ? 'opacity-100 translate-y-0' 
-          : 'opacity-0 translate-y-10'
-      }`}
-      style={{ transitionDelay: `${delay}s` }}
+    <motion.div 
+      className="p-6 bg-card/30 border border-border/40 rounded-xl transition-all duration-1000"
+      initial={{ opacity: 0, y: 20 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+      transition={{ duration: 0.6, delay }}
+      whileHover={{ 
+        y: -10, 
+        boxShadow: "0 10px 30px -15px rgba(0, 0, 0, 0.2)",
+        backgroundColor: "hsl(var(--card))"
+      }}
     >
-      <div className="w-12 h-12 flex items-center justify-center rounded-full bg-green-500/10 text-green-500 mb-4">
+      <div className="w-12 h-12 flex items-center justify-center rounded-full bg-green-500/10 text-green-500 mb-4 group-hover:scale-110 transition-all duration-300">
         {icon}
       </div>
       <h3 className="text-xl font-semibold mb-3">{title}</h3>
       <p className="text-muted-foreground">{description}</p>
-    </div>
+    </motion.div>
   );
 };
 
@@ -416,19 +428,24 @@ interface ChartButtonProps {
 
 const ChartButton: React.FC<ChartButtonProps> = ({ icon, label, active, onClick }) => {
   return (
-    <button
+    <motion.button
       onClick={onClick}
       className={`flex items-center space-x-2 px-4 py-2 rounded-md transition-colors ${
         active 
           ? 'bg-rashmi-red text-white' 
           : 'bg-muted/50 text-muted-foreground hover:bg-muted'
       }`}
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
     >
       {icon}
       <span>{label}</span>
       {active && <XCircle size={16} className="ml-2" />}
-    </button>
+    </motion.button>
   );
 };
+
+// Add the motion import at the top
+import { motion } from 'framer-motion';
 
 export default Sustainability;

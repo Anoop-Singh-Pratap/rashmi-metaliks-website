@@ -221,11 +221,15 @@ const Products = () => {
                       <motion.div 
                         key={idx}
                         variants={itemVariants}
-                        whileHover={{ scale: 1.05, backgroundColor: 'hsl(var(--card))' }}
-                        className="flex items-center p-3 bg-card/50 rounded-lg border border-border/30 transition-all duration-300"
+                        whileHover={{ 
+                          scale: 1.05, 
+                          backgroundColor: 'hsl(var(--card))',
+                          boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)'
+                        }}
+                        className="flex items-center p-3 bg-card/50 rounded-lg border border-border/30 transition-all duration-300 group"
                       >
-                        <div className="w-2 h-2 rounded-full bg-rashmi-red mr-3"></div>
-                        <span>{feature}</span>
+                        <div className="w-2 h-2 rounded-full bg-rashmi-red mr-3 group-hover:scale-150 transition-all duration-300"></div>
+                        <span className="group-hover:font-medium transition-all duration-300">{feature}</span>
                       </motion.div>
                     ))}
                   </motion.div>
@@ -237,10 +241,10 @@ const Products = () => {
                     >
                       <Link 
                         to={activeProduct.link} 
-                        className="bg-rashmi-red hover-glow text-white px-6 py-3 rounded-md hover:bg-rashmi-red/90 transition-all duration-300 inline-flex items-center gap-2"
+                        className="bg-rashmi-red hover-glow text-white px-6 py-3 rounded-md hover:bg-rashmi-red/90 transition-all duration-300 inline-flex items-center gap-2 group"
                       >
                         Learn More
-                        <ChevronRight size={16} className="transition-transform group-hover:translate-x-1"/>
+                        <ChevronRight size={16} className="transition-transform duration-300 group-hover:translate-x-1"/>
                       </Link>
                     </motion.div>
                   ) : (

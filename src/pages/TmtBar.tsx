@@ -106,6 +106,13 @@ const TmtBar = () => {
     }
   };
 
+  const scrollToAdvantages = () => {
+    const advantagesSection = document.getElementById('advantages');
+    if (advantagesSection) {
+      advantagesSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background" ref={containerRef}>
       <Helmet>
@@ -130,11 +137,11 @@ const TmtBar = () => {
             transition={{ duration: 0.6 }}
             className="max-w-4xl mx-auto text-center"
           >
-            <h1 className="text-4xl md:text-5xl font-display font-bold mb-6">
+            <h1 className="text-4xl md:text-5xl font-display font-bold mb-6 text-center">
               Engineering <span className="text-rashmi-red">Structural Excellence</span>
               <span className="block text-2xl mt-4 font-medium text-muted-foreground">Premium TMT Steel Bars</span>
             </h1>
-            <p className="text-muted-foreground text-lg max-w-3xl mx-auto mb-8">
+            <p className="text-muted-foreground text-lg max-w-3xl mx-auto mb-8 text-center">
               The TMT Bars produced by Rashmi Metaliks are world-class products with high yield load, 
               ductility & quality for infrastructure projects where strength meets precision.
             </p>
@@ -185,9 +192,10 @@ const TmtBar = () => {
           transition={{ duration: 0.8, delay: 0.8 }}
           className="absolute bottom-8 left-1/2 -translate-x-1/2 text-center"
         >
-          <a 
-            href="#advantages" 
-            className="flex flex-col items-center text-sm text-muted-foreground hover:text-foreground transition-colors duration-300"
+          <motion.button 
+            onClick={scrollToAdvantages}
+            className="flex flex-col items-center text-sm text-muted-foreground hover:text-foreground transition-colors duration-300 focus:outline-none"
+            whileHover={{ y: 5 }}
           >
             <span className="mb-2">Explore Advantages</span>
             <motion.div
@@ -197,7 +205,7 @@ const TmtBar = () => {
             >
               <ArrowDown size={18} className="text-white" />
             </motion.div>
-          </a>
+          </motion.button>
         </motion.div>
       </section>
 
@@ -211,7 +219,7 @@ const TmtBar = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5 }}
-                className="text-3xl md:text-4xl font-display font-bold mb-4"
+                className="text-3xl md:text-4xl font-display font-bold mb-4 text-center"
               >
                 Rashmi <span className="text-rashmi-red">TMT</span> Grades
               </motion.h2>
@@ -220,7 +228,7 @@ const TmtBar = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.2 }}
-                className="text-muted-foreground text-lg"
+                className="text-muted-foreground text-lg text-center"
               >
                 Our diverse range of high-quality TMT grades for various construction needs
               </motion.p>
@@ -234,10 +242,13 @@ const TmtBar = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
-                  whileHover={{ scale: 1.05 }}
+                  whileHover={{ 
+                    scale: 1.05,
+                    boxShadow: "0 10px 30px -15px rgba(0, 0, 0, 0.2)"
+                  }}
                   className="bg-card border border-border rounded-lg p-6 text-center transition-all duration-300"
                 >
-                  <div className="w-16 h-16 mx-auto bg-rashmi-red/10 rounded-full flex items-center justify-center mb-4">
+                  <div className="w-16 h-16 mx-auto bg-rashmi-red/10 rounded-full flex items-center justify-center mb-4 group-hover:bg-rashmi-red/20 transition-colors duration-300">
                     <Award className="text-rashmi-red" size={32} />
                   </div>
                   <h3 className="text-xl font-bold mb-2">{grade}</h3>
@@ -258,7 +269,7 @@ const TmtBar = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
-              className="text-3xl md:text-4xl font-display font-bold mb-6"
+              className="text-3xl md:text-4xl font-display font-bold mb-6 text-center"
             >
               Key <span className="text-rashmi-red">Advantages</span>
             </motion.h2>
@@ -267,7 +278,7 @@ const TmtBar = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-muted-foreground text-lg"
+              className="text-muted-foreground text-lg text-center"
             >
               Our TMT Bars offer significant advantages over conventional reinforcement bars
             </motion.p>
@@ -284,14 +295,15 @@ const TmtBar = () => {
                 transition={{ delay: index * 0.1 }}
                 whileHover={{ 
                   y: -10, 
-                  boxShadow: "0 10px 30px -15px rgba(0, 0, 0, 0.2)"
+                  boxShadow: "0 10px 30px -15px rgba(0, 0, 0, 0.2)",
+                  backgroundColor: "hsl(var(--card))"
                 }}
                 className="bg-card border border-border rounded-lg p-6 transition-all duration-300 relative overflow-hidden group"
               >
                 <div className="absolute -right-12 -bottom-12 w-36 h-36 bg-gradient-to-r from-rashmi-red/5 to-transparent rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 
                 <div className="relative z-10">
-                  <div className="mb-4 bg-rashmi-red/10 w-12 h-12 rounded-full flex items-center justify-center">
+                  <div className="mb-4 bg-rashmi-red/10 w-12 h-12 rounded-full flex items-center justify-center group-hover:bg-rashmi-red/20 transition-colors duration-300">
                     {React.createElement(advantage.icon, { className: "text-rashmi-red", size: 22 })}
                   </div>
                   <h3 className="text-xl font-bold mb-2">{advantage.title}</h3>
@@ -302,7 +314,7 @@ const TmtBar = () => {
                     whileInView={{ width: "40%" }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.8, delay: index * 0.1 + 0.3 }}
-                    className="h-1 bg-rashmi-red/60 rounded-full mt-4"
+                    className="h-1 bg-rashmi-red/60 rounded-full mt-4 group-hover:width-[60%] group-hover:bg-rashmi-red transition-all duration-300"
                   ></motion.div>
                 </div>
               </motion.div>
@@ -320,7 +332,7 @@ const TmtBar = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
-              className="text-3xl md:text-4xl font-display font-bold mb-6"
+              className="text-3xl md:text-4xl font-display font-bold mb-6 text-center"
             >
               Manufacturing <span className="text-rashmi-red">Process</span>
             </motion.h2>
@@ -329,14 +341,14 @@ const TmtBar = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-muted-foreground text-lg"
+              className="text-muted-foreground text-lg text-center"
             >
               Our precision manufacturing process ensures the highest quality TMT Bars
             </motion.p>
           </div>
           
           <div className="max-w-5xl mx-auto">
-            <div className="flex flex-wrap mb-8">
+            <div className="flex flex-wrap justify-center mb-8">
               {processSteps.map((step, index) => (
                 <motion.button
                   key={step.title}
@@ -345,9 +357,11 @@ const TmtBar = () => {
                   viewport={{ once: true }}
                   transition={{ duration: 0.3, delay: index * 0.05 }}
                   onClick={() => setActiveProcessStep(index)}
+                  whileHover={{ scale: activeProcessStep === index ? 1 : 1.05 }}
+                  whileTap={{ scale: 0.98 }}
                   className={`px-4 py-2 rounded-full text-sm md:text-base font-medium m-1 transition-all ${
                     activeProcessStep === index 
-                      ? 'bg-rashmi-red text-white' 
+                      ? 'bg-rashmi-red text-white shadow-md' 
                       : 'bg-card border border-border text-foreground hover:bg-muted'
                   }`}
                 >
@@ -409,7 +423,7 @@ const TmtBar = () => {
                 viewport={{ once: true }}
                 transition={{ duration: 0.6 }}
               >
-                <h2 className="text-3xl font-display font-bold mb-6">
+                <h2 className="text-3xl font-display font-bold mb-6 text-center lg:text-left">
                   <span className="text-rashmi-red">Applications</span> & Uses
                 </h2>
                 <p className="text-muted-foreground mb-6">
@@ -423,7 +437,11 @@ const TmtBar = () => {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.4 }}
-                    className="flex items-start p-4 bg-card rounded-lg border border-border"
+                    whileHover={{ 
+                      y: -5,
+                      boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)"
+                    }}
+                    className="flex items-start p-4 bg-card rounded-lg border border-border transition-all duration-300"
                   >
                     <CheckCircle className="h-5 w-5 text-rashmi-red mt-0.5 mr-3" />
                     <div>
@@ -439,7 +457,11 @@ const TmtBar = () => {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.4, delay: 0.1 }}
-                    className="flex items-start p-4 bg-card rounded-lg border border-border"
+                    whileHover={{ 
+                      y: -5,
+                      boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)"
+                    }}
+                    className="flex items-start p-4 bg-card rounded-lg border border-border transition-all duration-300"
                   >
                     <CheckCircle className="h-5 w-5 text-rashmi-red mt-0.5 mr-3" />
                     <div>
@@ -455,7 +477,11 @@ const TmtBar = () => {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.4, delay: 0.2 }}
-                    className="flex items-start p-4 bg-card rounded-lg border border-border"
+                    whileHover={{ 
+                      y: -5,
+                      boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)"
+                    }}
+                    className="flex items-start p-4 bg-card rounded-lg border border-border transition-all duration-300"
                   >
                     <CheckCircle className="h-5 w-5 text-rashmi-red mt-0.5 mr-3" />
                     <div>
@@ -540,10 +566,10 @@ const TmtBar = () => {
             </div>
             
             <div className="relative z-10">
-              <h2 className="text-3xl md:text-4xl font-display font-bold mb-6">
+              <h2 className="text-3xl md:text-4xl font-display font-bold mb-6 text-center">
                 Ready to use Rashmi TMT for your <span className="text-rashmi-red">construction projects?</span>
               </h2>
-              <p className="text-muted-foreground text-lg mb-10 max-w-2xl mx-auto">
+              <p className="text-muted-foreground text-lg mb-10 max-w-2xl mx-auto text-center">
                 Contact our experts to learn more about our high-quality TMT Bars and how they can benefit your construction projects.
               </p>
               
@@ -552,7 +578,7 @@ const TmtBar = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.98 }}
                 transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                className="inline-flex items-center px-6 py-3 bg-rashmi-red text-white font-medium rounded-lg transition-colors hover:bg-rashmi-red/90"
+                className="inline-flex items-center px-6 py-3 bg-rashmi-red text-white font-medium rounded-lg transition-colors hover:bg-rashmi-red/90 hover:shadow-lg hover-glow"
               >
                 Contact Us Today
                 <ArrowDown className="ml-2 rotate-[-90deg]" size={18} />

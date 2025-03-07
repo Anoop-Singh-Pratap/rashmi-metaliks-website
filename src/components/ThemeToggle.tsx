@@ -2,6 +2,7 @@
 import React, { useRef, useEffect } from 'react';
 import { Moon, Sun } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const ThemeToggle: React.FC = () => {
   const { theme, toggleTheme } = useTheme();
@@ -29,7 +30,7 @@ const ThemeToggle: React.FC = () => {
   }, []);
 
   return (
-    <button
+    <motion.button
       ref={toggleRef}
       onClick={toggleTheme}
       className="relative w-12 h-12 rounded-full bg-gradient-to-tr from-background to-secondary 
@@ -43,15 +44,35 @@ const ThemeToggle: React.FC = () => {
         '--y': '50%',
       } as React.CSSProperties}
       aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+      whileHover={{ scale: 1.1 }}
+      whileTap={{ scale: 0.9 }}
     >
-      <span className="absolute inset-0 flex items-center justify-center transition-opacity duration-300">
+      <AnimatePresence mode="wait">
         {theme === 'dark' ? (
-          <Sun className="h-5 w-5 text-foreground" />
+          <motion.div
+            key="sun"
+            initial={{ opacity: 0, rotate: -180 }}
+            animate={{ opacity: 1, rotate: 0 }}
+            exit={{ opacity: 0, rotate: 180 }}
+            transition={{ duration: 0.3 }}
+            className="absolute inset-0 flex items-center justify-center"
+          >
+            <Sun className="h-5 w-5 text-foreground" />
+          </motion.div>
         ) : (
-          <Moon className="h-5 w-5 text-foreground" />
+          <motion.div
+            key="moon"
+            initial={{ opacity: 0, rotate: 180 }}
+            animate={{ opacity: 1, rotate: 0 }}
+            exit={{ opacity: 0, rotate: -180 }}
+            transition={{ duration: 0.3 }}
+            className="absolute inset-0 flex items-center justify-center"
+          >
+            <Moon className="h-5 w-5 text-foreground" />
+          </motion.div>
         )}
-      </span>
-    </button>
+      </AnimatePresence>
+    </motion.button>
   );
 };
 
