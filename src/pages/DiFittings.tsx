@@ -1,122 +1,194 @@
-
-import React, { useState, useRef, useEffect } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import React, { useRef } from 'react';
+import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowDown, Check, ScrollText, Settings, Factory, Globe, ChevronDown } from 'lucide-react';
+import { ArrowDown, CheckCircle, Layers, Shield, Zap, Award, Factory, AlertCircle } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import SpecificationTable from '../components/ui/SpecificationTable';
-import ProductFeatures from '../components/ui/ProductFeatures';
+
+interface TableRow {
+  [key: string]: string | number;
+}
 
 const DiFittings = () => {
-  const [activeTab, setActiveTab] = useState('specifications');
   const containerRef = useRef<HTMLDivElement>(null);
-  const [selectedFitting, setSelectedFitting] = useState("socket");
   
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"]
-  });
-  
-  const opacity = useTransform(scrollYProgress, [0, 0.2], [0, 1]);
-  const scale = useTransform(scrollYProgress, [0, 0.2], [0.95, 1]);
-  
-  // Create helper functions to transform data for SpecificationTable
-  const transformDataToTableFormat = (data: { property: string; value: string }[]) => {
-    const headers = ["Property", "Value"];
-    const rows = data.map(item => [item.property, item.value]);
-    return { headers, rows };
+  const socketsData = [
+    {
+      "nominal_size": "80",
+      "outside_diameter": "98",
+      "socket_depth": "84",
+      "weight": "2.3"
+    },
+    {
+      "nominal_size": "100",
+      "outside_diameter": "118",
+      "socket_depth": "87",
+      "weight": "2.84"
+    },
+    {
+      "nominal_size": "150",
+      "outside_diameter": "170",
+      "socket_depth": "91",
+      "weight": "4.15"
+    },
+    {
+      "nominal_size": "200",
+      "outside_diameter": "222",
+      "socket_depth": "95",
+      "weight": "5.63"
+    },
+    {
+      "nominal_size": "250",
+      "outside_diameter": "274",
+      "socket_depth": "99",
+      "weight": "7.34"
+    },
+    {
+      "nominal_size": "300",
+      "outside_diameter": "326",
+      "socket_depth": "103",
+      "weight": "9.28"
+    }
+  ];
+
+  const flangesData = [
+    {
+      "nominal_size": "80",
+      "outside_diameter": "200",
+      "bolt_circle": "160",
+      "no_of_bolts": "8",
+      "weight": "5.6"
+    },
+    {
+      "nominal_size": "100",
+      "outside_diameter": "220",
+      "bolt_circle": "180",
+      "no_of_bolts": "8",
+      "weight": "6.7"
+    },
+    {
+      "nominal_size": "150",
+      "outside_diameter": "285",
+      "bolt_circle": "240",
+      "no_of_bolts": "8",
+      "weight": "10.2"
+    },
+    {
+      "nominal_size": "200",
+      "outside_diameter": "340",
+      "bolt_circle": "295",
+      "no_of_bolts": "12",
+      "weight": "13.6"
+    },
+    {
+      "nominal_size": "250",
+      "outside_diameter": "400",
+      "bolt_circle": "350",
+      "no_of_bolts": "12",
+      "weight": "17.3"
+    },
+    {
+      "nominal_size": "300",
+      "outside_diameter": "455",
+      "bolt_circle": "400",
+      "no_of_bolts": "12",
+      "weight": "21.5"
+    }
+  ];
+
+  const bendData = [
+    {
+      "nominal_size": "80",
+      "l_mm": "170",
+      "weight_11_deg": "3.2",
+      "weight_22_deg": "3.5",
+      "weight_45_deg": "4.1",
+      "weight_90_deg": "6.8"
+    },
+    {
+      "nominal_size": "100",
+      "l_mm": "180",
+      "weight_11_deg": "4.1",
+      "weight_22_deg": "4.5",
+      "weight_45_deg": "5.2",
+      "weight_90_deg": "8.6"
+    },
+    {
+      "nominal_size": "150",
+      "l_mm": "200",
+      "weight_11_deg": "6.5",
+      "weight_22_deg": "7.2",
+      "weight_45_deg": "8.5",
+      "weight_90_deg": "14.1"
+    },
+    {
+      "nominal_size": "200",
+      "l_mm": "220",
+      "weight_11_deg": "9.8",
+      "weight_22_deg": "10.9",
+      "weight_45_deg": "12.7",
+      "weight_90_deg": "21.3"
+    },
+    {
+      "nominal_size": "250",
+      "l_mm": "240",
+      "weight_11_deg": "13.8",
+      "weight_22_deg": "15.3",
+      "weight_45_deg": "17.9",
+      "weight_90_deg": "30.1"
+    },
+    {
+      "nominal_size": "300",
+      "l_mm": "260",
+      "weight_11_deg": "18.6",
+      "weight_22_deg": "20.6",
+      "weight_45_deg": "24.1",
+      "weight_90_deg": "40.5"
+    }
+  ];
+
+  const advantages = [
+    {
+      title: "Perfect Compatibility",
+      description: "Engineered to seamlessly integrate with our DI pipe systems, ensuring a cohesive and reliable pipeline network."
+    },
+    {
+      title: "Same Durability",
+      description: "Manufactured with the same high-quality ductile iron as our pipes, guaranteeing exceptional strength and longevity."
+    },
+    {
+      title: "Diverse Joints",
+      description: "Available in a variety of joint configurations, including flanged, spigot and socket, and mechanical joints, to suit any project requirement."
+    },
+    {
+      title: "Pressure Capable",
+      description: "Designed to withstand high-pressure conditions, ensuring safe and efficient fluid transfer in demanding applications."
+    }
+  ];
+
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
   };
-  
-  const socketSpecifications = [
-    { property: "Standard", value: "EN 545, ISO 2531" },
-    { property: "Diameter Range", value: "DN 80-1000 mm" },
-    { property: "Pressure Class", value: "PN 10, PN 16, PN 25" },
-    { property: "Coating", value: "Bitumen/Epoxy" },
-    { property: "Lining", value: "Cement Mortar" },
-    { property: "Material", value: "Ductile Iron GGG 50" },
-    { property: "Joint Type", value: "Push-on, Mechanical" },
-    { property: "Length", value: "Variable" }
-  ];
-  
-  const flangeSpecifications = [
-    { property: "Standard", value: "EN 545, ISO 2531" },
-    { property: "Diameter Range", value: "DN 80-1200 mm" },
-    { property: "Pressure Class", value: "PN 10, PN 16, PN 25, PN 40" },
-    { property: "Flange Standard", value: "EN 1092-2, ISO 7005-2" },
-    { property: "Coating", value: "Bitumen/Epoxy" },
-    { property: "Lining", value: "Cement Mortar" },
-    { property: "Material", value: "Ductile Iron GGG 50" },
-    { property: "Drilling Pattern", value: "PN 10/16, ANSI, JIS" }
-  ];
-  
-  const bendSpecifications = [
-    { property: "Standard", value: "EN 545, ISO 2531" },
-    { property: "Diameter Range", value: "DN 80-1000 mm" },
-    { property: "Angle", value: "11.25°, 22.5°, 30°, 45°, 90°" },
-    { property: "Pressure Class", value: "PN 10, PN 16, PN 25" },
-    { property: "Coating", value: "Bitumen/Epoxy" },
-    { property: "Lining", value: "Cement Mortar" },
-    { property: "Material", value: "Ductile Iron GGG 50" },
-    { property: "Joint Type", value: "Push-on, Flanged" }
-  ];
-  
-  const features = [
-    {
-      title: "Corrosion Resistance",
-      description: "Enhanced resistance to corrosion through speciality coatings and linings",
-      icon: "shield"
-    },
-    {
-      title: "Temperature Tolerance",
-      description: "Withstands temperature variations while maintaining structural integrity",
-      icon: "thermometer"
-    },
-    {
-      title: "Pressure Rating",
-      description: "High pressure ratings from PN 10 to PN 40 for different application needs",
-      icon: "gauge"
-    },
-    {
-      title: "Easy Installation",
-      description: "Designed for simple and quick installation with push-on or mechanical joints",
-      icon: "tool"
-    },
-    {
-      title: "Hydraulic Efficiency",
-      description: "Smooth internal surface provides excellent hydraulic flow characteristics",
-      icon: "droplet"
-    },
-    {
-      title: "Long Service Life",
-      description: "Exceptional durability with service life exceeding 100 years",
-      icon: "clock"
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { duration: 0.5 }
     }
-  ];
-  
-  const fittingTypes = [
-    {
-      id: "socket",
-      name: "Double Socket",
-      description: "For straight pipeline connections with push-on joints",
-      imageUrl: "https://images.unsplash.com/photo-1621155346337-1d19476ba7d6?q=80&w=500"
-    },
-    {
-      id: "flange",
-      name: "Flanged Fittings",
-      description: "For connection to valves, pumps and above-ground applications",
-      imageUrl: "https://images.unsplash.com/photo-1614313913007-2b4ae8ce32d6?q=80&w=500"
-    },
-    {
-      id: "bend",
-      name: "Bends & Elbows",
-      description: "For changing direction of pipeline with various angles",
-      imageUrl: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?q=80&w=500"
-    }
-  ];
-  
+  };
+
   return (
-    <div ref={containerRef} className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" ref={containerRef}>
       <Header />
       
       {/* Hero Section */}
@@ -126,45 +198,35 @@ const DiFittings = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="max-w-4xl mx-auto"
+            className="max-w-4xl mx-auto text-center"
           >
             <h1 className="text-4xl md:text-5xl font-display font-bold mb-6">
-              Ductile Iron <span className="text-rashmi-red">Fittings</span>
+              Precision <span className="text-rashmi-red">DI Fittings</span>
             </h1>
-            <p className="text-muted-foreground text-lg max-w-3xl mb-8">
-              Premium quality ductile iron fittings manufactured to international standards for water and sewage pipeline systems. Our fittings ensure reliable connections and seamless pipeline operations.
+            <p className="text-muted-foreground text-lg max-w-3xl mx-auto mb-8">
+              High-quality ductile iron fittings that complement our DI pipe systems for complete water management solutions.
             </p>
             
             <motion.div 
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: 0.3 }}
-              className="flex flex-wrap gap-3"
+              className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-10 max-w-2xl mx-auto"
             >
-              <motion.span 
-                whileHover={{ scale: 1.05, y: -2 }}
-                className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-rashmi-red/10 text-rashmi-red"
+              <motion.div 
+                className="bg-card hover:bg-card/90 border border-border p-6 rounded-lg transition-colors duration-300"
+                whileHover={{ y: -5, boxShadow: "0 10px 30px -15px rgba(0, 0, 0, 0.2)" }}
               >
-                EN 545
-              </motion.span>
-              <motion.span 
-                whileHover={{ scale: 1.05, y: -2 }}
-                className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-rashmi-red/10 text-rashmi-red"
+                <h3 className="text-2xl font-bold mb-1">Perfect Fit</h3>
+                <p className="text-muted-foreground">Seamless Integration</p>
+              </motion.div>
+              <motion.div 
+                className="bg-card hover:bg-card/90 border border-border p-6 rounded-lg transition-colors duration-300"
+                whileHover={{ y: -5, boxShadow: "0 10px 30px -15px rgba(0, 0, 0, 0.2)" }}
               >
-                ISO 2531
-              </motion.span>
-              <motion.span 
-                whileHover={{ scale: 1.05, y: -2 }}
-                className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-rashmi-red/10 text-rashmi-red"
-              >
-                PN 10-40
-              </motion.span>
-              <motion.span 
-                whileHover={{ scale: 1.05, y: -2 }}
-                className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-rashmi-red/10 text-rashmi-red"
-              >
-                DN 80-1200
-              </motion.span>
+                <h3 className="text-2xl font-bold mb-1">High Pressure</h3>
+                <p className="text-muted-foreground">Capable Performance</p>
+              </motion.div>
             </motion.div>
           </motion.div>
         </div>
@@ -185,10 +247,10 @@ const DiFittings = () => {
           className="absolute bottom-8 left-1/2 -translate-x-1/2 text-center"
         >
           <a 
-            href="#product-range" 
+            href="#specifications" 
             className="flex flex-col items-center text-sm text-muted-foreground hover:text-foreground transition-colors duration-300"
           >
-            <span className="mb-2">Explore Our Range</span>
+            <span className="mb-2">Explore Specifications</span>
             <motion.div
               animate={{ y: [0, 10, 0] }}
               transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
@@ -199,9 +261,9 @@ const DiFittings = () => {
           </a>
         </motion.div>
       </section>
-      
-      {/* Product Range Section */}
-      <section id="product-range" className="py-16 bg-muted/30">
+
+      {/* Advantages Section */}
+      <section id="advantages" className="py-16 bg-muted/30">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto mb-16 text-center">
             <motion.h2 
@@ -211,7 +273,7 @@ const DiFittings = () => {
               transition={{ duration: 0.5 }}
               className="text-3xl md:text-4xl font-display font-bold mb-6"
             >
-              Our Comprehensive <span className="text-rashmi-red">Fitting Range</span>
+              Key <span className="text-rashmi-red">Advantages</span>
             </motion.h2>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -220,44 +282,30 @@ const DiFittings = () => {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="text-muted-foreground text-lg"
             >
-              Explore our extensive range of ductile iron fittings designed for various pipeline applications
+              Our DI Fittings offer significant advantages over conventional fittings
             </motion.p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {fittingTypes.map((fitting, index) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto">
+            {advantages.map((advantage, index) => (
               <motion.div
-                key={fitting.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                key={advantage.title}
+                initial="hidden"
+                whileInView="visible"
                 viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+                variants={itemVariants}
+                transition={{ delay: index * 0.1 }}
                 whileHover={{ 
-                  y: -8, 
-                  boxShadow: "0 15px 30px -10px rgba(0, 0, 0, 0.2)" 
+                  y: -10, 
+                  boxShadow: "0 10px 30px -15px rgba(0, 0, 0, 0.2)"
                 }}
-                className={`bg-card border border-border rounded-lg overflow-hidden transition-all duration-300 cursor-pointer ${
-                  selectedFitting === fitting.id ? 'ring-2 ring-rashmi-red' : ''
-                }`}
-                onClick={() => setSelectedFitting(fitting.id)}
+                className="bg-card border border-border rounded-lg p-6 transition-all duration-300"
               >
-                <div className="h-48 overflow-hidden">
-                  <img 
-                    src={fitting.imageUrl} 
-                    alt={fitting.name} 
-                    className="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
-                  />
+                <div className="mb-4 bg-rashmi-red/10 w-12 h-12 rounded-full flex items-center justify-center">
+                  <CheckCircle className="text-rashmi-red" size={22} />
                 </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-bold mb-2">{fitting.name}</h3>
-                  <p className="text-muted-foreground mb-4">{fitting.description}</p>
-                  <div className="flex items-center text-rashmi-red">
-                    <span className="text-sm font-medium">View Specifications</span>
-                    <ChevronDown size={16} className={`ml-2 transition-transform duration-300 ${
-                      selectedFitting === fitting.id ? 'rotate-180' : ''
-                    }`} />
-                  </div>
-                </div>
+                <h3 className="text-xl font-bold mb-2">{advantage.title}</h3>
+                <p className="text-muted-foreground">{advantage.description}</p>
               </motion.div>
             ))}
           </div>
@@ -267,7 +315,7 @@ const DiFittings = () => {
       {/* Specifications Section */}
       <section id="specifications" className="py-16">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto mb-16 text-center">
+          <div className="max-w-4xl mx-auto mb-12 text-center">
             <motion.h2 
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -282,121 +330,29 @@ const DiFittings = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-muted-foreground text-lg mb-8"
+              className="text-muted-foreground text-lg"
             >
-              Detailed technical specifications for our ductile iron fittings
+              Detailed specifications for our range of DI Fittings
             </motion.p>
-            
-            <div className="inline-flex bg-muted rounded-lg p-1.5 mb-8">
-              <button
-                onClick={() => setActiveTab('specifications')}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
-                  activeTab === 'specifications'
-                    ? 'bg-card shadow-sm text-foreground'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                Specifications
-              </button>
-              <button
-                onClick={() => setActiveTab('features')}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
-                  activeTab === 'features'
-                    ? 'bg-card shadow-sm text-foreground'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                Features
-              </button>
-              <button
-                onClick={() => setActiveTab('applications')}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
-                  activeTab === 'applications'
-                    ? 'bg-card shadow-sm text-foreground'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                Applications
-              </button>
-            </div>
           </div>
           
-          <motion.div 
-            className="max-w-4xl mx-auto"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            {activeTab === 'specifications' && (
-              <div>
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  {selectedFitting === "socket" && (
-                    <SpecificationTable {...transformDataToTableFormat(socketSpecifications)} />
-                  )}
-                  {selectedFitting === "flange" && (
-                    <SpecificationTable {...transformDataToTableFormat(flangeSpecifications)} />
-                  )}
-                  {selectedFitting === "bend" && (
-                    <SpecificationTable {...transformDataToTableFormat(bendSpecifications)} />
-                  )}
-                </motion.div>
-              </div>
-            )}
-            
-            {activeTab === 'features' && (
-              <div>
-                <ProductFeatures features={features} />
-              </div>
-            )}
-            
-            {activeTab === 'applications' && (
-              <div className="bg-card border border-border rounded-lg p-6">
-                <h3 className="text-xl font-bold mb-4">Common Applications</h3>
-                <ul className="space-y-3">
-                  <li className="flex items-start">
-                    <div className="flex-shrink-0 h-6 w-6 rounded-full bg-rashmi-red/10 flex items-center justify-center mt-0.5">
-                      <Check size={14} className="text-rashmi-red" />
-                    </div>
-                    <p className="ml-3 text-muted-foreground">Municipal water distribution networks</p>
-                  </li>
-                  <li className="flex items-start">
-                    <div className="flex-shrink-0 h-6 w-6 rounded-full bg-rashmi-red/10 flex items-center justify-center mt-0.5">
-                      <Check size={14} className="text-rashmi-red" />
-                    </div>
-                    <p className="ml-3 text-muted-foreground">Industrial water supply systems</p>
-                  </li>
-                  <li className="flex items-start">
-                    <div className="flex-shrink-0 h-6 w-6 rounded-full bg-rashmi-red/10 flex items-center justify-center mt-0.5">
-                      <Check size={14} className="text-rashmi-red" />
-                    </div>
-                    <p className="ml-3 text-muted-foreground">Sewage and wastewater management</p>
-                  </li>
-                  <li className="flex items-start">
-                    <div className="flex-shrink-0 h-6 w-6 rounded-full bg-rashmi-red/10 flex items-center justify-center mt-0.5">
-                      <Check size={14} className="text-rashmi-red" />
-                    </div>
-                    <p className="ml-3 text-muted-foreground">Fire protection networks</p>
-                  </li>
-                  <li className="flex items-start">
-                    <div className="flex-shrink-0 h-6 w-6 rounded-full bg-rashmi-red/10 flex items-center justify-center mt-0.5">
-                      <Check size={14} className="text-rashmi-red" />
-                    </div>
-                    <p className="ml-3 text-muted-foreground">Irrigation systems for agriculture</p>
-                  </li>
-                  <li className="flex items-start">
-                    <div className="flex-shrink-0 h-6 w-6 rounded-full bg-rashmi-red/10 flex items-center justify-center mt-0.5">
-                      <Check size={14} className="text-rashmi-red" />
-                    </div>
-                    <p className="ml-3 text-muted-foreground">Hydropower plants and dams</p>
-                  </li>
-                </ul>
-              </div>
-            )}
-          </motion.div>
+          <SpecificationTable 
+            headers={["Nominal Size", "Outside Diameter", "Socket Depth", "Weight"]}
+            rows={socketsData}
+            className="mb-6"
+          />
+
+          <SpecificationTable 
+            headers={["Nominal Size", "Outside Diameter", "Bolt Circle", "No. of Bolts", "Weight"]}
+            rows={flangesData}
+            className="mb-6"
+          />
+
+          <SpecificationTable 
+            headers={["Nominal Size", "L (mm)", "11° Weight", "22° Weight", "45° Weight", "90° Weight"]}
+            rows={bendData}
+            className="mb-6"
+          />
         </div>
       </section>
       
@@ -418,10 +374,10 @@ const DiFittings = () => {
             
             <div className="relative z-10">
               <h2 className="text-3xl md:text-4xl font-display font-bold mb-6">
-                Need custom <span className="text-rashmi-red">fittings</span> for your project?
+                Ready to integrate Rashmi DI Fittings into your <span className="text-rashmi-red">water systems?</span>
               </h2>
               <p className="text-muted-foreground text-lg mb-10 max-w-2xl mx-auto">
-                Our expert team can help you select the right fittings for your specific application or design custom solutions to meet your requirements.
+                Contact our experts to learn more about our high-quality DI Fittings and how they can benefit your water management solutions.
               </p>
               
               <motion.a
@@ -431,7 +387,7 @@ const DiFittings = () => {
                 transition={{ type: "spring", stiffness: 400, damping: 17 }}
                 className="inline-flex items-center px-6 py-3 bg-rashmi-red text-white font-medium rounded-lg transition-colors hover:bg-rashmi-red/90"
               >
-                Contact Our Experts
+                Contact Us Today
                 <ArrowDown className="ml-2 rotate-[-90deg]" size={18} />
               </motion.a>
             </div>

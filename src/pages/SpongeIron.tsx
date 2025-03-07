@@ -1,5 +1,6 @@
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
+import { Helmet } from 'react-helmet';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowDown, Check, ScrollText, BookOpen, Settings, Factory, Globe, Flame } from 'lucide-react';
@@ -16,6 +17,8 @@ const SpongeIron = () => {
   
   const opacity = useTransform(scrollYProgress, [0, 0.2], [0, 1]);
   const yOffset = useTransform(scrollYProgress, [0, 0.2], [50, 0]);
+  
+  const [activeStep, setActiveStep] = useState(0);
   
   const processSteps = [
     {
@@ -68,14 +71,45 @@ const SpongeIron = () => {
       description: "Produces the highest quality Sponge Iron in the market"
     }
   ];
+  
+  // Animation variants for staggered animations
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { duration: 0.5 }
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background" ref={containerRef}>
+      <Helmet>
+        <title>Sponge Iron - Premium Quality | Rashmi Metaliks</title>
+        <meta name="description" content="Rashmi Metaliks produces highest quality Sponge Iron in its Jhargram facility with a production capacity of 1.5 TPA using superior production process." />
+        <meta name="keywords" content="Sponge Iron, Jhargram facility, DRI Plant, Magnetic Separation, Iron production" />
+        <link rel="canonical" href="https://www.rashmi.com/sponge-iron" />
+      </Helmet>
+      
       <Header />
       
       {/* Hero Section */}
       <section className="pt-32 pb-16 relative overflow-hidden">
-        <div className="container mx-auto px-4">
+        <div className="absolute inset-0 z-0 bg-gradient-to-b from-background to-muted/30">
+          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1620283085634-a10c02034ad5?ixlib=rb-4.0.3&auto=format&fit=crop&q=80')] bg-fixed bg-center bg-cover opacity-10"></div>
+        </div>
+        
+        <div className="container mx-auto px-4 relative z-10">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -84,6 +118,7 @@ const SpongeIron = () => {
           >
             <h1 className="text-4xl md:text-5xl font-display font-bold mb-6">
               Premium <span className="text-rashmi-red">Sponge Iron</span> Production
+              <span className="block text-2xl mt-4 font-medium text-muted-foreground">Engineering Material Excellence</span>
             </h1>
             <p className="text-muted-foreground text-lg max-w-3xl mx-auto mb-8">
               Rashmi Metaliks produces the highest quality Sponge Iron in its Jhargram facility with a production 
@@ -197,6 +232,69 @@ const SpongeIron = () => {
             </motion.p>
           </div>
           
+          {/* Interactive Process Steps */}
+          <div className="max-w-5xl mx-auto mb-16">
+            <div className="flex flex-wrap justify-center mb-8">
+              {processSteps.map((step, index) => (
+                <motion.button
+                  key={step.title}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.3, delay: index * 0.05 }}
+                  onClick={() => setActiveStep(index)}
+                  className={`px-4 py-2 rounded-full text-sm md:text-base font-medium m-1 transition-all ${
+                    activeStep === index 
+                      ? 'bg-rashmi-red text-white' 
+                      : 'bg-card border border-border text-foreground hover:bg-muted'
+                  }`}
+                >
+                  Step {index + 1}
+                </motion.button>
+              ))}
+            </div>
+            
+            <motion.div
+              key={activeStep}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.5 }}
+              className="bg-card border border-border rounded-xl p-6 md:p-8"
+            >
+              <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
+                <div className="flex-shrink-0 bg-gradient-to-br from-rashmi-red/20 to-background border border-border/40 rounded-full w-20 h-20 flex items-center justify-center">
+                  {React.createElement(processSteps[activeStep].icon, { 
+                    className: "text-rashmi-red", 
+                    size: 32
+                  })}
+                </div>
+                
+                <div>
+                  <h3 className="text-xl md:text-2xl font-bold mb-3">
+                    Step {activeStep + 1}: {processSteps[activeStep].title}
+                  </h3>
+                  <p className="text-muted-foreground">{processSteps[activeStep].description}</p>
+                  
+                  <div className="mt-8 flex items-center">
+                    <div className="h-2 bg-muted rounded-full flex-grow">
+                      <motion.div 
+                        initial={{ width: 0 }}
+                        animate={{ width: `${(activeStep + 1) / processSteps.length * 100}%` }}
+                        className="h-full bg-rashmi-red rounded-full"
+                        transition={{ duration: 0.5 }}
+                      ></motion.div>
+                    </div>
+                    <span className="ml-4 text-sm font-medium">
+                      {Math.round((activeStep + 1) / processSteps.length * 100)}%
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+          
+          {/* Visual Process Timeline */}
           <div className="relative max-w-5xl mx-auto">
             {/* Timeline line */}
             <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-border/50 rounded-full z-0"></div>
@@ -228,10 +326,13 @@ const SpongeIron = () => {
                   
                   {/* Center node */}
                   <motion.div 
-                    className="absolute left-1/2 transform -translate-x-1/2 w-6 h-6 rounded-full bg-rashmi-red z-10 flex items-center justify-center"
+                    className={`absolute left-1/2 transform -translate-x-1/2 w-6 h-6 rounded-full bg-rashmi-red z-10 flex items-center justify-center ${
+                      activeStep === index ? 'scale-125 ring-4 ring-rashmi-red/20' : ''
+                    }`}
                     whileInView={{ scale: [0.8, 1.2, 1] }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.5, delay: index * 0.1 + 0.3 }}
+                    onClick={() => setActiveStep(index)}
                   >
                     <span className="w-3 h-3 rounded-full bg-white"></span>
                   </motion.div>
@@ -243,7 +344,7 @@ const SpongeIron = () => {
       </section>
       
       {/* CTA Section */}
-      <section className="py-16 relative overflow-hidden">
+      <section className="py-16 relative overflow-hidden bg-muted/30">
         <div className="container mx-auto px-4">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}

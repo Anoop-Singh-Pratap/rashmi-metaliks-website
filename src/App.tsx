@@ -1,4 +1,5 @@
 
+import { Helmet } from "react-helmet";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -21,6 +22,21 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider>
+      <Helmet>
+        <title>Rashmi Metaliks - Premium Steel Products & Solutions</title>
+        <meta name="description" content="Rashmi Metaliks - Leading manufacturer of high-quality steel products including DI Pipes, TMT Bars, Pig Iron, and more with industry-leading quality standards." />
+        <meta name="keywords" content="Rashmi Metaliks, Steel Products, DI Pipes, TMT Bars, Sponge Iron, Pig Iron" />
+        <meta name="author" content="Rashmi Metaliks" />
+        <meta property="og:title" content="Rashmi Metaliks - Premium Steel Products" />
+        <meta property="og:description" content="Leading manufacturer of high-quality steel products with industry-leading quality standards." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://www.rashmi.com" />
+        <meta property="og:image" content="https://www.rashmi.com/og-image.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Rashmi Metaliks - Premium Steel Products" />
+        <meta name="twitter:description" content="Leading manufacturer of high-quality steel products with industry-leading quality standards." />
+        <meta name="twitter:image" content="https://www.rashmi.com/og-image.png" />
+      </Helmet>
       <TooltipProvider>
         <Toaster />
         <Sonner />

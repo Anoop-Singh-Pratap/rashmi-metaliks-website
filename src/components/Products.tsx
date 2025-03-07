@@ -1,9 +1,10 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import RevealText from './ui/RevealText';
 import ProductViewer from './ui/ProductViewer';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 interface Product {
   id: number;
@@ -75,17 +76,73 @@ const productData: Product[] = [
 
 const Products = () => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [autoplayEnabled, setAutoplayEnabled] = useState(true);
   const productRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const autoplayRef = useRef<NodeJS.Timeout | null>(null);
+  const navigate = useNavigate();
+  
+  // Setup autoplay
+  useEffect(() => {
+    if (!autoplayEnabled) return;
+    
+    autoplayRef.current = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % productData.length);
+    }, 5000);
+    
+    return () => {
+      if (autoplayRef.current) clearInterval(autoplayRef.current);
+    };
+  }, [autoplayEnabled]);
+  
+  // Pause autoplay on hover
+  const handleMouseEnter = () => setAutoplayEnabled(false);
+  const handleMouseLeave = () => setAutoplayEnabled(true);
   
   const nextProduct = () => {
     setActiveIndex((prev) => (prev + 1) % productData.length);
+    setAutoplayEnabled(false);
+    setTimeout(() => setAutoplayEnabled(true), 10000); // Resume autoplay after 10 seconds
   };
   
   const prevProduct = () => {
     setActiveIndex((prev) => (prev - 1 + productData.length) % productData.length);
+    setAutoplayEnabled(false);
+    setTimeout(() => setAutoplayEnabled(true), 10000); // Resume autoplay after 10 seconds
+  };
+
+  const goToProduct = (index: number) => {
+    setActiveIndex(index);
+    setAutoplayEnabled(false);
+    setTimeout(() => setAutoplayEnabled(true), 10000); // Resume autoplay after 10 seconds
+  };
+  
+  const handleViewDetails = () => {
+    if (activeProduct.link) {
+      navigate(activeProduct.link);
+    }
   };
 
   const activeProduct = productData[activeIndex];
+
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5 }
+    }
+  };
 
   return (
     <section id="products" className="py-20 md:py-32 bg-muted/30">
@@ -105,54 +162,98 @@ const Products = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div 
+          className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
           {/* 3D Product Viewer */}
-          <div className="order-2 lg:order-1">
-            <ProductViewer 
-              className="w-full h-[400px] max-w-lg mx-auto" 
-              productName={activeProduct.name} 
-            />
-          </div>
+          <motion.div 
+            className="order-2 lg:order-1 perspective-1000"
+            whileInView={{ opacity: [0, 1], scale: [0.9, 1] }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <motion.div
+              whileHover={{ rotateY: 10, rotateX: -5 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            >
+              <ProductViewer 
+                className="w-full h-[400px] max-w-lg mx-auto drop-shadow-xl" 
+                productName={activeProduct.name} 
+              />
+            </motion.div>
+            
+            {/* Loading progress indicator */}
+            <div className="mt-6 w-full max-w-lg mx-auto bg-muted h-1 rounded-full overflow-hidden">
+              <motion.div
+                key={activeIndex}
+                initial={{ width: '0%' }}
+                animate={{ width: '100%' }}
+                transition={{ duration: autoplayEnabled ? 5 : 0, ease: 'linear' }}
+                className="h-full bg-rashmi-red"
+              />
+            </div>
+          </motion.div>
           
           {/* Product Information */}
           <div className="order-1 lg:order-2">
-            <div className="relative">
-              {productData.map((product, index) => (
-                <div
-                  key={product.id}
-                  ref={(el) => (productRefs.current[index] = el)}
-                  className={`transition-all duration-500 ${
-                    activeIndex === index
-                      ? 'opacity-100 translate-y-0'
-                      : 'opacity-0 translate-y-8 absolute top-0 left-0 right-0'
-                  }`}
+            <div className="relative min-h-[380px]">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeIndex}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.5 }}
+                  className="space-y-6"
                 >
-                  <h3 className="text-2xl md:text-3xl font-display font-bold mb-4">{product.name}</h3>
-                  <p className="text-muted-foreground mb-6">{product.description}</p>
+                  <h3 className="text-2xl md:text-3xl font-display font-bold mb-4">{activeProduct.name}</h3>
+                  <p className="text-muted-foreground mb-6">{activeProduct.description}</p>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-                    {product.features.map((feature, idx) => (
-                      <div 
+                  <motion.div 
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="visible"
+                    className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8"
+                  >
+                    {activeProduct.features.map((feature, idx) => (
+                      <motion.div 
                         key={idx}
-                        className="flex items-center p-3 bg-card/50 rounded-lg border border-border/30"
+                        variants={itemVariants}
+                        whileHover={{ scale: 1.05, backgroundColor: 'hsl(var(--card))' }}
+                        className="flex items-center p-3 bg-card/50 rounded-lg border border-border/30 transition-all duration-300"
                       >
                         <div className="w-2 h-2 rounded-full bg-rashmi-red mr-3"></div>
                         <span>{feature}</span>
-                      </div>
+                      </motion.div>
                     ))}
-                  </div>
+                  </motion.div>
                   
-                  {product.link ? (
-                    <Link to={product.link} className="bg-rashmi-red text-white px-6 py-3 rounded-md hover:bg-rashmi-red/90 transition-colors inline-block">
-                      Learn More
-                    </Link>
+                  {activeProduct.link ? (
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.97 }}
+                    >
+                      <Link 
+                        to={activeProduct.link} 
+                        className="bg-rashmi-red hover-glow text-white px-6 py-3 rounded-md hover:bg-rashmi-red/90 transition-all duration-300 inline-flex items-center gap-2"
+                      >
+                        Learn More
+                        <ChevronRight size={16} className="transition-transform group-hover:translate-x-1"/>
+                      </Link>
+                    </motion.div>
                   ) : (
-                    <button className="bg-rashmi-red text-white px-6 py-3 rounded-md hover:bg-rashmi-red/90 transition-colors">
+                    <motion.button 
+                      className="bg-rashmi-red text-white px-6 py-3 rounded-md hover:bg-rashmi-red/90 transition-colors"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.97 }}
+                    >
                       Get Specifications
-                    </button>
+                    </motion.button>
                   )}
-                </div>
-              ))}
+                </motion.div>
+              </AnimatePresence>
             </div>
             
             {/* Product Navigation */}
@@ -161,9 +262,9 @@ const Products = () => {
                 {productData.map((_, index) => (
                   <button
                     key={index}
-                    onClick={() => setActiveIndex(index)}
-                    className={`w-3 h-3 rounded-full transition-all ${
-                      activeIndex === index ? 'bg-rashmi-red w-6' : 'bg-muted'
+                    onClick={() => goToProduct(index)}
+                    className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                      activeIndex === index ? 'bg-rashmi-red w-6' : 'bg-muted hover:bg-muted-foreground/50'
                     }`}
                     aria-label={`View product ${index + 1}`}
                   />
@@ -171,20 +272,24 @@ const Products = () => {
               </div>
               
               <div className="flex space-x-3">
-                <button
+                <motion.button
                   onClick={prevProduct}
                   className="w-10 h-10 rounded-full flex items-center justify-center border border-border hover:bg-card transition-colors"
+                  whileHover={{ scale: 1.1, backgroundColor: 'hsl(var(--card))' }}
+                  whileTap={{ scale: 0.95 }}
                   aria-label="Previous product"
                 >
                   <ChevronLeft size={20} />
-                </button>
-                <button
+                </motion.button>
+                <motion.button
                   onClick={nextProduct}
                   className="w-10 h-10 rounded-full flex items-center justify-center border border-border hover:bg-card transition-colors"
+                  whileHover={{ scale: 1.1, backgroundColor: 'hsl(var(--card))' }}
+                  whileTap={{ scale: 0.95 }}
                   aria-label="Next product"
                 >
                   <ChevronRight size={20} />
-                </button>
+                </motion.button>
               </div>
             </div>
           </div>
