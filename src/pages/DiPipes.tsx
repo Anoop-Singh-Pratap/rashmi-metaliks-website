@@ -1,9 +1,12 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowDown, Check, Ruler, Pipette, Waves, ShieldCheck } from 'lucide-react';
+import { Helmet } from 'react-helmet';
+import { ArrowDown, Check, Ruler, Pipette, Waves, ShieldCheck, ChevronDown } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import ProductViewer from '../components/ui/ProductViewer';
 
 // Fixed TypeScript error by specifying literal types for repeatType
 const floatAnimation = {
@@ -33,15 +36,35 @@ const flowAnimation = {
 };
 
 const pulseAnimation = {
-  initial: { y: 0 },
+  initial: { opacity: 0.7 },
   animate: { 
-    y: [0, 2, 0], 
+    opacity: [0.7, 1, 0.7], 
+    scale: [1, 1.05, 1],
     transition: { 
       duration: 1.5, 
       repeat: Infinity, 
       repeatType: "mirror" as const, 
       ease: "easeInOut" 
     } 
+  }
+};
+
+// Microinteraction animations for explore button
+const exploreButtonVariants = {
+  initial: { scale: 1 },
+  hover: { scale: 1.1, transition: { duration: 0.2 } },
+  tap: { scale: 0.9, transition: { duration: 0.2 } }
+};
+
+const arrowVariants = {
+  initial: { y: 0 },
+  animate: { 
+    y: [0, 10, 0],
+    transition: { 
+      repeat: Infinity, 
+      duration: 1.5, 
+      ease: "easeInOut" 
+    }
   }
 };
 
@@ -79,6 +102,13 @@ const DiPipes = () => {
     }
   ];
 
+  const scrollToSection = (sectionId: string) => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -99,55 +129,97 @@ const DiPipes = () => {
 
   return (
     <div ref={containerRef} className="min-h-screen bg-background">
+      <Helmet>
+        <title>Ductile Iron Pipes | Rashmi Metaliks</title>
+        <meta name="description" content="High-performance ductile iron pipes for water and sewage infrastructure, manufactured to meet international standards and engineered for durability." />
+        <meta name="keywords" content="Ductile Iron Pipes, DI Pipes, Water Distribution, Sewage Systems, Rashmi Metaliks" />
+      </Helmet>
+      
       <Header />
       
-      {/* Hero Section */}
-      <section id="overview" className="pt-32 pb-16 relative overflow-hidden">
+      {/* Hero Section - Industrial Grandeur */}
+      <section id="overview" className="pt-32 pb-20 relative overflow-hidden">
         <div className="container mx-auto px-4">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="max-w-4xl mx-auto"
+            transition={{ duration: 0.8 }}
+            className="max-w-4xl mx-auto text-center"
           >
-            <h1 className="text-4xl md:text-5xl font-display font-bold mb-6">
-              Ductile Iron <span className="text-rashmi-red">Pipes</span>
+            <h1 className="text-4xl md:text-5xl font-display font-bold mb-4 text-center">
+              Engineering Fluid <span className="text-rashmi-red">Excellence</span>
+              <motion.span 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="block text-xl md:text-2xl mt-2 text-muted-foreground"
+              >
+                Ductile Iron Pressure Pipes
+              </motion.span>
             </h1>
-            <p className="text-muted-foreground text-lg max-w-3xl mb-8">
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="text-muted-foreground text-lg max-w-3xl mx-auto mb-10"
+            >
               High-performance ductile iron pipes for water and sewage infrastructure. Manufactured to meet stringent international standards, ensuring durability and reliability.
-            </p>
+            </motion.p>
             
+            {/* Stat badges with floating animation */}
             <motion.div 
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="flex flex-wrap gap-3"
+              transition={{ duration: 0.5, delay: 0.6 }}
+              className="flex flex-wrap gap-4 justify-center mb-12"
             >
               <motion.span 
-                whileHover={{ scale: 1.05, y: -2 }}
-                className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-rashmi-red/10 text-rashmi-red"
+                variants={floatAnimation}
+                initial="initial"
+                animate="animate"
+                className="inline-flex items-center px-5 py-2 rounded-full text-sm font-medium bg-rashmi-red text-white shadow-md"
               >
-                EN 545
+                EN 545 Certified
               </motion.span>
               <motion.span 
-                whileHover={{ scale: 1.05, y: -2 }}
-                className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-rashmi-red/10 text-rashmi-red"
+                variants={flowAnimation}
+                initial="initial"
+                animate="animate"
+                className="inline-flex items-center px-5 py-2 rounded-full text-sm font-medium bg-card border border-border shadow-md"
               >
-                ISO 2531
+                ISO 2531 Compliant
               </motion.span>
               <motion.span 
-                whileHover={{ scale: 1.05, y: -2 }}
-                className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-rashmi-red/10 text-rashmi-red"
+                variants={floatAnimation}
+                initial="initial"
+                animate="animate"
+                className="inline-flex items-center px-5 py-2 rounded-full text-sm font-medium bg-rashmi-red text-white shadow-md"
               >
-                PN 10-40
+                PN 10-40 Pressure Rating
               </motion.span>
               <motion.span 
-                whileHover={{ scale: 1.05, y: -2 }}
-                className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-rashmi-red/10 text-rashmi-red"
+                variants={flowAnimation}
+                initial="initial"
+                animate="animate"
+                className="inline-flex items-center px-5 py-2 rounded-full text-sm font-medium bg-card border border-border shadow-md"
               >
-                DN 80-1600
+                DN 80-1600 Diameters
               </motion.span>
             </motion.div>
+          </motion.div>
+          
+          {/* Product Visualization */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.8 }}
+            className="max-w-xl mx-auto mt-8"
+          >
+            <ProductViewer 
+              productName="Ductile Iron Pipes"
+              description="Premium quality with ISO certification"
+              onClick={() => scrollToSection('features')}
+            />
           </motion.div>
         </div>
         
@@ -160,30 +232,32 @@ const DiPipes = () => {
           <div className="bg-rashmi-red/20 rounded-full w-[600px] h-[600px] blur-[150px] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.8 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 text-center"
-        >
-          <a 
-            href="#features" 
-            className="flex flex-col items-center text-sm text-muted-foreground hover:text-foreground transition-colors duration-300"
-          >
-            <span className="mb-2">Explore Key Features</span>
-            <motion.div
-              animate={{ y: [0, 10, 0] }}
-              transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
-              className="bg-rashmi-red/90 rounded-full w-8 h-8 flex items-center justify-center"
+        {/* Explore process button with improved microinteraction */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-center z-10">
+          <div className="flex flex-col items-center">
+            <span className="text-sm text-muted-foreground mb-3">Explore Key Features</span>
+            <motion.button
+              onClick={() => scrollToSection('features')}
+              variants={exploreButtonVariants}
+              initial="initial"
+              whileHover="hover"
+              whileTap="tap"
+              className="bg-rashmi-red hover:bg-rashmi-red/90 rounded-full w-12 h-12 flex items-center justify-center shadow-lg group transition-all duration-300"
             >
-              <ArrowDown size={18} className="text-white" />
-            </motion.div>
-          </a>
-        </motion.div>
+              <motion.div
+                variants={arrowVariants}
+                initial="initial"
+                animate="animate"
+              >
+                <ChevronDown size={24} className="text-white group-hover:scale-110 transition-transform" />
+              </motion.div>
+            </motion.button>
+          </div>
+        </div>
       </section>
       
-      {/* Features Section */}
-      <section id="features" className="py-16 bg-muted/30">
+      {/* Features Section - Interactive Advantages Showcase */}
+      <section id="features" className="py-20 bg-muted/30">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto mb-16 text-center">
             <motion.h2 
@@ -191,7 +265,7 @@ const DiPipes = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
-              className="text-3xl md:text-4xl font-display font-bold mb-6"
+              className="text-3xl md:text-4xl font-display font-bold mb-6 text-center"
             >
               Key <span className="text-rashmi-red">Features</span>
             </motion.h2>
@@ -200,33 +274,43 @@ const DiPipes = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-muted-foreground text-lg"
+              className="text-muted-foreground text-lg text-center"
             >
               Explore the exceptional features that make our ductile iron pipes the ideal choice for your projects
             </motion.p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
             {pipeFeatures.map((feature, index) => (
               <motion.div
                 key={feature.title}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+                transition={{ duration: 0.5, delay: index * 0.1 + 0.3 }}
                 whileHover={{ 
-                  y: -5, 
-                  boxShadow: "0 10px 30px -15px rgba(0, 0, 0, 0.2)"
+                  y: -10, 
+                  boxShadow: "0 15px 30px -10px rgba(0, 0, 0, 0.1)",
+                  transition: { duration: 0.3 }
                 }}
-                className="bg-card border border-border rounded-lg p-6 transition-all duration-300 relative overflow-hidden"
+                className="bg-card border border-border rounded-lg p-8 transition-all duration-300 relative overflow-hidden group"
               >
-                <div className="mb-3 bg-rashmi-red/10 w-12 h-12 rounded-full flex items-center justify-center">
-                  {React.createElement(feature.icon, { className: "text-rashmi-red", size: 22 })}
+                <div className="mb-4 bg-rashmi-red/10 w-14 h-14 rounded-full flex items-center justify-center group-hover:bg-rashmi-red/20 transition-colors duration-300">
+                  {React.createElement(feature.icon, { className: "text-rashmi-red group-hover:scale-110 transition-transform duration-300", size: 24 })}
                 </div>
-                <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
-                <p className="text-muted-foreground">{feature.description}</p>
+                <h3 className="text-xl font-bold mb-3 group-hover:text-rashmi-red transition-colors duration-300">{feature.title}</h3>
+                <p className="text-muted-foreground group-hover:text-foreground transition-colors duration-300">{feature.description}</p>
                 
-                <div className="absolute -right-12 -bottom-12 w-32 h-32 bg-gradient-to-r from-rashmi-red/5 to-transparent rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                {/* Highlight overlay on hover */}
+                <div className="absolute -right-12 -bottom-12 w-32 h-32 bg-gradient-to-r from-rashmi-red/10 to-transparent rounded-full opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                
+                {/* Top border accent that appears on hover */}
+                <motion.div 
+                  initial={{ width: "0%" }}
+                  whileHover={{ width: "100%" }}
+                  transition={{ duration: 0.3 }}
+                  className="absolute top-0 left-0 h-1 bg-rashmi-red"
+                ></motion.div>
               </motion.div>
             ))}
           </div>
@@ -234,7 +318,7 @@ const DiPipes = () => {
       </section>
       
       {/* Applications Section */}
-      <section id="applications" className="py-16 relative overflow-hidden">
+      <section id="applications" className="py-20 relative overflow-hidden">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto mb-16 text-center">
             <motion.h2 
@@ -242,7 +326,7 @@ const DiPipes = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
-              className="text-3xl md:text-4xl font-display font-bold mb-6"
+              className="text-3xl md:text-4xl font-display font-bold mb-6 text-center"
             >
               Versatile <span className="text-rashmi-red">Applications</span>
             </motion.h2>
@@ -251,7 +335,7 @@ const DiPipes = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-muted-foreground text-lg"
+              className="text-muted-foreground text-lg text-center"
             >
               Our ductile iron pipes are suitable for a wide range of applications
             </motion.p>
@@ -263,16 +347,27 @@ const DiPipes = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7 }}
-              className="bg-card border border-border rounded-lg p-8"
+              whileHover={{ scale: 1.02 }}
+              className="bg-card border border-border rounded-lg p-8 shadow-sm hover:shadow-md transition-all duration-300"
             >
-              <h3 className="text-2xl font-bold mb-4">Water Distribution</h3>
+              <h3 className="text-2xl font-bold mb-4 text-center md:text-left">Water Distribution</h3>
               <p className="text-muted-foreground mb-6">
                 Reliable and durable pipes for municipal and industrial water distribution networks.
               </p>
-              <ul className="list-disc pl-5 text-muted-foreground">
-                <li>Potable water supply</li>
-                <li>Raw water transmission</li>
-                <li>Treated water distribution</li>
+              <ul className="space-y-2">
+                {["Potable water supply", "Raw water transmission", "Treated water distribution"].map((item, i) => (
+                  <motion.li 
+                    key={i}
+                    initial={{ opacity: 0, x: -10 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.3, delay: i * 0.1 + 0.5 }}
+                    className="flex items-center text-muted-foreground"
+                  >
+                    <Check className="text-rashmi-red mr-2 h-5 w-5 flex-shrink-0" />
+                    <span>{item}</span>
+                  </motion.li>
+                ))}
               </ul>
             </motion.div>
             
@@ -281,16 +376,27 @@ const DiPipes = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7 }}
-              className="bg-card border border-border rounded-lg p-8"
+              whileHover={{ scale: 1.02 }}
+              className="bg-card border border-border rounded-lg p-8 shadow-sm hover:shadow-md transition-all duration-300"
             >
-              <h3 className="text-2xl font-bold mb-4">Sewage Systems</h3>
+              <h3 className="text-2xl font-bold mb-4 text-center md:text-left">Sewage Systems</h3>
               <p className="text-muted-foreground mb-6">
                 Robust pipes designed to handle sewage and wastewater efficiently.
               </p>
-              <ul className="list-disc pl-5 text-muted-foreground">
-                <li>Sanitary sewer lines</li>
-                <li>Storm sewer systems</li>
-                <li>Wastewater treatment plants</li>
+              <ul className="space-y-2">
+                {["Sanitary sewer lines", "Storm sewer systems", "Wastewater treatment plants"].map((item, i) => (
+                  <motion.li 
+                    key={i}
+                    initial={{ opacity: 0, x: -10 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.3, delay: i * 0.1 + 0.5 }}
+                    className="flex items-center text-muted-foreground"
+                  >
+                    <Check className="text-rashmi-red mr-2 h-5 w-5 flex-shrink-0" />
+                    <span>{item}</span>
+                  </motion.li>
+                ))}
               </ul>
             </motion.div>
             
@@ -299,16 +405,27 @@ const DiPipes = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7 }}
-              className="bg-card border border-border rounded-lg p-8"
+              whileHover={{ scale: 1.02 }}
+              className="bg-card border border-border rounded-lg p-8 shadow-sm hover:shadow-md transition-all duration-300"
             >
-              <h3 className="text-2xl font-bold mb-4">Industrial Applications</h3>
+              <h3 className="text-2xl font-bold mb-4 text-center md:text-left">Industrial Applications</h3>
               <p className="text-muted-foreground mb-6">
                 Ductile iron pipes for demanding industrial environments.
               </p>
-              <ul className="list-disc pl-5 text-muted-foreground">
-                <li>Process water lines</li>
-                <li>Cooling water systems</li>
-                <li>Chemical transport</li>
+              <ul className="space-y-2">
+                {["Process water lines", "Cooling water systems", "Chemical transport"].map((item, i) => (
+                  <motion.li 
+                    key={i}
+                    initial={{ opacity: 0, x: -10 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.3, delay: i * 0.1 + 0.5 }}
+                    className="flex items-center text-muted-foreground"
+                  >
+                    <Check className="text-rashmi-red mr-2 h-5 w-5 flex-shrink-0" />
+                    <span>{item}</span>
+                  </motion.li>
+                ))}
               </ul>
             </motion.div>
             
@@ -317,24 +434,43 @@ const DiPipes = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7 }}
-              className="bg-card border border-border rounded-lg p-8"
+              whileHover={{ scale: 1.02 }}
+              className="bg-card border border-border rounded-lg p-8 shadow-sm hover:shadow-md transition-all duration-300"
             >
-              <h3 className="text-2xl font-bold mb-4">Infrastructure Projects</h3>
+              <h3 className="text-2xl font-bold mb-4 text-center md:text-left">Infrastructure Projects</h3>
               <p className="text-muted-foreground mb-6">
                 Reliable piping solutions for large-scale infrastructure developments.
               </p>
-              <ul className="list-disc pl-5 text-muted-foreground">
-                <li>Water transmission mains</li>
-                <li>Sewer trunk lines</li>
-                <li>Underground utilities</li>
+              <ul className="space-y-2">
+                {["Water transmission mains", "Sewer trunk lines", "Underground utilities"].map((item, i) => (
+                  <motion.li 
+                    key={i}
+                    initial={{ opacity: 0, x: -10 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.3, delay: i * 0.1 + 0.5 }}
+                    className="flex items-center text-muted-foreground"
+                  >
+                    <Check className="text-rashmi-red mr-2 h-5 w-5 flex-shrink-0" />
+                    <span>{item}</span>
+                  </motion.li>
+                ))}
               </ul>
             </motion.div>
+          </div>
+        </div>
+        
+        {/* Background decoration */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute top-1/2 right-0 w-1/2 h-full opacity-10">
+            <div className="absolute -right-20 top-0 w-80 h-80 bg-rashmi-red/30 rounded-full blur-[100px]"></div>
+            <div className="absolute -right-40 bottom-0 w-60 h-60 bg-rashmi-red/20 rounded-full blur-[80px]"></div>
           </div>
         </div>
       </section>
       
       {/* Standards Section */}
-      <section id="standards" className="py-16 bg-muted/30">
+      <section id="standards" className="py-20 bg-muted/30">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto mb-16 text-center">
             <motion.h2 
@@ -342,7 +478,8 @@ const DiPipes = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
-              className="text-3xl md:text-4xl font-display font-bold mb-6">
+              className="text-3xl md:text-4xl font-display font-bold mb-6 text-center"
+            >
               Compliance with <span className="text-rashmi-red">Standards</span>
             </motion.h2>
             <motion.p
@@ -350,7 +487,8 @@ const DiPipes = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-muted-foreground text-lg">
+              className="text-muted-foreground text-lg text-center"
+            >
               Our ductile iron pipes are manufactured to meet or exceed the following standards:
             </motion.p>
           </div>
@@ -363,36 +501,48 @@ const DiPipes = () => {
               transition={{ duration: 0.5 }}
               className="space-y-4"
             >
-              <li className="bg-card border border-border rounded-lg p-4 flex items-center">
-                <Check className="text-rashmi-red mr-3 h-5 w-5" />
-                <span className="font-medium">EN 545: Ductile iron pipes, fittings, accessories and their joints for water pipelines</span>
-              </li>
-              <li className="bg-card border border-border rounded-lg p-4 flex items-center">
-                <Check className="text-rashmi-red mr-3 h-5 w-5" />
-                <span className="font-medium">ISO 2531: Ductile iron pipes, fittings, accessories and their joints for pressure pipelines</span>
-              </li>
-              <li className="bg-card border border-border rounded-lg p-4 flex items-center">
-                <Check className="text-rashmi-red mr-3 h-5 w-5" />
-                <span className="font-medium">AWWA C151/A21.51: Ductile-Iron Pipe, Centrifugally Cast</span>
-              </li>
-              <li className="bg-card border border-border rounded-lg p-4 flex items-center">
-                <Check className="text-rashmi-red mr-3 h-5 w-5" />
-                <span className="font-medium">ASTM A536: Standard Specification for Ductile Iron Castings</span>
-              </li>
+              {[
+                "EN 545: Ductile iron pipes, fittings, accessories and their joints for water pipelines",
+                "ISO 2531: Ductile iron pipes, fittings, accessories and their joints for pressure pipelines",
+                "AWWA C151/A21.51: Ductile-Iron Pipe, Centrifugally Cast",
+                "ASTM A536: Standard Specification for Ductile Iron Castings"
+              ].map((standard, index) => (
+                <motion.li 
+                  key={index}
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: index * 0.1 }}
+                  whileHover={{ scale: 1.01, x: 5 }}
+                  className="bg-card border border-border rounded-lg p-4 flex items-center shadow-sm hover:shadow-md transition-all duration-300"
+                >
+                  <div className="flex-shrink-0 mr-3">
+                    <motion.div 
+                      variants={pulseAnimation}
+                      initial="initial"
+                      animate="animate"
+                      className="w-8 h-8 bg-rashmi-red rounded-full flex items-center justify-center"
+                    >
+                      <Check className="text-white h-5 w-5" />
+                    </motion.div>
+                  </div>
+                  <span className="font-medium">{standard}</span>
+                </motion.li>
+              ))}
             </motion.ul>
           </div>
         </div>
       </section>
       
       {/* CTA Section */}
-      <section className="py-16 relative overflow-hidden">
+      <section className="py-20 relative overflow-hidden">
         <div className="container mx-auto px-4">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="max-w-5xl mx-auto text-center bg-card border border-border p-10 md:p-16 rounded-2xl relative"
+            className="max-w-5xl mx-auto text-center bg-card border border-border p-10 md:p-16 rounded-2xl relative shadow-lg"
           >
             <div className="absolute top-0 left-0 w-full h-full overflow-hidden rounded-2xl z-0">
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-2xl">
@@ -401,19 +551,34 @@ const DiPipes = () => {
             </div>
             
             <div className="relative z-10">
-              <h2 className="text-3xl md:text-4xl font-display font-bold mb-6">
+              <motion.h2
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5 }}
+                className="text-3xl md:text-4xl font-display font-bold mb-6 text-center"
+              >
                 Looking for reliable <span className="text-rashmi-red">piping</span> solutions?
-              </h2>
-              <p className="text-muted-foreground text-lg mb-10 max-w-2xl mx-auto">
+              </motion.h2>
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className="text-muted-foreground text-lg mb-10 max-w-2xl mx-auto"
+              >
                 Contact us today to learn more about our ductile iron pipes and how they can benefit your next project.
-              </p>
+              </motion.p>
               
               <motion.a
                 href="#contact"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.4 }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.98 }}
-                transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                className="inline-flex items-center px-6 py-3 bg-rashmi-red text-white font-medium rounded-lg transition-colors hover:bg-rashmi-red/90"
+                className="inline-flex items-center px-6 py-3 bg-rashmi-red text-white font-medium rounded-lg transition-all duration-300 hover:bg-rashmi-red/90 shadow-md hover:shadow-lg"
               >
                 Request a Quote
                 <ArrowDown className="ml-2 rotate-[-90deg]" size={18} />
