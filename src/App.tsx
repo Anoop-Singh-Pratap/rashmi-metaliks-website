@@ -18,6 +18,7 @@ import Certifications from "./pages/Certifications";
 import QualityAssurance from "./pages/QualityAssurance";
 import WhyRashmiDiPipes from "./pages/WhyRashmiDiPipes";
 import AboutRashmi from "./pages/AboutRashmi";
+import ContactUs from "./pages/ContactUs";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -57,6 +58,7 @@ const App = () => (
             <Route path="/quality-assurance" element={<QualityAssurance />} />
             <Route path="/why-rashmi-di-pipes" element={<WhyRashmiDiPipes />} />
             <Route path="/about-rashmi" element={<AboutRashmi />} />
+            <Route path="/contact-us" element={<ContactUs />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

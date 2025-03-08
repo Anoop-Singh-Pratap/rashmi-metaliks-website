@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Menu, X, Home, ChevronDown, Download, FileText } from 'lucide-react';
-import ThemeToggle from '@/components/ThemeToggle';
+import ThemeToggle from './ThemeToggle';
 import { Link, useLocation } from 'react-router-dom';
 
 const Header = () => {

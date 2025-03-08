@@ -38,7 +38,7 @@ const Footer = () => {
             <h4 className="text-xl font-display font-semibold mb-6">Quick Links</h4>
             <ul className="space-y-3">
               <FooterLink href="/about-rashmi">About Us</FooterLink>
-              <FooterLink href="#products">Products</FooterLink>
+              <FooterLink href="/#products">Products</FooterLink>
               <FooterLink href="/quality-assurance">Quality Assurance</FooterLink>
               <FooterLink href="/certifications">Certifications</FooterLink>
               <FooterLink href="#careers">Careers</FooterLink>

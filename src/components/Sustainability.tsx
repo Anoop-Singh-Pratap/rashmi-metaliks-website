@@ -1,7 +1,6 @@
-
 import React, { useState, useEffect } from 'react';
 import RevealText from './ui/RevealText';
-import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend, LabelList } from 'recharts';
 import { Leaf, Droplets, Wind, XCircle, BarChartIcon, PieChartIcon, LineChartIcon } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTheme } from '@/context/ThemeContext';
@@ -16,11 +15,11 @@ const emissionsData = [
 ];
 
 const energySourceData = [
-  { name: 'Solar', value: 35 },
-  { name: 'Wind', value: 25 },
-  { name: 'Hydroelectric', value: 15 },
-  { name: 'Biomass', value: 10 },
-  { name: 'Traditional', value: 15 },
+  { name: 'Solar', value: 35, color: '#22c55e' },
+  { name: 'Wind', value: 25, color: '#3b82f6' },
+  { name: 'Hydroelectric', value: 15, color: '#6366f1' },
+  { name: 'Biomass', value: 10, color: '#f59e0b' },
+  { name: 'Traditional', value: 15, color: '#64748b' },
 ];
 
 const waterUsageData = [
@@ -272,7 +271,7 @@ const Sustainability = () => {
                       {energySourceData.map((entry, index) => (
                         <Cell 
                           key={`cell-${index}`} 
-                          fill={COLORS[index % COLORS.length]} 
+                          fill={entry.color} 
                         />
                       ))}
                     </Pie>
@@ -301,7 +300,7 @@ const Sustainability = () => {
                 <ResponsiveContainer width="100%" height="90%">
                   <BarChart
                     data={animatedWaterData}
-                    margin={{ top: 20, right: 30, left: 0, bottom: 20 }}
+                    margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
                     stackOffset="expand"
                     barSize={40}
                   >
@@ -336,20 +335,15 @@ const Sustainability = () => {
                       stackId="a" 
                       fill="#3b82f6"
                       radius={[4, 4, 0, 0]}
+                      className="water-bar"
                     >
-                      {animatedWaterData.map((entry, index) => (
-                        <text 
-                          key={`text-${index}`} 
-                          x={0} 
-                          y={0} 
-                          fill="white"
-                          className="text-white font-medium"
-                          textAnchor="middle" 
-                          dominantBaseline="middle"
-                        >
-                          {Math.round(entry.animatedRecycled)}%
-                        </text>
-                      ))}
+                      <LabelList 
+                        dataKey="animatedRecycled" 
+                        position="center" 
+                        formatter={(value: number) => `${Math.round(value)}%`}
+                        fill="white"
+                        className="font-medium"
+                      />
                     </Bar>
                     <Bar 
                       dataKey="animatedFresh" 
@@ -358,19 +352,13 @@ const Sustainability = () => {
                       fill="#64748b"
                       radius={[4, 4, 0, 0]}
                     >
-                      {animatedWaterData.map((entry, index) => (
-                        <text 
-                          key={`text-${index}`} 
-                          x={0} 
-                          y={0} 
-                          fill="white"
-                          className="text-white font-medium"
-                          textAnchor="middle" 
-                          dominantBaseline="middle"
-                        >
-                          {Math.round(entry.animatedFresh)}%
-                        </text>
-                      ))}
+                      <LabelList 
+                        dataKey="animatedFresh" 
+                        position="center" 
+                        formatter={(value: number) => `${Math.round(value)}%`}
+                        fill="white"
+                        className="font-medium"
+                      />
                     </Bar>
                   </BarChart>
                 </ResponsiveContainer>
@@ -403,11 +391,15 @@ const Sustainability = () => {
         /* Water animation effect */
         @keyframes wave {
           0% {
-            transform: translateX(-100%);
+            background-position: 0% 50%;
           }
           100% {
-            transform: translateX(100%);
+            background-position: 100% 50%;
           }
+        }
+        
+        .water-bar rect {
+          fill: url(#waterGradient);
         }
         
         .water-effect {

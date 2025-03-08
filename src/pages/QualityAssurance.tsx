@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Home, Search, Filter, Microscope, Flask, FileCheck, Ruler, Settings, Tool, Award, ZoomIn } from 'lucide-react';
+import { Home, Search, Filter, Microscope, Beaker, FileCheck, Ruler, Settings, Wrench, Award, ZoomIn } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
@@ -71,9 +71,9 @@ const categories = [
 
 const QualityIcons = {
   "Design & Patterns": Settings,
-  "Sand Testing": Flask,
+  "Sand Testing": Beaker,
   "Physical Testing": Microscope,
-  "Finishing Facility": Tool,
+  "Finishing Facility": Wrench,
   "Quality Inspection": FileCheck,
   "Dimension Inspection": Ruler,
   "Machine Shop": Settings

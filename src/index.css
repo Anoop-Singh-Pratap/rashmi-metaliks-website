@@ -196,6 +196,15 @@
   .hover-glow:hover {
     filter: drop-shadow(0 0 8px theme('colors.rashmi-red'));
   }
+  
+  .water-bar rect {
+    fill: url(#blueGradient);
+    animation: waterFlow 3s ease-in-out infinite;
+  }
+  
+  .animate-pulse-slow {
+    animation: pulseSlow 4s ease-in-out infinite;
+  }
 }
 
 /* Animations */
@@ -225,6 +234,26 @@
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes waterFlow {
+  0%, 100% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes pulseSlow {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.7;
   }
 }
 
