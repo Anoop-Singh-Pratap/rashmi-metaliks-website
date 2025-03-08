@@ -186,27 +186,27 @@ const TmtBar = () => {
           <div className="bg-rashmi-red/20 rounded-full w-[600px] h-[600px] blur-[150px] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.8 }}
-          className="mt-16 text-center"
-        >
-          <motion.button 
-            onClick={scrollToAdvantages}
-            className="flex flex-col items-center text-sm text-muted-foreground hover:text-foreground transition-colors duration-300 focus:outline-none"
-            whileHover={{ y: 5 }}
-          >
-            <span className="mb-2">Explore Advantages</span>
-            <motion.div
-              animate={{ y: [0, 10, 0] }}
-              transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
-              className="bg-rashmi-red/90 rounded-full w-8 h-8 flex items-center justify-center"
-            >
-              <ArrowDown size={18} className="text-white" />
-            </motion.div>
-          </motion.button>
-        </motion.div>
+<motion.div
+  initial={{ opacity: 0, y: 50 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.8, delay: 0.8 }}
+  className="mt-16 text-center" // Removed absolute positioning
+>
+  <motion.button 
+    onClick={scrollToAdvantages}
+    className="flex flex-col items-center mx-auto text-sm text-muted-foreground hover:text-foreground transition-colors duration-300 focus:outline-none"
+    whileHover={{ y: 5 }}
+  >
+    <span className="mb-2">Explore Advantages</span>
+    <motion.div
+      animate={{ y: [0, 10, 0] }}
+      transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+      className="bg-rashmi-red/90 rounded-full w-8 h-8 flex items-center justify-center"
+    >
+      <ArrowDown size={18} className="text-white" />
+    </motion.div>
+  </motion.button>
+</motion.div>
       </section>
 
       {/* TMT Grades Section */}
