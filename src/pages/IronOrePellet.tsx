@@ -104,26 +104,26 @@ const IronOrePellet = () => {
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.8 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 text-center"
-        >
-          <a 
-            href="#advantages" 
-            className="flex flex-col items-center text-sm text-muted-foreground hover:text-foreground transition-colors duration-300"
-          >
-            <span className="mb-2">Explore Advantages</span>
-            <motion.div
-              animate={{ y: [0, 10, 0] }}
-              transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
-              className="bg-rashmi-red/90 rounded-full w-8 h-8 flex items-center justify-center"
-            >
-              <ArrowDown size={18} className="text-white" />
-            </motion.div>
-          </a>
-        </motion.div>
-      </section>
+  initial={{ opacity: 0, y: 50 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.8, delay: 0.8 }}
+  className="mt-16 text-center" // Replaced absolute positioning with margin
+>
+  <a 
+    href="#advantages" 
+    className="flex flex-col items-center mx-auto text-sm text-muted-foreground hover:text-foreground transition-colors duration-300"
+  >
+    <span className="mb-2">Explore Advantages</span>
+    <motion.div
+      animate={{ y: [0, 10, 0] }}
+      transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+      className="bg-rashmi-red/90 rounded-full w-8 h-8 flex items-center justify-center"
+    >
+      <ArrowDown size={18} className="text-white" />
+    </motion.div>
+  </a>
+</motion.div>
+</section>
 
       {/* About Section */}
       <section className="py-16 bg-muted/30">
