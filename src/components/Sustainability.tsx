@@ -213,13 +213,13 @@ const Sustainability = () => {
                     <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.3} />
                     <XAxis 
                       dataKey="year" 
-                      stroke="var(--foreground)" 
-                      tick={{ fill: 'var(--foreground)' }}
+                      stroke={textColor} 
+                      tick={{ fill: textColor }}
                       tickFormatter={axisTickFormatter}
                     />
                     <YAxis 
-                      stroke="var(--foreground)" 
-                      tick={{ fill: 'var(--foreground)' }}
+                      stroke={textColor} 
+                      tick={{ fill: textColor }}
                       tickFormatter={value => `${value}%`}
                     />
                     <Tooltip content={<CustomTooltip />} />
@@ -235,7 +235,7 @@ const Sustainability = () => {
                         <text 
                           x={x} 
                           y={y-10} 
-                          fill="var(--foreground)" 
+                          fill={textColor} 
                           textAnchor="middle"
                           fontSize={12}
                         >
@@ -281,8 +281,10 @@ const Sustainability = () => {
                       layout="horizontal"
                       verticalAlign="bottom"
                       align="center"
-                      formatter={(value, entry, index) => (
-                        <span className="text-foreground">{value}</span>
+                      formatter={(value, entry: any, index) => (
+                        <span style={{ color: textColor }}>
+                          {value} - {energySourceData[index].value}%
+                        </span>
                       )}
                     />
                   </PieChart>
@@ -293,7 +295,7 @@ const Sustainability = () => {
             {activeChart === 'water' && (
               <div className={`transition-opacity duration-700 h-full ${animateChart ? 'opacity-100' : 'opacity-0'}`}>
                 <div className="text-center mb-4">
-                  <h3 className="text-xl md:text-2xl font-semibold text-foreground">Water Usage Efficiency (2023)</h3>
+                  <h3 className="text-xl md:text-2xl font-semibold text-foreground">Water Usage Efficiency</h3>
                   <p className="text-muted-foreground text-sm">Recycled vs Fresh Water Consumption</p>
                 </div>
                 <ResponsiveContainer width="100%" height="90%">
@@ -306,13 +308,13 @@ const Sustainability = () => {
                     <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.3} />
                     <XAxis 
                       dataKey="month" 
-                      stroke="var(--foreground)" 
-                      tick={{ fill: 'var(--foreground)' }}
+                      stroke={textColor} 
+                      tick={{ fill: textColor }}
                       tickFormatter={axisTickFormatter}
                     />
                     <YAxis 
-                      stroke="var(--foreground)" 
-                      tick={{ fill: 'var(--foreground)' }}
+                      stroke={textColor} 
+                      tick={{ fill: textColor }}
                       tickFormatter={formatPercentage}
                       domain={[0, 100]}
                     />
@@ -325,7 +327,7 @@ const Sustainability = () => {
                       verticalAlign="bottom"
                       align="center"
                       formatter={(value, entry, index) => (
-                        <span className="text-foreground">{value}</span>
+                        <span style={{ color: textColor }}>{value}</span>
                       )}
                     />
                     <Bar 
@@ -386,11 +388,11 @@ const Sustainability = () => {
           stroke: var(--foreground) !important;
         }
         
-        .recharts-cartesian-axis-tick-value {
+        .recharts-text.recharts-label {
           fill: var(--foreground) !important;
         }
         
-        .recharts-text {
+        .recharts-layer.recharts-pie-labels text {
           fill: var(--foreground) !important;
         }
         

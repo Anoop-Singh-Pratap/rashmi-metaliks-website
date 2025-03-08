@@ -1,10 +1,12 @@
+
 import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowDown, CheckCircle, Layers, Shield, Zap, Award, Factory, AlertCircle } from 'lucide-react';
+import { CheckCircle, Layers, Shield, Zap, Award, Factory, AlertCircle } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import SpecificationTable from '../components/ui/SpecificationTable';
+import ExploreButton from '../components/ui/ExploreButton';
 
 interface TableRow {
   [key: string]: string | number;
@@ -240,26 +242,11 @@ const DiFittings = () => {
           <div className="bg-rashmi-red/20 rounded-full w-[600px] h-[600px] blur-[150px] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.8 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 text-center"
-        >
-          <a 
-            href="#specifications" 
-            className="flex flex-col items-center text-sm text-muted-foreground hover:text-foreground transition-colors duration-300"
-          >
-            <span className="mb-2">Explore Specifications</span>
-            <motion.div
-              animate={{ y: [0, 10, 0] }}
-              transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
-              className="bg-rashmi-red/90 rounded-full w-8 h-8 flex items-center justify-center"
-            >
-              <ArrowDown size={18} className="text-white" />
-            </motion.div>
-          </a>
-        </motion.div>
+        <ExploreButton 
+          text="Explore Specifications" 
+          targetId="specifications" 
+          className="mt-12" 
+        />
       </section>
 
       {/* Advantages Section */}
@@ -313,7 +300,7 @@ const DiFittings = () => {
       </section>
       
       {/* Specifications Section */}
-      <section id="specifications" className="py-16">
+      <section id="specifications" className="py-16 mt-6">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto mb-12 text-center">
             <motion.h2 
@@ -388,7 +375,6 @@ const DiFittings = () => {
                 className="inline-flex items-center px-6 py-3 bg-rashmi-red text-white font-medium rounded-lg transition-colors hover:bg-rashmi-red/90"
               >
                 Contact Us Today
-                <ArrowDown className="ml-2 rotate-[-90deg]" size={18} />
               </motion.a>
             </div>
           </motion.div>
