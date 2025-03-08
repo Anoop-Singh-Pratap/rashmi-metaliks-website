@@ -190,7 +190,7 @@ const TmtBar = () => {
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.8 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 text-center"
+          className="mt-16 text-center"
         >
           <motion.button 
             onClick={scrollToAdvantages}
