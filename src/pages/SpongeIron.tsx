@@ -276,19 +276,21 @@ const SpongeIron = () => {
                   </h3>
                   <p className="text-muted-foreground">{processSteps[activeStep].description}</p>
                   
-                  <div className="mt-8 flex items-center">
-                    <div className="h-2 bg-muted rounded-full flex-grow">
-                      <motion.div 
-                        initial={{ width: 0 }}
-                        animate={{ width: `${(activeStep + 1) / processSteps.length * 100}%` }}
-                        className="h-full bg-rashmi-red rounded-full"
-                        transition={{ duration: 0.5 }}
-                      ></motion.div>
-                    </div>
-                    <span className="ml-4 text-sm font-medium">
-                      {Math.round((activeStep + 1) / processSteps.length * 100)}%
-                    </span>
-                  </div>
+                  <motion.div 
+      initial={{ width: 0 }}
+      animate={{ width: `${(activeStep + 1) / processSteps.length * 100}%` }}
+      className="h-full bg-rashmi-red rounded-full absolute top-0 left-0"
+      transition={{ 
+        duration: 0.5,
+        ease: "easeInOut",
+        type: "tween"  // Explicitly set the animation type
+      }}
+    ></motion.div>
+  </div>
+  <span className="ml-4 text-sm font-medium">
+    {Math.round((activeStep + 1) / processSteps.length * 100)}%
+  </span>
+</div>
                 </div>
               </div>
             </motion.div>
