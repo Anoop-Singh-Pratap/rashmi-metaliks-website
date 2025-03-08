@@ -116,25 +116,25 @@ const Sinter = () => {
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.8 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 text-center"
-        >
-          <a 
-            href="#process" 
-            className="flex flex-col items-center text-sm text-muted-foreground hover:text-foreground transition-colors duration-300"
-          >
-            <span className="mb-2">Explore Process</span>
-            <motion.div
-              animate={{ y: [0, 10, 0] }}
-              transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
-              className="bg-rashmi-red/90 rounded-full w-8 h-8 flex items-center justify-center"
-            >
-              <ArrowDown size={18} className="text-white" />
-            </motion.div>
-          </a>
-        </motion.div>
+  initial={{ opacity: 0, y: 50 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.8, delay: 0.8 }}
+  className="mt-16 text-center" // Changed from absolute positioning to relative with margin
+>
+  <a 
+    href="#process" 
+    className="inline-flex flex-col items-center text-sm text-muted-foreground hover:text-foreground transition-colors duration-300"
+  >
+    <span className="mb-2">Explore Process</span>
+    <motion.div
+      animate={{ y: [0, 10, 0] }}
+      transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+      className="bg-rashmi-red/90 rounded-full w-8 h-8 flex items-center justify-center"
+    >
+      <ArrowDown size={18} className="text-white" />
+    </motion.div>
+  </a>
+</motion.div>
       </section>
 
       {/* About Section */}
