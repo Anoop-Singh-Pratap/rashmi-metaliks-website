@@ -227,23 +227,23 @@ const DiPipes = () => {
           
           {/* "Why Rashmi DI Pipes" Link */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1 }}
-            className="flex justify-center mt-10"
-          >
-            <Link to="/why-rashmi-di-pipes">
-              <motion.button
-                whileHover={{ scale: 1.05, x: 5 }}
-                whileTap={{ scale: 0.95 }}
-                className="inline-flex items-center gap-2 px-6 py-3 bg-card shadow-md border border-border rounded-lg text-foreground hover:bg-card/80 transition-all"
-              >
-                <BookOpen size={18} className="text-rashmi-red" />
-                <span>Why Rashmi DI Pipes</span>
-                <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
-              </motion.button>
-            </Link>
-          </motion.div>
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.8, delay: 1 }}
+  className="flex justify-center mt-12 mb-4" // Adjusted spacing
+>
+  <Link to="/why-rashmi-di-pipes">
+    <motion.button
+      whileHover={{ scale: 1.05, x: 5 }}
+      whileTap={{ scale: 0.95 }}
+      className="inline-flex items-center gap-2 px-6 py-3 bg-rashmi-red/10 shadow-md border border-rashmi-red/20 rounded-lg text-foreground hover:bg-rashmi-red/20 transition-all" // Enhanced visibility with brand colors
+    >
+      <BookOpen size={18} className="text-rashmi-red" />
+      <span className="font-medium">Why Rashmi DI Pipes</span>
+      <ArrowRight size={16} className="text-rashmi-red ml-1 transition-transform group-hover:translate-x-1" />
+    </motion.button>
+  </Link>
+</motion.div>
         </div>
         
         <motion.div 
