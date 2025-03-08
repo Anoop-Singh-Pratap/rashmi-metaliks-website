@@ -40,7 +40,7 @@ const ExploreButton: React.FC<ExploreButtonProps> = ({
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, delay: 0.8 }}
-      className={`w-full flex justify-center my-8 ${className}`}
+      className={`w-full flex justify-center my-8 z-10 relative ${className}`}
     >
       <motion.a 
         href={`#${targetId}`} 

@@ -25,10 +25,10 @@ const Footer = () => {
               pioneer in manufacturing of integrated Iron & Steel Products, Cement, Power and Ferro Alloys & Mining.
             </p>
             <div className="flex space-x-4">
-              <SocialLink href="https://linkedin.com" icon={<Linkedin size={18} />} />
-              <SocialLink href="https://twitter.com" icon={<Twitter size={18} />} />
-              <SocialLink href="https://facebook.com" icon={<Facebook size={18} />} />
-              <SocialLink href="https://instagram.com" icon={<Instagram size={18} />} />
+              <SocialLink href="https://www.linkedin.com/company/rashmi-metaliks-limited/posts/?feedView=all" icon={<Linkedin size={18} />} />
+              <SocialLink href="https://twitter.com/rashmi_group" icon={<Twitter size={18} />} />
+              <SocialLink href="https://www.facebook.com" icon={<Facebook size={18} />} />
+              <SocialLink href="https://www.instagram.com/rashmimetaliksltd/" icon={<Instagram size={18} />} />
               <ThemeToggle />
             </div>
           </div>
@@ -37,11 +37,11 @@ const Footer = () => {
           <div>
             <h4 className="text-xl font-display font-semibold mb-6">Quick Links</h4>
             <ul className="space-y-3">
-              <FooterLink href="#about">About Us</FooterLink>
+              <FooterLink href="/about-rashmi">About Us</FooterLink>
               <FooterLink href="#products">Products</FooterLink>
-              <FooterLink href="#sustainability">Sustainability</FooterLink>
+              <FooterLink href="/quality-assurance">Quality Assurance</FooterLink>
+              <FooterLink href="/certifications">Certifications</FooterLink>
               <FooterLink href="#careers">Careers</FooterLink>
-              <FooterLink href="#news">News & Media</FooterLink>
               <FooterLink href="#contact">Contact Us</FooterLink>
             </ul>
           </div>
@@ -50,12 +50,13 @@ const Footer = () => {
           <div>
             <h4 className="text-xl font-display font-semibold mb-6">Our Products</h4>
             <ul className="space-y-3">
-              <FooterLink href="#pipes">Ductile Iron Pipes</FooterLink>
-              <FooterLink href="#tmt">TMT Bars</FooterLink>
-              <FooterLink href="#wirerod">Wire Rods</FooterLink>
-              <FooterLink href="#pigiron">Pig Iron</FooterLink>
-              <FooterLink href="#cement">Cement</FooterLink>
-              <FooterLink href="#power">Power Plants</FooterLink>
+              <FooterLink href="/di-pipes">Ductile Iron Pipes</FooterLink>
+              <FooterLink href="/di-fittings">DI Fittings</FooterLink>
+              <FooterLink href="/tmt-bar">TMT Bars</FooterLink>
+              <FooterLink href="/sponge-iron">Sponge Iron</FooterLink>
+              <FooterLink href="/pig-iron">Pig Iron</FooterLink>
+              <FooterLink href="/iron-ore-pellet">Iron Ore Pellet</FooterLink>
+              <FooterLink href="/sinter">Sinter</FooterLink>
             </ul>
           </div>
           
@@ -121,14 +122,44 @@ interface FooterLinkProps {
 }
 
 const FooterLink: React.FC<FooterLinkProps> = ({ href, children }) => {
+  const isExternalLink = href.startsWith('http');
+  
+  if (isExternalLink) {
+    return (
+      <li>
+        <a 
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-white/70 hover:text-rashmi-red transition-colors inline-block"
+        >
+          {children}
+        </a>
+      </li>
+    );
+  }
+  
+  if (href.startsWith('#')) {
+    return (
+      <li>
+        <a 
+          href={href} 
+          className="text-white/70 hover:text-rashmi-red transition-colors inline-block"
+        >
+          {children}
+        </a>
+      </li>
+    );
+  }
+  
   return (
     <li>
-      <a 
-        href={href} 
+      <Link 
+        to={href} 
         className="text-white/70 hover:text-rashmi-red transition-colors inline-block"
       >
         {children}
-      </a>
+      </Link>
     </li>
   );
 };

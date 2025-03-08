@@ -15,6 +15,7 @@ import PigIron from "./pages/PigIron";
 import IronOrePellet from "./pages/IronOrePellet";
 import Sinter from "./pages/Sinter";
 import Certifications from "./pages/Certifications";
+import QualityAssurance from "./pages/QualityAssurance";
 import WhyRashmiDiPipes from "./pages/WhyRashmiDiPipes";
 import AboutRashmi from "./pages/AboutRashmi";
 import NotFound from "./pages/NotFound";
@@ -53,6 +54,7 @@ const App = () => (
             <Route path="/iron-ore-pellet" element={<IronOrePellet />} />
             <Route path="/sinter" element={<Sinter />} />
             <Route path="/certifications" element={<Certifications />} />
+            <Route path="/quality-assurance" element={<QualityAssurance />} />
             <Route path="/why-rashmi-di-pipes" element={<WhyRashmiDiPipes />} />
             <Route path="/about-rashmi" element={<AboutRashmi />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

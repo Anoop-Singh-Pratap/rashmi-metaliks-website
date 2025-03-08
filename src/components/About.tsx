@@ -2,15 +2,21 @@
 import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import RevealText from './ui/RevealText';
-import { Award, Globe, Zap, ArrowRight } from 'lucide-react';
+import { Award, Globe, Zap, ArrowRight, Factory, FileText, Users } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const About = () => {
   const sectionRef = useRef<HTMLElement>(null);
 
   return (
-    <section id="about" ref={sectionRef} className="py-20 md:py-32 bg-background">
-      <div className="container mx-auto px-4">
+    <section id="about" ref={sectionRef} className="py-20 md:py-32 bg-background relative overflow-hidden">
+      {/* Background decorative elements */}
+      <div className="absolute inset-0 pointer-events-none z-0 opacity-5">
+        <div className="absolute top-1/3 left-10 w-72 h-72 rounded-full bg-rashmi-red/20 blur-3xl"></div>
+        <div className="absolute bottom-1/4 right-10 w-80 h-80 rounded-full bg-rashmi-red/10 blur-3xl"></div>
+      </div>
+      
+      <div className="container mx-auto px-4 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left Column - Text Content */}
           <div className="max-w-xl">
@@ -71,10 +77,10 @@ const About = () => {
             >
               <Link 
                 to="/about-rashmi" 
-                className="inline-flex items-center group text-rashmi-red hover:text-rashmi-red/80 font-medium transition-colors"
+                className="inline-flex items-center group text-lg px-6 py-3 bg-rashmi-red text-white rounded-md hover:bg-rashmi-red/90 transition-colors"
               >
                 Learn more about Rashmi Group
-                <ArrowRight className="ml-2 w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+                <ArrowRight className="ml-2 w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
               </Link>
             </motion.div>
           </div>
@@ -92,6 +98,30 @@ const About = () => {
               <p className="text-sm text-muted-foreground">State-of-the-art manufacturing facility in West Bengal</p>
             </div>
           </div>
+        </div>
+
+        {/* Stats Row */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-16">
+          <StatCard 
+            icon={<Factory />}
+            value="7.7L MT"
+            label="Annual DI Pipe Capacity"
+          />
+          <StatCard 
+            icon={<FileText />}
+            value="30+"
+            label="Country Approvals"
+          />
+          <StatCard 
+            icon={<Users />}
+            value="5000+"
+            label="Team Members"
+          />
+          <StatCard 
+            icon={<Globe />}
+            value="2004"
+            label="Year Established"
+          />
         </div>
       </div>
     </section>
@@ -119,6 +149,33 @@ const Achievement: React.FC<AchievementProps> = ({ icon, title, description, del
       </div>
       <h3 className="font-semibold text-foreground mb-1">{title}</h3>
       <p className="text-sm text-muted-foreground">{description}</p>
+    </motion.div>
+  );
+};
+
+interface StatCardProps {
+  icon: React.ReactNode;
+  value: string;
+  label: string;
+}
+
+const StatCard: React.FC<StatCardProps> = ({ icon, value, label }) => {
+  return (
+    <motion.div 
+      className="bg-card border border-border rounded-xl p-6 flex items-center"
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5 }}
+      whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)" }}
+    >
+      <div className="w-12 h-12 flex items-center justify-center rounded-full bg-rashmi-red/10 text-rashmi-red mr-4">
+        {icon}
+      </div>
+      <div>
+        <h4 className="text-2xl font-bold">{value}</h4>
+        <p className="text-sm text-muted-foreground">{label}</p>
+      </div>
     </motion.div>
   );
 };

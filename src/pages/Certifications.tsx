@@ -1,104 +1,211 @@
-
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, FileText, Search, Filter, Home } from 'lucide-react';
+import { ArrowLeft, FileText, Search, Filter, Home, X, Award, Globe, Check, Shield, Download } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
-// Certificate data
-const certificates = [
-  {
-    id: 1,
-    title: "BSI ISO 9001, 14001 and 45001",
-    category: "company",
-    description: "Management Systems Certification",
-    image: "https://images.unsplash.com/photo-1594322436404-5a0526db4d13?ixlib=rb-4.0.3&auto=format&fit=crop&q=80",
-  },
-  {
-    id: 2,
-    title: "WRAS OPC Certificate",
-    category: "product",
-    description: "Water Regulations Advisory Scheme for OPC",
-    image: "https://images.unsplash.com/photo-1622778455593-ff775a50235a?ixlib=rb-4.0.3&auto=format&fit=crop&q=80",
-  },
-  {
-    id: 3,
-    title: "Kitemark Certification for DI Pipes",
-    category: "pipes",
-    description: "British Standards Institution certification",
-    image: "https://images.unsplash.com/photo-1621905251918-48416bd8575a?ixlib=rb-4.0.3&auto=format&fit=crop&q=80",
-  },
-  {
-    id: 4,
-    title: "Kitemark Certification for Fittings",
-    category: "fittings",
-    description: "British Standards Institution certification",
-    image: "https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?ixlib=rb-4.0.3&auto=format&fit=crop&q=80",
-  },
-  {
-    id: 5,
-    title: "Kitemark EN 545",
-    category: "standards",
-    description: "European Standards compliance",
-    image: "https://images.unsplash.com/photo-1579389083078-4e7018379f7e?ixlib=rb-4.0.3&auto=format&fit=crop&q=80",
-  },
-  {
-    id: 6,
-    title: "Kitemark ISO 2531",
-    category: "standards",
-    description: "International Standards compliance",
-    image: "https://images.unsplash.com/photo-1569017388730-020b5f80a004?ixlib=rb-4.0.3&auto=format&fit=crop&q=80",
-  },
-  {
-    id: 7,
-    title: "RML NABL Certificate TC-8688",
-    category: "company",
-    description: "National Accreditation Board for Testing and Calibration Laboratories",
-    image: "https://images.unsplash.com/photo-1590496794008-383c8070b257?ixlib=rb-4.0.3&auto=format&fit=crop&q=80",
-  },
-  {
-    id: 8,
-    title: "Rashmi Ductile Iron SASO Certificate",
-    category: "pipes",
-    description: "Saudi Standards, Metrology and Quality Organization",
-    image: "https://images.unsplash.com/photo-1580820726687-30e7ba70d976?ixlib=rb-4.0.3&auto=format&fit=crop&q=80",
-  },
-  {
-    id: 9,
-    title: "BIS 8329:2000",
-    category: "standards",
-    description: "Bureau of Indian Standards compliance",
-    image: "https://images.unsplash.com/photo-1603126857599-f6e157fa2fe6?ixlib=rb-4.0.3&auto=format&fit=crop&q=80",
-  },
-];
+// Certificate data structure
+interface Certificate {
+  id: number;
+  title: string;
+  category: string;
+  description: string;
+  countries?: string[];
+  standard?: string;
+}
 
 // Certificate categories
 const categories = [
   { value: "all", label: "All Certificates" },
-  { value: "company", label: "Company Certificates" },
-  { value: "product", label: "Product Certificates" },
-  { value: "pipes", label: "DI Pipe Certificates" },
-  { value: "fittings", label: "DI Fitting Certificates" },
-  { value: "standards", label: "Standards Compliance" },
+  { value: "standard", label: "Standard Specifications" },
+  { value: "approval", label: "Country Approvals" },
+  { value: "system", label: "Management Systems" },
+];
+
+// Certificate data
+const certificates: Certificate[] = [
+  // Standard Specifications
+  {
+    id: 1,
+    title: "ISO 2531",
+    category: "standard",
+    description: "Ductile iron pipes, fittings, and accessories for pressure pipelines",
+    standard: "ISO"
+  },
+  {
+    id: 2,
+    title: "ISO 7186",
+    category: "standard",
+    description: "Ductile iron products for sewage applications",
+    standard: "ISO"
+  },
+  {
+    id: 3,
+    title: "BSEN 545",
+    category: "standard",
+    description: "Ductile iron pipes, fittings, and accessories and their joints for water pipelines",
+    standard: "EN"
+  },
+  {
+    id: 4,
+    title: "BSEN 598",
+    category: "standard",
+    description: "Ductile iron pipes, fittings, and accessories and their joints for sewerage applications",
+    standard: "EN"
+  },
+  {
+    id: 5,
+    title: "ISO 4179",
+    category: "standard",
+    description: "Ductile iron pipes for pressure and non-pressure pipelines – centrifugal cement mortar lining general requirements",
+    standard: "ISO"
+  },
+  {
+    id: 6,
+    title: "BS 4027",
+    category: "standard",
+    description: "Specification for sulfate-resisting Portland cement",
+    standard: "BS"
+  },
+  {
+    id: 7,
+    title: "ISO 8179",
+    category: "standard",
+    description: "Ductile iron pipes – external zinc coating",
+    standard: "ISO"
+  },
+  {
+    id: 8,
+    title: "BS 3416",
+    category: "standard",
+    description: "Specification for bitumen-based coatings for cold application, suitable for use in contact with potable water",
+    standard: "BS"
+  },
+  {
+    id: 9,
+    title: "ISO 4633",
+    category: "standard",
+    description: "Rubber seals-joint rings for water supply, drainage, and sewerage pipelines – specs for materials",
+    standard: "ISO"
+  },
+  {
+    id: 10,
+    title: "BS 2494",
+    category: "standard",
+    description: "Specification for elastomeric seals for joints in pipework and pipelines",
+    standard: "BS"
+  },
+  
+  // Approvals
+  {
+    id: 11,
+    title: "Bahrain Approval",
+    category: "approval",
+    description: "Approved by Ministry of Electricity and Water – EWA",
+    countries: ["Bahrain"]
+  },
+  {
+    id: 12,
+    title: "Kuwait Approvals",
+    category: "approval",
+    description: "Approved by MEW, MPW, MOD, KED, and PAHW",
+    countries: ["Kuwait"]
+  },
+  {
+    id: 13,
+    title: "Qatar Approvals",
+    category: "approval",
+    description: "Approved by Kahramaa, ASHGHAL, and Civil Defense",
+    countries: ["Qatar"]
+  },
+  {
+    id: 14,
+    title: "Saudi Arabia Approvals",
+    category: "approval",
+    description: "Approved by NWC, Ministries, RCJY, ARAMCO & SABIC",
+    countries: ["Saudi Arabia"]
+  },
+  {
+    id: 15,
+    title: "Turkey Approval",
+    category: "approval",
+    description: "Approved by ISKI (Istanbul Water and Sewerage Administration)",
+    countries: ["Turkey"]
+  },
+  {
+    id: 16,
+    title: "UAE Approval",
+    category: "approval",
+    description: "Approved by ADWEA and ADSSC",
+    countries: ["UAE"]
+  },
+  
+  // Other certificates
+  {
+    id: 17,
+    title: "ISO 9001:2008",
+    category: "system",
+    description: "Quality Management System Certification by TUV NORD",
+    standard: "ISO"
+  },
+  {
+    id: 18,
+    title: "ISO 2531 Compliance",
+    category: "system",
+    description: "Compliance certification by TUV NORD",
+    standard: "ISO"
+  },
+  {
+    id: 19,
+    title: "Bureau Veritas Compliance",
+    category: "system",
+    description: "Compliance with ISO 2531 & all standards related to Ductile Iron Products",
+    standard: "ISO"
+  },
+  {
+    id: 20,
+    title: "FM Approved",
+    category: "system",
+    description: "Certificate of Compliance for fire safety systems",
+    standard: "FM"
+  }
 ];
 
 const Certifications = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCertificate, setSelectedCertificate] = useState<number | null>(null);
+  const [selectedCertificate, setSelectedCertificate] = useState<Certificate | null>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
   
   // Filter certificates based on category and search term
   const filteredCertificates = certificates.filter(cert => {
     const matchesCategory = selectedCategory === "all" || cert.category === selectedCategory;
     const matchesSearch = cert.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                           cert.description.toLowerCase().includes(searchTerm.toLowerCase());
+                          cert.description.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesCategory && matchesSearch;
   });
+
+  // Handle modal close
+  const closeModal = () => {
+    setSelectedCertificate(null);
+  };
+
+  // Close modal when clicking outside
+  const handleModalClick = (e: React.MouseEvent) => {
+    if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
+      closeModal();
+    }
+  };
   
-  // Handle certificate preview
-  const handleCertificateClick = (id: number) => {
-    setSelectedCertificate(selectedCertificate === id ? null : id);
+  // Certificate icon based on category
+  const getCertificateIcon = (category: string) => {
+    switch (category) {
+      case 'standard': return <FileText className="text-blue-500" />;
+      case 'approval': return <Globe className="text-green-500" />;
+      case 'system': return <Shield className="text-amber-500" />;
+      default: return <Award className="text-rashmi-red" />;
+    }
   };
   
   return (
@@ -106,8 +213,13 @@ const Certifications = () => {
       <Header />
       
       {/* Hero Section */}
-      <section className="relative pt-32 pb-16">
-        <div className="container mx-auto px-4">
+      <section className="relative pt-32 pb-16 overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 bg-gradient-to-b from-background to-background/50"></div>
+          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1621905251918-48416bd8575a?ixlib=rb-4.0.3&auto=format&fit=crop&q=80')] bg-fixed bg-center bg-cover opacity-10"></div>
+        </div>
+        
+        <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto">
             {/* Breadcrumb */}
             <div className="flex items-center text-sm text-muted-foreground mb-6">
@@ -135,7 +247,7 @@ const Certifications = () => {
               className="text-muted-foreground text-lg max-w-3xl mb-8"
             >
               Rashmi Metaliks Limited is committed to maintaining the highest quality standards. 
-              Browse our collection of certifications that demonstrate our compliance with international standards.
+              Our products comply with numerous international standards and have received approvals from organizations worldwide.
             </motion.p>
             
             {/* Search and Filter */}
@@ -196,49 +308,39 @@ const Certifications = () => {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.5 }}
-                    className="bg-card border border-border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer"
-                    onClick={() => handleCertificateClick(certificate.id)}
+                    whileHover={{ y: -5, boxShadow: "0 10px 20px rgba(0,0,0,0.1)" }}
+                    className="bg-card border border-border rounded-lg overflow-hidden shadow-sm hover:border-rashmi-red/50 transition-all cursor-pointer"
+                    onClick={() => setSelectedCertificate(certificate)}
                   >
-                    <div className="relative h-48 overflow-hidden">
-                      <img 
-                        src={certificate.image} 
-                        alt={certificate.title} 
-                        className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-                      />
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-background/90 to-transparent px-4 py-3">
-                        <span className="inline-block px-2 py-1 text-xs font-semibold bg-rashmi-red/90 text-white rounded">
-                          {categories.find(cat => cat.value === certificate.category)?.label || certificate.category}
-                        </span>
+                    <div className="p-6">
+                      <div className="flex items-start justify-between">
+                        <div className="w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center mb-4">
+                          {getCertificateIcon(certificate.category)}
+                        </div>
+                        <div className="px-2 py-1 text-xs font-medium rounded-full bg-muted">
+                          {certificate.standard || (certificate.countries && certificate.countries[0])}
+                        </div>
                       </div>
-                    </div>
-                    
-                    <div className="p-4">
-                      <h3 className="text-lg font-semibold mb-2 line-clamp-2">{certificate.title}</h3>
-                      <p className="text-muted-foreground text-sm mb-4">{certificate.description}</p>
                       
-                      <div className="flex items-center text-rashmi-red">
-                        <span className="text-sm font-medium">View Certificate</span>
-                        <ArrowLeft size={16} className={`ml-2 transition-transform duration-300 ${
-                          selectedCertificate === certificate.id ? 'rotate-[-135deg]' : 'rotate-[-225deg]'
-                        }`} />
+                      <h3 className="text-lg font-semibold mb-2">{certificate.title}</h3>
+                      <p className="text-muted-foreground text-sm mb-4 line-clamp-2">{certificate.description}</p>
+                      
+                      <div className="mt-4 flex justify-between items-center">
+                        <span className="text-rashmi-red text-sm font-medium">View Details</span>
+                        <div className="w-8 h-8 rounded-full border border-border flex items-center justify-center">
+                          <ArrowLeft size={14} className="rotate-[-135deg]" />
+                        </div>
                       </div>
                     </div>
                     
-                    {/* Certificate Preview */}
-                    {selectedCertificate === certificate.id && (
-                      <div className="p-4 pt-0 border-t border-border mt-4">
-                        <div className="aspect-[3/4] bg-muted rounded-md flex items-center justify-center p-8 text-center">
-                          <div className="max-w-sm">
-                            <FileText size={48} className="mx-auto text-rashmi-red mb-4" />
-                            <h4 className="font-semibold mb-2">{certificate.title}</h4>
-                            <p className="text-sm text-muted-foreground mb-4">
-                              This is a preview of the {certificate.title} certificate. 
-                              The actual document can be viewed or downloaded by contacting our team.
-                            </p>
-                            <button className="px-4 py-2 bg-rashmi-red hover:bg-rashmi-red/90 text-white rounded-md text-sm transition-colors">
-                              Request Full Document
-                            </button>
-                          </div>
+                    {certificate.countries && certificate.countries.length > 0 && (
+                      <div className="px-6 py-3 border-t border-border bg-muted/30">
+                        <div className="flex gap-2 flex-wrap">
+                          {certificate.countries.map((country) => (
+                            <span key={country} className="px-2 py-1 text-xs bg-background rounded text-muted-foreground">
+                              {country}
+                            </span>
+                          ))}
                         </div>
                       </div>
                     )}
@@ -249,6 +351,107 @@ const Certifications = () => {
           </div>
         </div>
       </section>
+      
+      {/* Certificate Modal */}
+      <AnimatePresence>
+        {selectedCertificate && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={handleModalClick}
+          >
+            <motion.div
+              ref={modalRef}
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ type: "spring", damping: 20, stiffness: 300 }}
+              className="bg-card border border-border rounded-xl shadow-lg max-w-lg w-full overflow-hidden"
+            >
+              <div className="p-6">
+                <div className="flex justify-between items-start mb-6">
+                  <div className="flex items-center">
+                    <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center mr-4">
+                      {getCertificateIcon(selectedCertificate.category)}
+                    </div>
+                    <h3 className="text-xl font-bold">{selectedCertificate.title}</h3>
+                  </div>
+                  <button 
+                    onClick={closeModal}
+                    className="w-8 h-8 rounded-full bg-muted hover:bg-muted/80 flex items-center justify-center"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+                
+                <div className="bg-muted/50 rounded-lg p-4 mb-6">
+                  <h4 className="text-sm font-medium mb-2 flex items-center">
+                    <FileText size={14} className="mr-2" />
+                    Description
+                  </h4>
+                  <p className="text-muted-foreground">{selectedCertificate.description}</p>
+                </div>
+                
+                {selectedCertificate.countries && (
+                  <div className="mb-6">
+                    <h4 className="text-sm font-medium mb-2 flex items-center">
+                      <Globe size={14} className="mr-2" />
+                      Applicable Countries
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedCertificate.countries.map(country => (
+                        <span 
+                          key={country}
+                          className="px-3 py-1 bg-muted rounded-full text-sm"
+                        >
+                          {country}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                <div className="mb-6">
+                  <h4 className="text-sm font-medium mb-2 flex items-center">
+                    <Check size={14} className="mr-2" />
+                    Benefits
+                  </h4>
+                  <ul className="text-muted-foreground space-y-2">
+                    <li className="flex items-start">
+                      <Check size={16} className="text-green-500 mr-2 mt-1 flex-shrink-0" />
+                      <span>Ensures compliance with international standards</span>
+                    </li>
+                    <li className="flex items-start">
+                      <Check size={16} className="text-green-500 mr-2 mt-1 flex-shrink-0" />
+                      <span>Validates the quality of our manufacturing processes</span>
+                    </li>
+                    <li className="flex items-start">
+                      <Check size={16} className="text-green-500 mr-2 mt-1 flex-shrink-0" />
+                      <span>Provides assurance to customers and regulatory bodies</span>
+                    </li>
+                  </ul>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <button className="px-4 py-2 bg-muted hover:bg-muted/80 rounded-md flex items-center text-sm font-medium">
+                    <Download size={16} className="mr-2" />
+                    Download PDF
+                  </button>
+                  <button 
+                    onClick={closeModal}
+                    className="px-4 py-2 bg-rashmi-red hover:bg-rashmi-red/90 text-white rounded-md text-sm font-medium"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       
       <Footer />
     </div>
