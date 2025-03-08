@@ -88,14 +88,14 @@ const Hero = () => {
               <span>Explore Products</span>
               <ArrowRight className="ml-2 transition-transform group-hover:translate-x-1" size={18} />
             </button>
-            <Link href="/about-rashmi" passHref> 
+            
             <button
               className="bg-transparent border border-white/30 text-white px-6 py-3 rounded-md 
                          hover:bg-white/10 transition-all"
             >
               Our Journey
             </button>
-              </Link>
+              
           </div>
         </div>
       </div>
