@@ -256,32 +256,35 @@ const DiPipes = () => {
         </motion.div>
 
         {/* Explore key features button with improved microinteraction */}
-        <div className="absolute left-1/2 -translate-x-1/2 bottom-8 flex flex-col items-center z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 1.2 }}
-            className="text-center flex flex-col items-center"
-          >
-            <span className="text-sm text-muted-foreground mb-2">Explore Key Features</span>
-            <motion.button
-              onClick={() => scrollToSection('features')}
-              variants={exploreButtonVariants}
-              initial="initial"
-              whileHover="hover"
-              whileTap="tap"
-              className="bg-rashmi-red hover:bg-rashmi-red/90 rounded-full w-12 h-12 flex items-center justify-center shadow-lg transition-all duration-300"
-            >
-              <motion.div
-                variants={arrowVariants}
-                initial="initial"
-                animate="animate"
-              >
-                <ChevronDown size={24} className="text-white" />
-              </motion.div>
-            </motion.button>
-          </motion.div>
-        </div>
+        <div className="relative h-20 mt-10 mb-6"> {/* Added height and margins */}
+  <div className="absolute left-1/2 -translate-x-1/2 bottom-0 flex flex-col items-center z-20"> {/* Increased z-index */}
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 1.2 }}
+      className="text-center flex flex-col items-center"
+    >
+      <span className="text-sm text-muted-foreground mb-2">Explore Key Features</span>
+      <motion.button
+        onClick={() => scrollToSection('features')}
+        variants={exploreButtonVariants}
+        initial="initial"
+        whileHover="hover"
+        whileTap="tap"
+        className="bg-rashmi-red hover:bg-rashmi-red/90 rounded-full w-12 h-12 flex items-center justify-center shadow-lg transition-all duration-300"
+      >
+        <motion.span
+          variants={arrowVariants}
+          initial="initial"
+          animate="animate"
+          className="inline-block" // Changed to inline-block
+        >
+          <ChevronDown size={24} className="text-white" />
+        </motion.span>
+      </motion.button>
+    </motion.div>
+  </div>
+</div>
       </section>
       
       {/* Features Section - Interactive Advantages Showcase */}
