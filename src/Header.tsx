@@ -1,8 +1,7 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Menu, X, Home, ChevronDown, Download, FileText } from 'lucide-react';
-import ThemeToggle from './components/ThemeToggle';
-import { Link } from 'react-router-dom';
+import ThemeToggle from './ThemeToggle';
+import { Link, useLocation } from 'react-router-dom';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -13,6 +12,7 @@ const Header = () => {
   const downloadsDropdownRef = useRef<HTMLDivElement>(null);
   const hoverTimeoutRef = useRef<number | null>(null);
   const downloadHoverTimeoutRef = useRef<number | null>(null);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -22,6 +22,11 @@ const Header = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Close mobile menu when changing routes
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [location.pathname]);
 
   const handleProductsHover = (isHovering: boolean) => {
     // Clear any existing timeout
@@ -33,10 +38,10 @@ const Header = () => {
     if (isHovering) {
       setProductsDropdownOpen(true);
     } else {
-      // Increased delay before closing dropdown to 1000ms (1 second)
+      // Add delay before closing dropdown - improved timing for better UX
       hoverTimeoutRef.current = window.setTimeout(() => {
         setProductsDropdownOpen(false);
-      }, 1000);
+      }, 300);
     }
   };
 
@@ -50,10 +55,10 @@ const Header = () => {
     if (isHovering) {
       setDownloadsDropdownOpen(true);
     } else {
-      // Increased delay before closing dropdown to 1000ms (1 second)
+      // Add delay before closing dropdown - improved timing for better UX
       downloadHoverTimeoutRef.current = window.setTimeout(() => {
         setDownloadsDropdownOpen(false);
-      }, 1000);
+      }, 300);
     }
   };
 
@@ -74,6 +79,13 @@ const Header = () => {
     };
   }, []);
 
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -84,7 +96,7 @@ const Header = () => {
     >
       <div className="container mx-auto px-4 flex items-center justify-between">
         <div className="flex items-center">
-          <Link to="/" className="flex items-center">
+          <Link to="/" onClick={scrollToTop} className="flex items-center">
             <img
               src="/lovable-uploads/rashmi-logo.png"
               alt="Rashmi Metaliks"
@@ -97,7 +109,11 @@ const Header = () => {
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
-          <Link to="/" className="relative font-medium text-foreground/80 hover:text-foreground transition-colors duration-300 group overflow-hidden">
+          <Link 
+            to="/" 
+            onClick={scrollToTop} 
+            className="relative font-medium text-foreground/80 hover:text-foreground transition-colors duration-300 group overflow-hidden"
+          >
             <span className="flex items-center"><Home size={16} className="mr-1" /> Home</span>
             <span className="absolute bottom-0 left-0 w-full h-0.5 bg-rashmi-red transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
           </Link>
@@ -115,27 +131,69 @@ const Header = () => {
               className="relative font-medium text-foreground/80 hover:text-foreground transition-colors duration-300 group overflow-hidden flex items-center"
             >
               <span>Products</span>
-              <ChevronDown size={16} className={`ml-1 transition-transform duration-200 ${productsDropdownOpen ? 'rotate-180' : ''}`} />
+              <ChevronDown 
+                size={16} 
+                className={`ml-1 transition-transform duration-200 ${productsDropdownOpen ? 'rotate-180' : ''}`} 
+              />
               <span className="absolute bottom-0 left-0 w-full h-0.5 bg-rashmi-red transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
             </a>
             
             {/* Dropdown Menu - improved hover experience */}
             <div 
-              className={`absolute top-full left-0 mt-2 w-48 rounded-md bg-background shadow-lg ring-1 ring-black ring-opacity-5 transition-all duration-300 ${
+              className={`absolute top-full left-0 mt-2 w-52 rounded-md bg-background shadow-lg ring-1 ring-black ring-opacity-5 transition-all duration-300 ${
                 productsDropdownOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'
               }`}
               onMouseEnter={() => handleProductsHover(true)}
               onMouseLeave={() => handleProductsHover(false)}
             >
               <div className="py-1">
-                <Link to="/di-pipes" className="block px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors duration-200">
+                <Link 
+                  to="/di-pipes" 
+                  className="block px-4 py-2 text-sm text-foreground hover:bg-muted hover:text-rashmi-red transition-colors duration-200"
+                >
                   DI Pipes
                 </Link>
-                <Link to="/di-fittings" className="block px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors duration-200">
+                <Link 
+                  to="/di-fittings" 
+                  className="block px-4 py-2 text-sm text-foreground hover:bg-muted hover:text-rashmi-red transition-colors duration-200"
+                >
                   DI Fittings
                 </Link>
-                <Link to="/tmt-bar" className="block px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors duration-200">
+                <Link 
+                  to="/tmt-bar" 
+                  className="block px-4 py-2 text-sm text-foreground hover:bg-muted hover:text-rashmi-red transition-colors duration-200"
+                >
                   TMT Bar
+                </Link>
+                <Link 
+                  to="/sponge-iron" 
+                  className="block px-4 py-2 text-sm text-foreground hover:bg-muted hover:text-rashmi-red transition-colors duration-200"
+                >
+                  Sponge Iron
+                </Link>
+                <Link 
+                  to="/pig-iron" 
+                  className="block px-4 py-2 text-sm text-foreground hover:bg-muted hover:text-rashmi-red transition-colors duration-200"
+                >
+                  Pig Iron
+                </Link>
+                <Link 
+                  to="/iron-ore-pellet" 
+                  className="block px-4 py-2 text-sm text-foreground hover:bg-muted hover:text-rashmi-red transition-colors duration-200"
+                >
+                  Iron Ore Pellet
+                </Link>
+                <Link 
+                  to="/sinter" 
+                  className="block px-4 py-2 text-sm text-foreground hover:bg-muted hover:text-rashmi-red transition-colors duration-200"
+                >
+                  Sinter
+                </Link>
+                <Link 
+                  to="/about-rashmi" 
+                  className="block px-4 py-2 text-sm text-foreground hover:bg-muted hover:text-rashmi-red transition-colors duration-200"
+                >
+                  About Rashmi Group
                 </Link>
               </div>
             </div>
@@ -155,7 +213,10 @@ const Header = () => {
               className="relative font-medium text-foreground/80 hover:text-foreground transition-colors duration-300 group overflow-hidden flex items-center"
             >
               <span>Downloads</span>
-              <ChevronDown size={16} className={`ml-1 transition-transform duration-200 ${downloadsDropdownOpen ? 'rotate-180' : ''}`} />
+              <ChevronDown 
+                size={16} 
+                className={`ml-1 transition-transform duration-200 ${downloadsDropdownOpen ? 'rotate-180' : ''}`} 
+              />
               <span className="absolute bottom-0 left-0 w-full h-0.5 bg-rashmi-red transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
             </a>
             
@@ -168,7 +229,10 @@ const Header = () => {
               onMouseLeave={() => handleDownloadsHover(false)}
             >
               <div className="py-1">
-                <Link to="/certifications" className="block px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors duration-200 flex items-center">
+                <Link 
+                  to="/certifications" 
+                  className="block px-4 py-2 text-sm text-foreground hover:bg-muted hover:text-rashmi-red transition-colors duration-200 flex items-center"
+                >
                   <FileText size={16} className="mr-2" />
                   Certifications
                 </Link>
@@ -201,7 +265,7 @@ const Header = () => {
       >
         <div className="container mx-auto px-4 py-4">
           <div className="flex flex-col space-y-4">
-            <MobileNavLink href="/" onClick={() => setIsMenuOpen(false)}>
+            <MobileNavLink href="/" onClick={scrollToTop}>
               <Home size={16} className="mr-1" /> Home
             </MobileNavLink>
             <MobileNavLink href="#about" onClick={() => setIsMenuOpen(false)}>
@@ -225,6 +289,18 @@ const Header = () => {
                 </MobileNavLink>
                 <MobileNavLink href="/tmt-bar" onClick={() => setIsMenuOpen(false)}>
                   TMT Bar
+                </MobileNavLink>
+                <MobileNavLink href="/sponge-iron" onClick={() => setIsMenuOpen(false)}>
+                  Sponge Iron
+                </MobileNavLink>
+                <MobileNavLink href="/pig-iron" onClick={() => setIsMenuOpen(false)}>
+                  Pig Iron
+                </MobileNavLink>
+                <MobileNavLink href="/iron-ore-pellet" onClick={() => setIsMenuOpen(false)}>
+                  Iron Ore Pellet
+                </MobileNavLink>
+                <MobileNavLink href="/sinter" onClick={() => setIsMenuOpen(false)}>
+                  Sinter
                 </MobileNavLink>
               </div>
             </div>

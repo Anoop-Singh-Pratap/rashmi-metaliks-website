@@ -1,7 +1,9 @@
 
 import React, { useRef } from 'react';
+import { Link } from 'react-router-dom';
 import RevealText from './ui/RevealText';
-import { Award, Globe, Zap } from 'lucide-react';
+import { Award, Globe, Zap, ArrowRight } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const About = () => {
   const sectionRef = useRef<HTMLElement>(null);
@@ -16,7 +18,7 @@ const About = () => {
               <RevealText text="About Rashmi Group" />
             </div>
             <RevealText
-              text="Our Journey of Excellence"
+              text="Global Leadership in Metallurgy"
               as="h2"
               className="text-3xl md:text-4xl lg:text-5xl font-display font-bold mb-6 text-foreground"
             />
@@ -27,14 +29,14 @@ const About = () => {
                 pioneer in manufacturing of integrated Iron & Steel Products, Cement, Power and Ferro Alloys & Mining.
               </p>
               <p className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
-                Led by Mr. Sajjan Kumar Patwari and his three sons Mr. Sunil Kumar Patwari, Mr. Sanjib Kumar Patwari and 
-                Mr. Sanjay Kumar Patwari, the group has its corporate office at Kolkata, and factories located at Kharagpur 
-                and Jhargram respectively.
+                Today, Rashmi Metaliks stands as the largest manufacturer of DI Pipes & Fittings in India and holds the 
+                second position globally, with an annual production capacity of 7,70,000 Metric Tonnes of DI Pipes & 
+                26,000 Metric Tonnes of DI Fittings.
               </p>
               <p className="animate-fade-in" style={{ animationDelay: '0.4s' }}>
-                It has a 3.0 MTPA state of art Integrated Iron & Steel manufacturing facility which comprises of products 
-                like – Pellet, Sinter, Pig Iron, Sponge Iron, Ductile Iron Pipe, Billet, TMT & Wire Rod and 1.0 MTPA of Cement 
-                manufacturing facility. Product range of the Group also includes Ferro Alloys and 300 MW of Captive Power Generation Plant.
+                Our State-Of-The-Art Integrated Steel manufacturing facility produces Pellet, Sinter, Pig Iron, 
+                Sponge Iron, Ductile Iron Pipe, Billet, TMT & Wire Rod, along with 1.0 MTPA of Cement 
+                manufacturing facility and 300 MW of Captive Power Generation Plant.
               </p>
             </div>
             
@@ -48,17 +50,33 @@ const About = () => {
               />
               <Achievement 
                 icon={<Globe />}
-                title="Winner of Ultra Mega Project"
-                description="Government of West Bengal"
+                title="#2 Worldwide"
+                description="In DI Pipe Manufacturing"
                 delay={0.7}
               />
               <Achievement 
                 icon={<Zap />}
-                title="300 MW"
-                description="Captive Power Generation Plant"
+                title="62% CAGR"
+                description="Industry-Leading Growth"
                 delay={0.8}
               />
             </div>
+            
+            {/* Learn More Link */}
+            <motion.div 
+              className="mt-10"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.9, duration: 0.5 }}
+            >
+              <Link 
+                to="/about-rashmi" 
+                className="inline-flex items-center group text-rashmi-red hover:text-rashmi-red/80 font-medium transition-colors"
+              >
+                Learn more about Rashmi Group
+                <ArrowRight className="ml-2 w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+              </Link>
+            </motion.div>
           </div>
           
           {/* Right Column - Image */}
@@ -89,16 +107,19 @@ interface AchievementProps {
 
 const Achievement: React.FC<AchievementProps> = ({ icon, title, description, delay }) => {
   return (
-    <div 
-      className="flex flex-col items-center text-center p-4 rounded-lg border border-border/40 bg-card/30 animate-fade-in"
-      style={{ animationDelay: `${delay}s` }}
+    <motion.div 
+      className="flex flex-col items-center text-center p-4 rounded-lg border border-border/40 bg-card/30"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay, duration: 0.5 }}
+      whileHover={{ y: -5 }}
     >
       <div className="w-12 h-12 flex items-center justify-center rounded-full bg-rashmi-red/10 text-rashmi-red mb-3">
         {icon}
       </div>
       <h3 className="font-semibold text-foreground mb-1">{title}</h3>
       <p className="text-sm text-muted-foreground">{description}</p>
-    </div>
+    </motion.div>
   );
 };
 

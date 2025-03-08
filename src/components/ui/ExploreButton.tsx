@@ -18,7 +18,20 @@ const ExploreButton: React.FC<ExploreButtonProps> = ({
     e.preventDefault();
     const element = document.getElementById(targetId);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+      // Get the element's position relative to the viewport
+      const rect = element.getBoundingClientRect();
+      
+      // Get the current scroll position
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      
+      // Calculate the absolute position by adding the relative position to the current scroll position
+      const absoluteTop = rect.top + scrollTop;
+      
+      // Scroll to the element with a slight offset for better visual
+      window.scrollTo({
+        top: absoluteTop - 100, // 100px offset from the top
+        behavior: 'smooth'
+      });
     }
   };
 
@@ -27,7 +40,7 @@ const ExploreButton: React.FC<ExploreButtonProps> = ({
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, delay: 0.8 }}
-      className={`w-full flex justify-center items-center my-8 ${className}`}
+      className={`w-full flex justify-center my-8 ${className}`}
     >
       <motion.a 
         href={`#${targetId}`} 
