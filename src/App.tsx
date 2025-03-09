@@ -21,6 +21,8 @@ import AboutRashmi from "./pages/AboutRashmi";
 import ContactUs from "./pages/ContactUs";
 import Media from "./pages/Media";
 import Careers from "./pages/Careers";
+import CSR from "./pages/CSR";
+import Brochures from "./pages/Brochures";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -63,6 +65,8 @@ const App = () => (
             <Route path="/contact-us" element={<ContactUs />} />
             <Route path="/media" element={<Media />} />
             <Route path="/careers" element={<Careers />} />
+            <Route path="/csr" element={<CSR />} />
+            <Route path="/brochures" element={<Brochures />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
