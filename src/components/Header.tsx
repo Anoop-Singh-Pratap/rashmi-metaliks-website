@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Menu, X, Home, ChevronDown, Download, FileText } from 'lucide-react';
-import ThemeToggle from './ThemeToggle';
+import { Menu, X, Home, ChevronDown, Download, FileText, Briefcase, Newspaper } from 'lucide-react';
+import ThemeToggle from '@/components/ThemeToggle';
 import { Link, useLocation } from 'react-router-dom';
 
 const Header = () => {
@@ -9,10 +9,13 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [productsDropdownOpen, setProductsDropdownOpen] = useState(false);
   const [downloadsDropdownOpen, setDownloadsDropdownOpen] = useState(false);
+  const [contactDropdownOpen, setContactDropdownOpen] = useState(false);
   const productsDropdownRef = useRef<HTMLDivElement>(null);
   const downloadsDropdownRef = useRef<HTMLDivElement>(null);
+  const contactDropdownRef = useRef<HTMLDivElement>(null);
   const hoverTimeoutRef = useRef<number | null>(null);
   const downloadHoverTimeoutRef = useRef<number | null>(null);
+  const contactHoverTimeoutRef = useRef<number | null>(null);
   const location = useLocation();
 
   useEffect(() => {
@@ -63,6 +66,23 @@ const Header = () => {
     }
   };
 
+  const handleContactHover = (isHovering: boolean) => {
+    // Clear any existing timeout
+    if (contactHoverTimeoutRef.current !== null) {
+      window.clearTimeout(contactHoverTimeoutRef.current);
+      contactHoverTimeoutRef.current = null;
+    }
+
+    if (isHovering) {
+      setContactDropdownOpen(true);
+    } else {
+      // Add delay before closing dropdown
+      contactHoverTimeoutRef.current = window.setTimeout(() => {
+        setContactDropdownOpen(false);
+      }, 300);
+    }
+  };
+
   // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -71,6 +91,9 @@ const Header = () => {
       }
       if (downloadsDropdownRef.current && !downloadsDropdownRef.current.contains(event.target as Node)) {
         setDownloadsDropdownOpen(false);
+      }
+      if (contactDropdownRef.current && !contactDropdownRef.current.contains(event.target as Node)) {
+        setContactDropdownOpen(false);
       }
     };
 
@@ -85,6 +108,14 @@ const Header = () => {
       top: 0,
       behavior: 'smooth'
     });
+  };
+
+  const scrollToSection = (sectionId: string) => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth' });
+    }
+    setIsMenuOpen(false);
   };
 
   return (
@@ -118,7 +149,14 @@ const Header = () => {
             <span className="flex items-center"><Home size={16} className="mr-1" /> Home</span>
             <span className="absolute bottom-0 left-0 w-full h-0.5 bg-rashmi-red transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
           </Link>
-          <NavLink href="#about">About</NavLink>
+          
+          <Link
+            to="/about-rashmi"
+            className="relative font-medium text-foreground/80 hover:text-foreground transition-colors duration-300 group overflow-hidden"
+          >
+            <span>About</span>
+            <span className="absolute bottom-0 left-0 w-full h-0.5 bg-rashmi-red transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
+          </Link>
           
           {/* Products Dropdown - improved hover experience */}
           <div 
@@ -128,7 +166,7 @@ const Header = () => {
             onMouseLeave={() => handleProductsHover(false)}
           >
             <a 
-              href="#products" 
+              href="/#products" 
               className="relative font-medium text-foreground/80 hover:text-foreground transition-colors duration-300 group overflow-hidden flex items-center"
             >
               <span>Products</span>
@@ -196,6 +234,15 @@ const Header = () => {
           
           <NavLink href="#sustainability">Sustainability</NavLink>
 
+          {/* Media Link */}
+          <Link
+            to="/media"
+            className="relative font-medium text-foreground/80 hover:text-foreground transition-colors duration-300 group overflow-hidden"
+          >
+            <span className="flex items-center"><Newspaper size={16} className="mr-1" /> Media</span>
+            <span className="absolute bottom-0 left-0 w-full h-0.5 bg-rashmi-red transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
+          </Link>
+
           {/* Downloads Dropdown */}
           <div 
             className="relative group" 
@@ -231,11 +278,63 @@ const Header = () => {
                   <FileText size={16} className="mr-2" />
                   Certifications
                 </Link>
+                <Link 
+                  to="/quality-assurance" 
+                  className="block px-4 py-2 text-sm text-foreground hover:bg-muted hover:text-rashmi-red transition-colors duration-200 flex items-center"
+                >
+                  <FileText size={16} className="mr-2" />
+                  Quality Assurance
+                </Link>
               </div>
             </div>
           </div>
           
-          <NavLink href="#contact">Contact</NavLink>
+          {/* Contact Dropdown */}
+          <div 
+            className="relative group" 
+            ref={contactDropdownRef}
+            onMouseEnter={() => handleContactHover(true)}
+            onMouseLeave={() => handleContactHover(false)}
+          >
+            <a 
+              href="#contact" 
+              className="relative font-medium text-foreground/80 hover:text-foreground transition-colors duration-300 group overflow-hidden flex items-center"
+            >
+              <span>Contact</span>
+              <ChevronDown 
+                size={16} 
+                className={`ml-1 transition-transform duration-200 ${contactDropdownOpen ? 'rotate-180' : ''}`} 
+              />
+              <span className="absolute bottom-0 left-0 w-full h-0.5 bg-rashmi-red transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
+            </a>
+            
+            {/* Contact Dropdown Menu */}
+            <div 
+              className={`absolute top-full right-0 mt-2 w-48 rounded-md bg-background shadow-lg ring-1 ring-black ring-opacity-5 transition-all duration-300 ${
+                contactDropdownOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'
+              }`}
+              onMouseEnter={() => handleContactHover(true)}
+              onMouseLeave={() => handleContactHover(false)}
+            >
+              <div className="py-1">
+                <Link 
+                  to="/contact-us" 
+                  className="block px-4 py-2 text-sm text-foreground hover:bg-muted hover:text-rashmi-red transition-colors duration-200 flex items-center"
+                >
+                  <FileText size={16} className="mr-2" />
+                  Contact Us
+                </Link>
+                <Link 
+                  to="/careers" 
+                  className="block px-4 py-2 text-sm text-foreground hover:bg-muted hover:text-rashmi-red transition-colors duration-200 flex items-center"
+                >
+                  <Briefcase size={16} className="mr-2" />
+                  Careers
+                </Link>
+              </div>
+            </div>
+          </div>
+          
           <ThemeToggle />
         </nav>
 
@@ -263,14 +362,14 @@ const Header = () => {
             <MobileNavLink href="/" onClick={scrollToTop}>
               <Home size={16} className="mr-1" /> Home
             </MobileNavLink>
-            <MobileNavLink href="#about" onClick={() => setIsMenuOpen(false)}>
+            <MobileNavLink href="/about-rashmi" onClick={() => setIsMenuOpen(false)}>
               About
             </MobileNavLink>
             
             {/* Products (Mobile) */}
             <div className="mb-2">
               <button
-                onClick={() => {}}
+                onClick={() => scrollToSection('products')}
                 className="flex items-center w-full py-2 text-lg font-medium text-foreground/80 hover:text-foreground hover:bg-muted/30 px-4 rounded-md transition-colors duration-200"
               >
                 Products <ChevronDown size={16} className="ml-1" />
@@ -304,6 +403,10 @@ const Header = () => {
               Sustainability
             </MobileNavLink>
 
+            <MobileNavLink href="/media" onClick={() => setIsMenuOpen(false)}>
+              <Newspaper size={16} className="mr-1" /> Media
+            </MobileNavLink>
+
             {/* Downloads (Mobile) */}
             <div className="mb-2">
               <button
@@ -316,12 +419,29 @@ const Header = () => {
                 <MobileNavLink href="/certifications" onClick={() => setIsMenuOpen(false)}>
                   <FileText size={16} className="mr-2" /> Certifications
                 </MobileNavLink>
+                <MobileNavLink href="/quality-assurance" onClick={() => setIsMenuOpen(false)}>
+                  <FileText size={16} className="mr-2" /> Quality Assurance
+                </MobileNavLink>
               </div>
             </div>
             
-            <MobileNavLink href="#contact" onClick={() => setIsMenuOpen(false)}>
-              Contact
-            </MobileNavLink>
+            {/* Contact (Mobile) */}
+            <div className="mb-2">
+              <button
+                onClick={() => {}}
+                className="flex items-center w-full py-2 text-lg font-medium text-foreground/80 hover:text-foreground hover:bg-muted/30 px-4 rounded-md transition-colors duration-200"
+              >
+                Contact <ChevronDown size={16} className="ml-1" />
+              </button>
+              <div className="pl-4 mt-2 border-l-2 border-rashmi-red/30 space-y-2">
+                <MobileNavLink href="/contact-us" onClick={() => setIsMenuOpen(false)}>
+                  <FileText size={16} className="mr-2" /> Contact Us
+                </MobileNavLink>
+                <MobileNavLink href="/careers" onClick={() => setIsMenuOpen(false)}>
+                  <Briefcase size={16} className="mr-2" /> Careers
+                </MobileNavLink>
+              </div>
+            </div>
           </div>
         </div>
       </div>

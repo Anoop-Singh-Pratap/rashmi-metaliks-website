@@ -1,5 +1,6 @@
 
 import React, { useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import RevealText from './ui/RevealText';
 import { ArrowRight } from 'lucide-react';
 
@@ -81,21 +82,22 @@ const Hero = () => {
             pioneer in manufacturing of integrated Iron & Steel Products, Cement, Power and Ferro Alloys & Mining.
           </p>
           <div className="flex flex-wrap gap-4 animate-fade-in" style={{ animationDelay: '1.2s' }}>
-            <button
+            <Link 
+              to="/#products"
               className="bg-rashmi-red text-white px-6 py-3 rounded-md hover:bg-rashmi-red/90 transition-colors 
-                         shadow-lg hover:shadow-rashmi-red/20 flex items-center group"
+                      shadow-lg hover:shadow-rashmi-red/20 flex items-center group"
             >
               <span>Explore Products</span>
               <ArrowRight className="ml-2 transition-transform group-hover:translate-x-1" size={18} />
-            </button>
+            </Link>
             
-            <button
+            <Link
+              to="/about-rashmi"
               className="bg-transparent border border-white/30 text-white px-6 py-3 rounded-md 
-                         hover:bg-white/10 transition-all"
+                      hover:bg-white/10 transition-all"
             >
               Our Journey
-            </button>
-              
+            </Link>
           </div>
         </div>
       </div>
@@ -105,7 +107,7 @@ const Hero = () => {
         ref={scrollRef}
         onClick={handleScrollDown}
         className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 text-white flex flex-col items-center 
-                   cursor-pointer animate-float"
+                 cursor-pointer animate-float"
       >
         <span className="text-sm mb-2">Scroll Down</span>
         <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center">

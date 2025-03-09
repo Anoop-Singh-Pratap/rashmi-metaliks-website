@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Mail, Phone, MapPin, Linkedin, Twitter, Facebook, Instagram } from 'lucide-react';
-import ThemeToggle from './ThemeToggle';
+import ThemeToggle from '@/components/ThemeToggle';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -41,8 +41,9 @@ const Footer = () => {
               <FooterLink href="/#products">Products</FooterLink>
               <FooterLink href="/quality-assurance">Quality Assurance</FooterLink>
               <FooterLink href="/certifications">Certifications</FooterLink>
-              <FooterLink href="#careers">Careers</FooterLink>
-              <FooterLink href="#contact">Contact Us</FooterLink>
+              <FooterLink href="/careers">Careers</FooterLink>
+              <FooterLink href="/contact-us">Contact Us</FooterLink>
+              <FooterLink href="/media">Media</FooterLink>
             </ul>
           </div>
           
@@ -65,9 +66,9 @@ const Footer = () => {
             <h4 className="text-xl font-display font-semibold mb-6">Contact Us</h4>
             <div className="space-y-4">
               <ContactItem icon={<MapPin size={18} />}>
-                Rashmi Metaliks Ltd, 7C, Kiran Shankar Roy Road<br />
-                Hastings Chambers, 2nd Floor<br />
-                Kolkata - 700001, West Bengal, India
+                First Floor, Ideal Center 9, A J C Bose Road<br />
+                Kolkata, West Bengal 700017<br />
+                India
               </ContactItem>
               <ContactItem icon={<Phone size={18} />}>
                 <a href="tel:+913322421200" className="hover:text-rashmi-red transition-colors">+91 33 2242 1200</a>
