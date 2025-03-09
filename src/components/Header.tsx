@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Menu, X, Home, ChevronDown, Download, FileText, Briefcase, Newspaper } from 'lucide-react';
 import ThemeToggle from '@/components/ThemeToggle';
@@ -27,13 +26,11 @@ const Header = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close mobile menu when changing routes
   useEffect(() => {
     setIsMenuOpen(false);
   }, [location.pathname]);
 
   const handleProductsHover = (isHovering: boolean) => {
-    // Clear any existing timeout
     if (hoverTimeoutRef.current !== null) {
       window.clearTimeout(hoverTimeoutRef.current);
       hoverTimeoutRef.current = null;
@@ -42,7 +39,6 @@ const Header = () => {
     if (isHovering) {
       setProductsDropdownOpen(true);
     } else {
-      // Add delay before closing dropdown - improved timing for better UX
       hoverTimeoutRef.current = window.setTimeout(() => {
         setProductsDropdownOpen(false);
       }, 300);
@@ -50,7 +46,6 @@ const Header = () => {
   };
 
   const handleDownloadsHover = (isHovering: boolean) => {
-    // Clear any existing timeout
     if (downloadHoverTimeoutRef.current !== null) {
       window.clearTimeout(downloadHoverTimeoutRef.current);
       downloadHoverTimeoutRef.current = null;
@@ -59,7 +54,6 @@ const Header = () => {
     if (isHovering) {
       setDownloadsDropdownOpen(true);
     } else {
-      // Add delay before closing dropdown - improved timing for better UX
       downloadHoverTimeoutRef.current = window.setTimeout(() => {
         setDownloadsDropdownOpen(false);
       }, 300);
@@ -67,7 +61,6 @@ const Header = () => {
   };
 
   const handleContactHover = (isHovering: boolean) => {
-    // Clear any existing timeout
     if (contactHoverTimeoutRef.current !== null) {
       window.clearTimeout(contactHoverTimeoutRef.current);
       contactHoverTimeoutRef.current = null;
@@ -76,14 +69,12 @@ const Header = () => {
     if (isHovering) {
       setContactDropdownOpen(true);
     } else {
-      // Add delay before closing dropdown
       contactHoverTimeoutRef.current = window.setTimeout(() => {
         setContactDropdownOpen(false);
       }, 300);
     }
   };
 
-  // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (productsDropdownRef.current && !productsDropdownRef.current.contains(event.target as Node)) {
@@ -139,7 +130,6 @@ const Header = () => {
           </Link>
         </div>
 
-        {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
           <Link 
             to="/" 
@@ -158,7 +148,6 @@ const Header = () => {
             <span className="absolute bottom-0 left-0 w-full h-0.5 bg-rashmi-red transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
           </Link>
           
-          {/* Products Dropdown - improved hover experience */}
           <div 
             className="relative group" 
             ref={productsDropdownRef}
@@ -177,7 +166,6 @@ const Header = () => {
               <span className="absolute bottom-0 left-0 w-full h-0.5 bg-rashmi-red transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
             </a>
             
-            {/* Dropdown Menu - improved hover experience */}
             <div 
               className={`absolute top-full left-0 mt-2 w-52 rounded-md bg-background shadow-lg ring-1 ring-black ring-opacity-5 transition-all duration-300 ${
                 productsDropdownOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'
@@ -232,9 +220,33 @@ const Header = () => {
             </div>
           </div>
           
-          <NavLink href="#sustainability">Sustainability</NavLink>
+          <div className="relative group">
+            <a 
+              href="#sustainability" 
+              className="relative font-medium text-foreground/80 hover:text-foreground transition-colors duration-300 group overflow-hidden flex items-center"
+            >
+              <span>Sustainability</span>
+              <ChevronDown size={16} className="ml-1" />
+              <span className="absolute bottom-0 left-0 w-full h-0.5 bg-rashmi-red transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
+            </a>
+            <div className="absolute top-full left-0 mt-2 w-52 rounded-md bg-background shadow-lg ring-1 ring-black ring-opacity-5 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+              <div className="py-1">
+                <a 
+                  href="#sustainability" 
+                  className="block px-4 py-2 text-sm text-foreground hover:bg-muted hover:text-rashmi-red transition-colors duration-200"
+                >
+                  Overview
+                </a>
+                <Link 
+                  to="/csr" 
+                  className="block px-4 py-2 text-sm text-foreground hover:bg-muted hover:text-rashmi-red transition-colors duration-200"
+                >
+                  CSR Initiatives
+                </Link>
+              </div>
+            </div>
+          </div>
 
-          {/* Media Link */}
           <Link
             to="/media"
             className="relative font-medium text-foreground/80 hover:text-foreground transition-colors duration-300 group overflow-hidden"
@@ -243,7 +255,6 @@ const Header = () => {
             <span className="absolute bottom-0 left-0 w-full h-0.5 bg-rashmi-red transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
           </Link>
 
-          {/* Downloads Dropdown */}
           <div 
             className="relative group" 
             ref={downloadsDropdownRef}
@@ -262,7 +273,6 @@ const Header = () => {
               <span className="absolute bottom-0 left-0 w-full h-0.5 bg-rashmi-red transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
             </a>
             
-            {/* Downloads Dropdown Menu */}
             <div 
               className={`absolute top-full left-0 mt-2 w-48 rounded-md bg-background shadow-lg ring-1 ring-black ring-opacity-5 transition-all duration-300 ${
                 downloadsDropdownOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'
@@ -285,11 +295,17 @@ const Header = () => {
                   <FileText size={16} className="mr-2" />
                   Quality Assurance
                 </Link>
+                <Link 
+                  to="/brochures" 
+                  className="block px-4 py-2 text-sm text-foreground hover:bg-muted hover:text-rashmi-red transition-colors duration-200 flex items-center"
+                >
+                  <Download size={16} className="mr-2" />
+                  Brochures
+                </Link>
               </div>
             </div>
           </div>
           
-          {/* Contact Dropdown */}
           <div 
             className="relative group" 
             ref={contactDropdownRef}
@@ -308,7 +324,6 @@ const Header = () => {
               <span className="absolute bottom-0 left-0 w-full h-0.5 bg-rashmi-red transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
             </a>
             
-            {/* Contact Dropdown Menu */}
             <div 
               className={`absolute top-full right-0 mt-2 w-48 rounded-md bg-background shadow-lg ring-1 ring-black ring-opacity-5 transition-all duration-300 ${
                 contactDropdownOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'
@@ -338,7 +353,6 @@ const Header = () => {
           <ThemeToggle />
         </nav>
 
-        {/* Mobile Menu Button */}
         <div className="md:hidden flex items-center">
           <ThemeToggle />
           <button
@@ -351,7 +365,6 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
       <div
         className={`md:hidden absolute top-full left-0 right-0 bg-background/95 backdrop-blur-md transition-transform duration-300 ease-in-out transform ${
           isMenuOpen ? 'translate-y-0' : '-translate-y-full'
@@ -366,7 +379,6 @@ const Header = () => {
               About
             </MobileNavLink>
             
-            {/* Products (Mobile) */}
             <div className="mb-2">
               <button
                 onClick={() => scrollToSection('products')}
@@ -407,7 +419,6 @@ const Header = () => {
               <Newspaper size={16} className="mr-1" /> Media
             </MobileNavLink>
 
-            {/* Downloads (Mobile) */}
             <div className="mb-2">
               <button
                 onClick={() => {}}
@@ -422,10 +433,12 @@ const Header = () => {
                 <MobileNavLink href="/quality-assurance" onClick={() => setIsMenuOpen(false)}>
                   <FileText size={16} className="mr-2" /> Quality Assurance
                 </MobileNavLink>
+                <MobileNavLink href="/brochures" onClick={() => setIsMenuOpen(false)}>
+                  <Download size={16} className="mr-2" /> Brochures
+                </MobileNavLink>
               </div>
             </div>
             
-            {/* Contact (Mobile) */}
             <div className="mb-2">
               <button
                 onClick={() => {}}
@@ -470,7 +483,6 @@ const MobileNavLink: React.FC<{
   onClick: () => void;
   children: React.ReactNode;
 }> = ({ href, onClick, children }) => {
-  // Check if it's an internal link or a section link
   const isInternalLink = !href.startsWith('#');
   
   if (isInternalLink) {

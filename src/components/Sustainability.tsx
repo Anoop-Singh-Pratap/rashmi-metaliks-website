@@ -41,9 +41,6 @@ const Sustainability = () => {
   const [activeChart, setActiveChart] = useState<ChartType>('emissions');
   const [isInView, setIsInView] = useState(false);
   const [animateChart, setAnimateChart] = useState(false);
-  const [animatedWaterData, setAnimatedWaterData] = useState(
-    waterUsageData.map(item => ({ ...item, animatedRecycled: 0, animatedFresh: 0 }))
-  );
   
   // Dynamic color based on theme
   const textColor = theme === 'dark' ? '#fff' : '#000';
@@ -68,43 +65,8 @@ const Sustainability = () => {
     };
   }, []);
 
-  // Animate water data when chart becomes visible
-  useEffect(() => {
-    if (animateChart && activeChart === 'water') {
-      // Reset animation data
-      setAnimatedWaterData(
-        waterUsageData.map(item => ({ ...item, animatedRecycled: 0, animatedFresh: 0 }))
-      );
-      
-      // Animate the water filling effect
-      const animationDuration = 1500; // 1.5 seconds
-      const steps = 20; // Number of animation steps
-      const stepDuration = animationDuration / steps;
-      
-      let step = 0;
-      
-      const animateStep = () => {
-        if (step < steps) {
-          setAnimatedWaterData(prev => 
-            prev.map((item, idx) => {
-              const progress = (step + 1) / steps;
-              return {
-                ...item,
-                animatedRecycled: Math.round(item.recycled * progress),
-                animatedFresh: Math.round(item.fresh * progress)
-              };
-            })
-          );
-          
-          step++;
-          setTimeout(animateStep, stepDuration);
-        }
-      };
-      
-      // Start animation
-      animateStep();
-    }
-  }, [animateChart, activeChart]);
+  // Format percentage values without decimals
+  const formatPercentage = (value: number) => `${Math.round(value)}%`;
 
   // Custom tooltip content for better dark mode visibility
   const CustomTooltip = ({ active, payload, label }: any) => {
@@ -122,9 +84,6 @@ const Sustainability = () => {
     }
     return null;
   };
-
-  // Format percentage values without decimals
-  const formatPercentage = (value: number) => `${Math.round(value)}%`;
 
   // Axis tick formatter for better visibility
   const axisTickFormatter = (value: any) => value.toString();
@@ -299,7 +258,7 @@ const Sustainability = () => {
                 </div>
                 <ResponsiveContainer width="100%" height="90%">
                   <BarChart
-                    data={animatedWaterData}
+                    data={waterUsageData}
                     margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
                     stackOffset="expand"
                     barSize={40}
@@ -330,15 +289,14 @@ const Sustainability = () => {
                       )}
                     />
                     <Bar 
-                      dataKey="animatedRecycled" 
+                      dataKey="recycled" 
                       name="Recycled Water" 
                       stackId="a" 
                       fill="#3b82f6"
                       radius={[4, 4, 0, 0]}
-                      className="water-bar"
                     >
                       <LabelList 
-                        dataKey="animatedRecycled" 
+                        dataKey="recycled" 
                         position="center" 
                         formatter={(value: number) => `${Math.round(value)}%`}
                         fill="white"
@@ -346,14 +304,14 @@ const Sustainability = () => {
                       />
                     </Bar>
                     <Bar 
-                      dataKey="animatedFresh" 
+                      dataKey="fresh" 
                       name="Fresh Water" 
                       stackId="a" 
                       fill="#64748b"
                       radius={[4, 4, 0, 0]}
                     >
                       <LabelList 
-                        dataKey="animatedFresh" 
+                        dataKey="fresh" 
                         position="center" 
                         formatter={(value: number) => `${Math.round(value)}%`}
                         fill="white"

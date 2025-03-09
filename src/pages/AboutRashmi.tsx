@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import Header from '@/components/Header';
@@ -121,7 +120,7 @@ const AboutRashmi = () => {
                         <MapPin className="text-white w-4 h-4" />
                       </div>
                       <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 whitespace-nowrap bg-background/80 backdrop-blur-sm px-2 py-1 rounded text-xs">
-                        Kharagpur, WB
+                        Kolkata HQ
                       </div>
                     </div>
                   </div>
@@ -133,7 +132,19 @@ const AboutRashmi = () => {
                         <MapPin className="text-white w-4 h-4" />
                       </div>
                       <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 whitespace-nowrap bg-background/80 backdrop-blur-sm px-2 py-1 rounded text-xs">
-                        Jhargram, WB
+                        Factory Location
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="absolute top-1/2 right-1/4 z-20">
+                    <div className="relative">
+                      <div className="absolute w-6 h-6 bg-rashmi-red rounded-full animate-ping opacity-75"></div>
+                      <div className="relative w-6 h-6 bg-rashmi-red rounded-full flex items-center justify-center">
+                        <MapPin className="text-white w-4 h-4" />
+                      </div>
+                      <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 whitespace-nowrap bg-background/80 backdrop-blur-sm px-2 py-1 rounded text-xs">
+                        Ideal Center, A J C Bose Road
                       </div>
                     </div>
                   </div>
