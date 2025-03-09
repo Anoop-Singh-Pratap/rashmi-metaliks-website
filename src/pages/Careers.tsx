@@ -1,68 +1,83 @@
 
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import RevealText from '@/components/ui/RevealText';
 import { motion } from 'framer-motion';
-import { Briefcase, MapPin, Filter, Search, ArrowRight, Award, Heart, BookOpen, Clock, Users, Coffee } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Briefcase, MapPin, Filter, Search, Building, Heart, Award, Clock, Users, ChevronDown, ChevronUp } from 'lucide-react';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+import RevealText from '../components/ui/RevealText';
+
+// Sample job listings - would come from an API in a real app
+const jobListings = [
+  {
+    id: 1,
+    title: "Process Engineer",
+    department: "Manufacturing",
+    location: "Kharagpur, WB",
+    type: "Full-time",
+    description: "Optimize production processes for our state-of-the-art manufacturing facility.",
+    requirements: "B.Tech in Metallurgy or related field, 3+ years experience in steel manufacturing. Knowledge of DI pipe production is a plus.",
+    responsibilities: [
+      "Monitor and optimize manufacturing processes",
+      "Implement quality control procedures",
+      "Identify opportunities for process improvement",
+      "Work with cross-functional teams to increase efficiency"
+    ]
+  },
+  {
+    id: 2,
+    title: "Quality Control Manager",
+    department: "Quality",
+    location: "Jhargram, WB",
+    type: "Full-time",
+    description: "Ensure our products meet the highest quality standards through rigorous testing and inspection.",
+    requirements: "B.Tech in Metallurgy/Materials Science with 5+ years in QA/QC role in steel industry. Knowledge of international standards required.",
+    responsibilities: [
+      "Oversee quality testing of raw materials and finished products",
+      "Maintain documentation of quality testing results",
+      "Train staff on quality control procedures",
+      "Implement improvements to quality management systems"
+    ]
+  },
+  {
+    id: 3,
+    title: "Sales Executive",
+    department: "Sales",
+    location: "Kolkata, WB",
+    type: "Full-time",
+    description: "Drive business development and expand our customer base across domestic and international markets.",
+    requirements: "Bachelor's degree with 3+ years in B2B sales, preferably in industrial products. Excellent communication and negotiation skills.",
+    responsibilities: [
+      "Identify and approach potential clients",
+      "Maintain relationships with existing customers",
+      "Prepare and present product demonstrations",
+      "Meet or exceed sales targets"
+    ]
+  },
+  {
+    id: 4,
+    title: "IT Systems Analyst",
+    department: "IT",
+    location: "Kolkata, WB",
+    type: "Full-time",
+    description: "Support and improve our IT infrastructure and enterprise systems to ensure smooth business operations.",
+    requirements: "Bachelor's in Computer Science or IT with 2+ years experience. Knowledge of ERP systems and industrial automation a plus.",
+    responsibilities: [
+      "Maintain and troubleshoot IT systems",
+      "Implement new technologies to improve efficiency",
+      "Provide technical support to employees",
+      "Ensure data security and integrity"
+    ]
+  }
+];
 
 const Careers = () => {
   const [selectedDepartment, setSelectedDepartment] = useState('All');
   const [selectedLocation, setSelectedLocation] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
+  const [expandedJob, setExpandedJob] = useState<number | null>(null);
   
-  // Mock job listings
-  const jobListings = [
-    {
-      id: 1,
-      title: 'Process Engineer',
-      department: 'Manufacturing',
-      location: 'Kharagpur, WB',
-      description: 'Looking for an experienced process engineer to optimize production processes for our DI pipe manufacturing line. The ideal candidate will have strong problem-solving skills and experience with lean manufacturing principles.',
-      requirements: 'B.Tech in Metallurgy or related field, 3+ years experience in steel manufacturing, knowledge of quality control systems, and excellent analytical skills.',
-      postedDate: '2023-10-15'
-    },
-    {
-      id: 2,
-      title: 'Quality Control Specialist',
-      department: 'Quality Assurance',
-      location: 'Kharagpur, WB',
-      description: 'Join our quality assurance team to ensure that all products meet our rigorous standards. Responsibilities include conducting tests, maintaining documentation, and implementing quality improvement initiatives.',
-      requirements: 'Degree in Engineering or related field, 2+ years of QA experience preferably in metal manufacturing, familiarity with ISO 9001 standards, and attention to detail.',
-      postedDate: '2023-10-10'
-    },
-    {
-      id: 3,
-      title: 'Marketing Manager',
-      department: 'Marketing',
-      location: 'Kolkata, WB',
-      description: 'Lead our marketing efforts to promote Rashmi Metaliks products across domestic and international markets. Develop comprehensive marketing strategies to increase brand awareness and market share.',
-      requirements: 'MBA in Marketing, 5+ years of experience in B2B marketing preferably in industrial/manufacturing sector, excellent communication skills, and experience in digital marketing.',
-      postedDate: '2023-10-05'
-    },
-    {
-      id: 4,
-      title: 'Maintenance Technician',
-      department: 'Operations',
-      location: 'Jhargram, WB',
-      description: 'Ensure the optimal functioning of our manufacturing equipment through regular maintenance and prompt repairs. Help implement preventive maintenance programs to minimize downtime.',
-      requirements: 'Diploma/ITI in Mechanical or Electrical, 2+ years of experience in industrial maintenance, knowledge of hydraulic and pneumatic systems, and problem-solving ability.',
-      postedDate: '2023-09-28'
-    },
-    {
-      id: 5,
-      title: 'HR Executive',
-      department: 'Human Resources',
-      location: 'Kolkata, WB',
-      description: 'Support our HR department in recruitment, employee relations, and policy implementation. Help create a positive work environment and ensure compliance with labor laws.',
-      requirements: 'MBA/PG in HR, 2+ years of HR experience preferably in manufacturing industry, knowledge of labor laws, and strong interpersonal skills.',
-      postedDate: '2023-09-25'
-    }
-  ];
-  
-  // Generate unique departments and locations for filters
+  // Extract unique departments and locations for filters
   const departments = ['All', ...Array.from(new Set(jobListings.map(job => job.department)))];
   const locations = ['All', ...Array.from(new Set(jobListings.map(job => job.location)))];
   
@@ -74,462 +89,493 @@ const Careers = () => {
      job.description.toLowerCase().includes(searchTerm.toLowerCase()))
   );
   
-  // Format date function
-  const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString(undefined, options);
+  const toggleJob = (id: number) => {
+    setExpandedJob(expandedJob === id ? null : id);
   };
   
   // Benefits data
   const benefits = [
-    { icon: <Award size={24} />, title: "Professional Growth", description: "Continuous learning and development opportunities" },
-    { icon: <Heart size={24} />, title: "Health Benefits", description: "Comprehensive medical coverage for you and your family" },
-    { icon: <Coffee size={24} />, title: "Work-Life Balance", description: "Flexible scheduling and generous leave policies" },
-    { icon: <Users size={24} />, title: "Collaborative Culture", description: "Team-oriented environment fostering innovation" },
-    { icon: <BookOpen size={24} />, title: "Education Support", description: "Tuition assistance for continued education" },
-    { icon: <Clock size={24} />, title: "Career Advancement", description: "Clear pathways for growth and promotion" }
+    {
+      title: "Career Growth",
+      description: "Continuous learning and career advancement opportunities",
+      icon: Award
+    },
+    {
+      title: "Work-Life Balance",
+      description: "Flexible schedules and supportive work environment",
+      icon: Clock
+    },
+    {
+      title: "Health Benefits",
+      description: "Comprehensive health insurance and wellness programs",
+      icon: Heart
+    },
+    {
+      title: "Collaborative Culture",
+      description: "A diverse, inclusive, and supportive team environment",
+      icon: Users
+    }
+  ];
+  
+  // Application steps
+  const applicationSteps = [
+    {
+      title: "Apply Online",
+      description: "Submit your application through our careers portal"
+    },
+    {
+      title: "Initial Screening",
+      description: "Our HR team reviews your application and qualifications"
+    },
+    {
+      title: "Interview Process",
+      description: "Multiple rounds to assess your skills and fit"
+    },
+    {
+      title: "Offer & Onboarding",
+      description: "Welcome to the Rashmi team!"
+    }
   ];
   
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Careers at Rashmi Metaliks | Join Our Team</title>
-        <meta name="description" content="Explore exciting career opportunities at Rashmi Metaliks, a global leader in steel manufacturing with a focus on growth and innovation." />
+        <title>Careers at Rashmi Group | Join Our Team</title>
+        <meta name="description" content="Explore exciting career opportunities at Rashmi Group, a global leader in steel manufacturing. Join our team and be part of our growth story." />
+        <meta name="keywords" content="Rashmi Group careers, steel industry jobs, manufacturing jobs, Rashmi Metaliks careers" />
+        <link rel="canonical" href="https://www.rashmi.com/careers" />
       </Helmet>
+      
       <Header />
-      <main>
-        {/* Hero Section */}
-        <section className="py-24 bg-gradient-to-b from-rashmi-dark to-background relative overflow-hidden">
-          <div className="absolute inset-0 opacity-20">
-            <div className="grid grid-cols-10 grid-rows-10 h-full w-full">
-              {Array.from({ length: 100 }).map((_, index) => (
-                <div key={index} className="border border-rashmi-red/5"></div>
-              ))}
+      
+      {/* Hero Section */}
+      <section className="pt-32 pb-16 relative overflow-hidden">
+        <div className="absolute inset-0 z-0 bg-gradient-to-b from-rashmi-dark to-background/80">
+          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3&auto=format&fit=crop&q=80')] bg-fixed bg-center bg-cover opacity-10"></div>
+        </div>
+        
+        <div className="container mx-auto px-4 relative z-10">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="max-w-4xl mx-auto text-center"
+          >
+            <RevealText
+              text="Join Our Team"
+              as="h1"
+              className="text-4xl md:text-5xl font-display font-bold text-foreground mb-4"
+              staggerDelay={0.08}
+            />
+            <RevealText
+              text="Build Your Career with Rashmi Group"
+              as="h2"
+              className="text-2xl md:text-3xl font-display text-muted-foreground mb-6"
+              staggerDelay={0.05}
+              initialDelay={0.5}
+            />
+            <p className="text-muted-foreground text-lg max-w-3xl mx-auto mb-8 animate-fade-in" style={{ animationDelay: '1s' }}>
+              Join one of the fastest growing Business Conglomerates in the eastern region of India. 
+              We offer exciting opportunities across various departments and locations.
+            </p>
+            
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.8 }}
+            >
+              <a 
+                href="#openings" 
+                className="inline-flex items-center px-6 py-3 bg-rashmi-red text-white font-medium rounded-lg transition-colors hover:bg-rashmi-red/90"
+              >
+                View Open Positions
+                <ChevronDown size={18} className="ml-2" />
+              </a>
+            </motion.div>
+          </motion.div>
+        </div>
+        
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.1 }}
+          transition={{ duration: 1, delay: 0.5 }}
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-5xl pointer-events-none z-[-1]"
+        >
+          <div className="bg-rashmi-red/20 rounded-full w-[600px] h-[600px] blur-[150px] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+        </motion.div>
+      </section>
+      
+      {/* Company Culture Section */}
+      <section className="py-16 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div>
+              <div className="text-rashmi-red font-medium mb-3">
+                <RevealText text="Our Culture" />
+              </div>
+              <RevealText
+                text="Why Work With Us"
+                as="h2"
+                className="text-3xl md:text-4xl font-display font-bold mb-6 text-foreground"
+              />
+              <p className="text-muted-foreground mb-6">
+                At Rashmi Group, we believe our people are our greatest asset. We foster a culture of innovation, 
+                continuous learning, and teamwork. We are committed to creating a diverse and inclusive workplace 
+                where everyone can thrive and contribute to our shared success.
+              </p>
+              <p className="text-muted-foreground mb-6">
+                As one of the fastest growing business conglomerates in the eastern region of India, 
+                we offer exciting opportunities for growth and development across various functions and locations.
+              </p>
+              
+              <motion.div 
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5 }}
+                className="flex items-center px-4 py-3 bg-card border border-border rounded-lg mb-4"
+              >
+                <Building className="text-rashmi-red mr-3 flex-shrink-0" size={24} />
+                <div>
+                  <h3 className="font-medium">Industry Leader</h3>
+                  <p className="text-sm text-muted-foreground">Work with cutting-edge technology and industry experts</p>
+                </div>
+              </motion.div>
+              
+              <motion.div 
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+                className="flex items-center px-4 py-3 bg-card border border-border rounded-lg"
+              >
+                <Users className="text-rashmi-red mr-3 flex-shrink-0" size={24} />
+                <div>
+                  <h3 className="font-medium">Diverse Teams</h3>
+                  <p className="text-sm text-muted-foreground">Collaborate with talented professionals from various backgrounds</p>
+                </div>
+              </motion.div>
+            </div>
+            
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="rounded-xl overflow-hidden h-[400px] relative group"
+            >
+              <img 
+                src="https://images.unsplash.com/photo-1541746972996-4e0b0f43e02a?ixlib=rb-4.0.3&auto=format&fit=crop&q=80" 
+                alt="Rashmi Group Team" 
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-rashmi-dark/80 to-transparent flex items-end">
+                <div className="p-6">
+                  <h3 className="text-white text-xl font-bold">Our Global Team</h3>
+                  <p className="text-white/80">Talented professionals working together to achieve excellence</p>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+      
+      {/* Benefits Section */}
+      <section className="py-16">
+        <div className="container mx-auto px-4">
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <div className="text-rashmi-red font-medium mb-3">
+              <RevealText text="Employee Benefits" />
+            </div>
+            <RevealText
+              text="What We Offer"
+              as="h2"
+              className="text-3xl md:text-4xl font-display font-bold mb-6 text-foreground"
+            />
+            <p className="text-muted-foreground">
+              We provide a comprehensive benefits package to support your professional growth and personal wellbeing.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {benefits.map((benefit, index) => (
+              <motion.div
+                key={benefit.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="bg-card border border-border rounded-xl p-6 hover:shadow-lg transition-all duration-300"
+              >
+                <div className="bg-rashmi-red/10 w-16 h-16 rounded-full flex items-center justify-center mb-4">
+                  {React.createElement(benefit.icon, { className: "text-rashmi-red", size: 32 })}
+                </div>
+                <h3 className="text-lg font-bold mb-2">{benefit.title}</h3>
+                <p className="text-muted-foreground">{benefit.description}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+      
+      {/* Job Listings Section */}
+      <section id="openings" className="py-16 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <div className="text-rashmi-red font-medium mb-3">
+              <RevealText text="Open Positions" />
+            </div>
+            <RevealText
+              text="Current Opportunities"
+              as="h2"
+              className="text-3xl md:text-4xl font-display font-bold mb-6 text-foreground"
+            />
+            <p className="text-muted-foreground">
+              Join our team of talented professionals and be part of our journey toward excellence in the steel industry.
+            </p>
+          </div>
+          
+          {/* Filters */}
+          <div className="bg-card p-6 rounded-xl border border-border/40 shadow-sm mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Department Filter */}
+              <div>
+                <label className="block text-sm font-medium mb-2">Department</label>
+                <select 
+                  className="w-full p-2 rounded-md border border-border bg-background"
+                  value={selectedDepartment}
+                  onChange={(e) => setSelectedDepartment(e.target.value)}
+                >
+                  {departments.map(dept => (
+                    <option key={dept} value={dept}>{dept}</option>
+                  ))}
+                </select>
+              </div>
+              
+              {/* Location Filter */}
+              <div>
+                <label className="block text-sm font-medium mb-2">Location</label>
+                <select 
+                  className="w-full p-2 rounded-md border border-border bg-background"
+                  value={selectedLocation}
+                  onChange={(e) => setSelectedLocation(e.target.value)}
+                >
+                  {locations.map(loc => (
+                    <option key={loc} value={loc}>{loc}</option>
+                  ))}
+                </select>
+              </div>
+              
+              {/* Search */}
+              <div>
+                <label className="block text-sm font-medium mb-2">Search</label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Search positions..."
+                    className="w-full p-2 pl-10 rounded-md border border-border bg-background"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                  <Search className="absolute left-3 top-2.5 text-muted-foreground w-4 h-4" />
+                </div>
+              </div>
             </div>
           </div>
           
-          <div className="container mx-auto px-4 relative">
-            <div className="text-center max-w-3xl mx-auto">
-              <RevealText
-                text="Build Your Career With Us"
-                as="h1"
-                className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-6 text-foreground"
-              />
-              <p className="text-xl text-muted-foreground mb-8">
-                Join a team that values innovation, growth, and excellence in everything we do
-              </p>
-              <Link
-                to="#job-openings"
-                className="inline-flex items-center px-6 py-3 bg-rashmi-red text-white rounded-md hover:bg-rashmi-red/90 transition-colors"
+          {/* Job Listings */}
+          <div className="space-y-4">
+            {filteredJobs.map(job => (
+              <motion.div 
+                key={job.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5 }}
+                className="bg-card rounded-xl border border-border/40 overflow-hidden shadow-sm"
               >
-                View Open Positions <ArrowRight size={18} className="ml-2" />
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* Company Culture Section */}
-        <section className="py-20 bg-background">
-          <div className="container mx-auto px-4">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-              <div className="space-y-6">
-                <div className="text-rashmi-red font-medium mb-3">
-                  <RevealText text="Our Culture" />
-                </div>
-                <RevealText
-                  text="Where Innovation Meets Excellence"
-                  as="h2"
-                  className="text-3xl md:text-4xl font-display font-bold mb-6 text-foreground"
-                />
-                
-                <div className="space-y-4 text-muted-foreground">
-                  <p>
-                    At Rashmi Metaliks, we believe that our people are our greatest asset. We foster a culture 
-                    of continuous improvement, teamwork, and respect where every employee has the opportunity to 
-                    grow both personally and professionally.
-                  </p>
-                  <p>
-                    As one of the world's leading manufacturers of ductile iron pipes and steel products, we offer 
-                    unique challenges and growth opportunities. Our team members gain exposure to cutting-edge 
-                    technologies and processes in a supportive and collaborative environment.
-                  </p>
-                  <p>
-                    We are committed to maintaining a diverse and inclusive workplace where innovative ideas thrive 
-                    and everyone has a voice in our shared success.
-                  </p>
-                </div>
-              </div>
-              
-              {/* Image Side */}
-              <div className="relative">
-                <div className="relative rounded-2xl overflow-hidden group h-[400px]">
-                  <div className="absolute inset-0 bg-gradient-to-br from-rashmi-red/20 to-rashmi-dark/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10"></div>
-                  <img 
-                    src="https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&auto=format&fit=crop&q=80" 
-                    alt="Team collaboration at Rashmi Metaliks" 
-                    className="w-full h-full object-cover rounded-2xl transform transition-transform duration-700 group-hover:scale-105"
-                  />
+                {/* Job Header - always visible */}
+                <div className="p-6">
+                  <div className="flex flex-wrap items-start justify-between gap-4">
+                    <div>
+                      <h3 className="text-xl font-bold">{job.title}</h3>
+                      <div className="flex flex-wrap items-center mt-2 gap-3">
+                        <div className="flex items-center text-sm text-muted-foreground">
+                          <Briefcase className="w-4 h-4 mr-1" />
+                          <span>{job.department}</span>
+                        </div>
+                        <div className="flex items-center text-sm text-muted-foreground">
+                          <MapPin className="w-4 h-4 mr-1" />
+                          <span>{job.location}</span>
+                        </div>
+                        <div className="px-2 py-0.5 bg-rashmi-red/10 text-rashmi-red text-xs rounded-full">
+                          {job.type}
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => toggleJob(job.id)}
+                      className={`px-4 py-2 rounded-md text-sm font-medium transition-colors flex items-center ${
+                        expandedJob === job.id 
+                          ? 'bg-muted hover:bg-muted/80 text-foreground' 
+                          : 'bg-rashmi-red hover:bg-rashmi-red/90 text-white'
+                      }`}
+                    >
+                      {expandedJob === job.id ? 'View Less' : 'View Details'}
+                      {expandedJob === job.id ? <ChevronUp className="ml-1 w-4 h-4" /> : <ChevronDown className="ml-1 w-4 h-4" />}
+                    </button>
+                  </div>
                 </div>
                 
-                {/* Testimonial overlay */}
-                <div className="absolute bottom-8 right-8 max-w-sm bg-card/90 backdrop-blur-sm p-6 rounded-xl border border-border shadow-lg">
-                  <div className="mb-3">
-                    <div className="flex">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <svg key={star} className="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
-                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                        </svg>
-                      ))}
+                {/* Expanded Content */}
+                {expandedJob === job.id && (
+                  <div className="px-6 pb-6 pt-2 border-t border-border/40">
+                    <div className="prose prose-sm max-w-none">
+                      <div className="mb-4">
+                        <h4 className="text-base font-semibold mb-2">Description</h4>
+                        <p className="text-muted-foreground">{job.description}</p>
+                      </div>
+                      
+                      <div className="mb-4">
+                        <h4 className="text-base font-semibold mb-2">Requirements</h4>
+                        <p className="text-muted-foreground">{job.requirements}</p>
+                      </div>
+                      
+                      <div className="mb-6">
+                        <h4 className="text-base font-semibold mb-2">Responsibilities</h4>
+                        <ul className="list-disc pl-5 text-muted-foreground">
+                          {job.responsibilities.map((item, i) => (
+                            <li key={i}>{item}</li>
+                          ))}
+                        </ul>
+                      </div>
+                      
+                      <div className="text-right">
+                        <a
+                          href={`/careers/apply/${job.id}`}
+                          className="inline-block px-6 py-3 bg-rashmi-red hover:bg-rashmi-red/90 text-white rounded-md transition-colors"
+                        >
+                          Apply Now
+                        </a>
+                      </div>
                     </div>
                   </div>
-                  <p className="text-sm italic text-muted-foreground mb-4">
-                    "Working at Rashmi has been rewarding both professionally and personally. The company truly invests in its people and provides real growth opportunities."
-                  </p>
-                  <div className="flex items-center">
-                    <div className="w-10 h-10 bg-rashmi-red/20 rounded-full flex items-center justify-center text-rashmi-red font-bold">RP</div>
-                    <div className="ml-3">
-                      <p className="text-sm font-semibold">Rahul Patel</p>
-                      <p className="text-xs text-muted-foreground">Process Engineer, 5 years</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-        
-        {/* Benefits Section */}
-        <section className="py-20 bg-muted/30">
-          <div className="container mx-auto px-4">
-            <div className="text-center max-w-3xl mx-auto mb-16">
-              <div className="text-rashmi-red font-medium mb-3">
-                <RevealText text="Why Join Us" />
-              </div>
-              <RevealText
-                text="Employee Benefits & Perks"
-                as="h2"
-                className="text-3xl md:text-4xl font-display font-bold mb-6 text-foreground"
-              />
-              <p className="text-muted-foreground">
-                We offer competitive compensation and comprehensive benefits to support your well-being and professional growth.
-              </p>
-            </div>
+                )}
+              </motion.div>
+            ))}
             
-            {/* Benefits Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {benefits.map((benefit, index) => (
-                <motion.div
-                  key={benefit.title}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="bg-card rounded-xl p-6 border border-border/40 hover:border-rashmi-red/30 transition-colors"
-                >
-                  <div className="w-12 h-12 rounded-full bg-rashmi-red/10 flex items-center justify-center text-rashmi-red mb-4">
-                    {benefit.icon}
-                  </div>
-                  <h3 className="text-xl font-bold mb-2">{benefit.title}</h3>
-                  <p className="text-muted-foreground">{benefit.description}</p>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
-        
-        {/* Job Listings Section */}
-        <section id="job-openings" className="py-20 bg-background">
-          <div className="container mx-auto px-4">
-            <div className="text-center max-w-3xl mx-auto mb-8">
-              <div className="text-rashmi-red font-medium mb-3">
-                <RevealText text="Open Positions" />
-              </div>
-              <RevealText
-                text="Current Opportunities"
-                as="h2"
-                className="text-3xl md:text-4xl font-display font-bold mb-6 text-foreground"
-              />
-              <p className="text-muted-foreground">
-                Join our team of talented professionals and be part of our journey toward excellence in the steel industry.
-              </p>
-            </div>
-            
-            {/* Filters */}
-            <div className="bg-card p-6 rounded-xl border border-border/40 shadow-sm mb-8">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {/* Department Filter */}
-                <div>
-                  <label className="block text-sm font-medium mb-2">Department</label>
-                  <div className="relative">
-                    <select 
-                      className="w-full p-2 pl-10 rounded-md border border-border bg-background appearance-none"
-                      value={selectedDepartment}
-                      onChange={(e) => setSelectedDepartment(e.target.value)}
-                    >
-                      {departments.map(dept => (
-                        <option key={dept} value={dept}>{dept}</option>
-                      ))}
-                    </select>
-                    <Filter className="absolute left-3 top-2.5 text-muted-foreground w-4 h-4" />
-                  </div>
-                </div>
-                
-                {/* Location Filter */}
-                <div>
-                  <label className="block text-sm font-medium mb-2">Location</label>
-                  <div className="relative">
-                    <select 
-                      className="w-full p-2 pl-10 rounded-md border border-border bg-background appearance-none"
-                      value={selectedLocation}
-                      onChange={(e) => setSelectedLocation(e.target.value)}
-                    >
-                      {locations.map(loc => (
-                        <option key={loc} value={loc}>{loc}</option>
-                      ))}
-                    </select>
-                    <MapPin className="absolute left-3 top-2.5 text-muted-foreground w-4 h-4" />
-                  </div>
-                </div>
-                
-                {/* Search */}
-                <div>
-                  <label className="block text-sm font-medium mb-2">Search</label>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      placeholder="Search positions..."
-                      className="w-full p-2 pl-10 rounded-md border border-border bg-background"
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                    <Search className="absolute left-3 top-2.5 text-muted-foreground w-4 h-4" />
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            {/* Job Listings */}
-            <div className="space-y-4">
-              {filteredJobs.map(job => (
-                <JobListing key={job.id} job={job} formatDate={formatDate} />
-              ))}
-              
-              {filteredJobs.length === 0 && (
-                <div className="text-center py-12 bg-card rounded-xl border border-border/40">
-                  <Briefcase className="mx-auto text-muted-foreground w-12 h-12 mb-4" />
-                  <h3 className="text-lg font-medium mb-2">No positions found</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Try adjusting your filters or check back later for new opportunities.
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-        </section>
-        
-        {/* Application Process */}
-        <section className="py-20 bg-muted/30">
-          <div className="container mx-auto px-4">
-            <div className="text-center max-w-3xl mx-auto mb-16">
-              <div className="text-rashmi-red font-medium mb-3">
-                <RevealText text="How To Apply" />
-              </div>
-              <RevealText
-                text="Our Hiring Process"
-                as="h2"
-                className="text-3xl md:text-4xl font-display font-bold mb-6 text-foreground"
-              />
-              <p className="text-muted-foreground">
-                We've designed a transparent and efficient hiring process to help you find your perfect role at Rashmi Metaliks.
-              </p>
-            </div>
-            
-            {/* Process Timeline */}
-            <div className="relative max-w-4xl mx-auto">
-              {/* Timeline Line */}
-              <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-border"></div>
-              
-              {/* Timeline Steps */}
-              <div className="space-y-16">
-                <TimelineStep 
-                  title="Application Submission" 
-                  description="Submit your application through our online portal with your updated resume and cover letter."
-                  number={1}
-                  position="left"
-                />
-                
-                <TimelineStep 
-                  title="Initial Screening" 
-                  description="Our HR team reviews your application and conducts a preliminary phone interview."
-                  number={2}
-                  position="right"
-                />
-                
-                <TimelineStep 
-                  title="Technical Assessment" 
-                  description="Depending on the role, you may be asked to complete a technical assessment or case study."
-                  number={3}
-                  position="left"
-                />
-                
-                <TimelineStep 
-                  title="In-Person Interviews" 
-                  description="Meet with the hiring manager and team members to discuss your experience and fit."
-                  number={4}
-                  position="right"
-                />
-                
-                <TimelineStep 
-                  title="Final Decision & Offer" 
-                  description="Successful candidates receive an offer detailing compensation and benefits."
-                  number={5}
-                  position="left"
-                />
-              </div>
-            </div>
-          </div>
-        </section>
-        
-        {/* CTA Section */}
-        <section className="py-20 bg-background">
-          <div className="container mx-auto px-4">
-            <div className="bg-gradient-to-r from-rashmi-dark/90 to-rashmi-dark rounded-2xl p-8 md:p-12 relative overflow-hidden">
-              <div className="absolute top-0 left-0 w-full h-full opacity-20">
-                <div className="absolute top-0 right-0 w-96 h-96 bg-rashmi-red/30 rounded-full filter blur-3xl"></div>
-                <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-500/20 rounded-full filter blur-3xl"></div>
-              </div>
-              
-              <div className="relative z-10 max-w-3xl mx-auto text-center">
-                <h2 className="text-3xl md:text-4xl font-display font-bold text-white mb-6">
-                  Ready to Grow Your Career With Us?
-                </h2>
-                <p className="text-white/80 mb-8">
-                  Even if you don't see a perfect match in our current openings, we'd love to hear from you. Send us your resume and we'll keep you in mind for future opportunities.
+            {filteredJobs.length === 0 && (
+              <div className="text-center py-12 bg-card rounded-xl border border-border/40">
+                <Briefcase className="mx-auto text-muted-foreground w-12 h-12 mb-4" />
+                <h3 className="text-lg font-medium mb-2">No positions found</h3>
+                <p className="text-sm text-muted-foreground">
+                  Try adjusting your filters or check back later for new opportunities.
                 </p>
-                <div className="flex flex-wrap justify-center gap-4">
-                  <a 
-                    href="mailto:careers@rashmigroup.com" 
-                    className="px-8 py-3 bg-rashmi-red text-white rounded-md hover:bg-rashmi-red/90 transition-colors"
-                  >
-                    Email Your Resume
-                  </a>
-                  <Link 
-                    to="/contact-us" 
-                    className="px-8 py-3 bg-transparent border border-white/30 text-white rounded-md hover:bg-white/10 transition-colors"
-                  >
-                    Contact HR Team
-                  </Link>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+      
+      {/* Application Process Section */}
+      <section className="py-16">
+        <div className="container mx-auto px-4">
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <div className="text-rashmi-red font-medium mb-3">
+              <RevealText text="How to Join" />
+            </div>
+            <RevealText
+              text="Application Process"
+              as="h2"
+              className="text-3xl md:text-4xl font-display font-bold mb-6 text-foreground"
+            />
+            <p className="text-muted-foreground">
+              Our recruitment process is designed to find the best talent while providing you with a smooth candidate experience.
+            </p>
+          </div>
+          
+          <div className="max-w-4xl mx-auto">
+            <div className="relative">
+              {/* Timeline Line */}
+              <div className="absolute left-0 md:left-1/2 top-0 bottom-0 w-px bg-border transform md:-translate-x-1/2"></div>
+              
+              {/* Steps */}
+              {applicationSteps.map((step, index) => (
+                <div key={index} className="relative z-10 mb-12">
+                  <div className={`flex flex-col ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} items-center`}>
+                    <div className="md:w-1/2 flex justify-center md:justify-end md:pr-8">
+                      <div className={`bg-card border border-border p-6 rounded-xl ${index % 2 === 0 ? 'md:text-right' : ''}`}>
+                        <h3 className="text-xl font-bold mb-2">{step.title}</h3>
+                        <p className="text-muted-foreground">{step.description}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-rashmi-red flex items-center justify-center z-20 my-4 md:my-0">
+                      <span className="text-white font-bold text-sm">{index + 1}</span>
+                    </div>
+                    
+                    <div className="md:w-1/2 md:pl-8">
+                      {/* Empty space for layout purposes */}
+                    </div>
+                  </div>
                 </div>
-              </div>
+              ))}
             </div>
           </div>
-        </section>
-      </main>
-      <Footer />
-    </div>
-  );
-};
-
-// Job Listing Component
-const JobListing = ({ job, formatDate }) => {
-  const [expanded, setExpanded] = useState(false);
-  
-  return (
-    <motion.div 
-      className="bg-card rounded-xl border border-border/40 overflow-hidden shadow-sm"
-      initial={false}
-      animate={{ height: expanded ? 'auto' : 'initial' }}
-      transition={{ duration: 0.3 }}
-    >
-      {/* Job Header - always visible */}
-      <div className="p-6">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <h3 className="text-xl font-bold">{job.title}</h3>
-            <div className="flex flex-wrap items-center mt-2 gap-3">
-              <div className="flex items-center text-sm text-muted-foreground">
-                <Briefcase className="w-4 h-4 mr-1" />
-                <span>{job.department}</span>
-              </div>
-              <div className="flex items-center text-sm text-muted-foreground">
-                <MapPin className="w-4 h-4 mr-1" />
-                <span>{job.location}</span>
-              </div>
-              <div className="flex items-center text-sm text-muted-foreground">
-                <Clock className="w-4 h-4 mr-1" />
-                <span>Posted {formatDate(job.postedDate)}</span>
-              </div>
-            </div>
-          </div>
-          <button
-            onClick={() => setExpanded(!expanded)}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-              expanded 
-                ? 'bg-muted hover:bg-muted/80 text-foreground' 
-                : 'bg-rashmi-red hover:bg-rashmi-red/90 text-white'
-            }`}
+        </div>
+      </section>
+      
+      {/* CTA Section */}
+      <section className="py-16 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="max-w-5xl mx-auto text-center bg-card border border-border p-10 md:p-16 rounded-2xl relative"
           >
-            {expanded ? 'View Less' : 'View Details'}
-          </button>
+            <div className="absolute top-0 left-0 w-full h-full overflow-hidden rounded-2xl z-0">
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-2xl">
+                <div className="bg-rashmi-red/5 rounded-full w-[600px] h-[600px] blur-[150px] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+              </div>
+            </div>
+            
+            <div className="relative z-10">
+              <h2 className="text-3xl md:text-4xl font-display font-bold mb-6">
+                Ready to <span className="text-rashmi-red">Join Our Team?</span>
+              </h2>
+              <p className="text-muted-foreground text-lg mb-10 max-w-2xl mx-auto">
+                Don't see a position that fits your skills? Submit your resume for future opportunities.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <motion.a
+                  href="#openings"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                  className="inline-flex items-center px-6 py-3 bg-rashmi-red text-white font-medium rounded-lg transition-colors hover:bg-rashmi-red/90"
+                >
+                  Browse Open Positions
+                  <ChevronDown className="ml-2" size={18} />
+                </motion.a>
+                <motion.a
+                  href="/contact-us"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                  className="inline-flex items-center px-6 py-3 bg-card border border-border text-foreground font-medium rounded-lg transition-colors hover:bg-muted"
+                >
+                  Contact HR Team
+                </motion.a>
+              </div>
+            </div>
+          </motion.div>
         </div>
-      </div>
+      </section>
       
-      {/* Expanded Content */}
-      {expanded && (
-        <div className="px-6 pb-6 pt-2 border-t border-border/40">
-          <div className="prose prose-sm max-w-none">
-            <div className="mb-4">
-              <h4 className="text-base font-semibold mb-2">Description</h4>
-              <p className="text-muted-foreground">{job.description}</p>
-            </div>
-            <div className="mb-6">
-              <h4 className="text-base font-semibold mb-2">Requirements</h4>
-              <p className="text-muted-foreground">{job.requirements}</p>
-            </div>
-            <div className="text-right">
-              <a
-                href={`mailto:careers@rashmigroup.com?subject=Application for ${job.title} position&body=Dear HR Team, %0D%0A%0D%0AI am interested in applying for the ${job.title} position at Rashmi Metaliks. Please find my attached resume for your consideration.%0D%0A%0D%0AThank you,%0D%0A[Your Name]`}
-                className="inline-block px-6 py-3 bg-rashmi-red hover:bg-rashmi-red/90 text-white rounded-md transition-colors"
-              >
-                Apply Now
-              </a>
-            </div>
-          </div>
-        </div>
-      )}
-    </motion.div>
-  );
-};
-
-// Timeline Step Component
-interface TimelineStepProps {
-  title: string;
-  description: string;
-  number: number;
-  position: "left" | "right";
-}
-
-const TimelineStep: React.FC<TimelineStepProps> = ({ title, description, number, position }) => {
-  return (
-    <div className="relative">
-      {/* Step Number */}
-      <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-rashmi-red flex items-center justify-center z-10">
-        <div className="text-white font-bold">{number}</div>
-      </div>
-      
-      {/* Content box */}
-      <motion.div 
-        className={`w-5/12 ${position === "left" ? "mr-auto pr-8" : "ml-auto pl-8"}`}
-        initial={{ opacity: 0, x: position === "left" ? -50 : 50 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5 }}
-      >
-        <div className="bg-card p-6 rounded-xl border border-border/40 shadow-sm">
-          <h3 className="text-xl font-bold mb-2">{title}</h3>
-          <p className="text-muted-foreground text-sm">{description}</p>
-        </div>
-      </motion.div>
+      <Footer />
     </div>
   );
 };

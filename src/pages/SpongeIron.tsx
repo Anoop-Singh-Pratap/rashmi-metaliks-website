@@ -159,25 +159,25 @@ const SpongeIron = () => {
         </motion.div>
 
         <motion.div
-  initial={{ opacity: 0, y: 50 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.8, delay: 0.8 }}
-  className="mt-16 text-center" // Changed from absolute positioning to relative with margin
->
-  <a 
-    href="#process" 
-    className="inline-flex flex-col items-center text-sm text-muted-foreground hover:text-foreground transition-colors duration-300"
-  >
-    <span className="mb-2">Explore Process</span>
-    <motion.div
-      animate={{ y: [0, 10, 0] }}
-      transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
-      className="bg-rashmi-red/90 rounded-full w-8 h-8 flex items-center justify-center"
-    >
-      <ArrowDown size={18} className="text-white" />
-    </motion.div>
-  </a>
-</motion.div>
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.8 }}
+          className="mt-16 text-center"
+        >
+          <a 
+            href="#process" 
+            className="inline-flex flex-col items-center text-sm text-muted-foreground hover:text-foreground transition-colors duration-300"
+          >
+            <span className="mb-2">Explore Process</span>
+            <motion.div
+              animate={{ y: [0, 10, 0] }}
+              transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+              className="bg-rashmi-red/90 rounded-full w-8 h-8 flex items-center justify-center"
+            >
+              <ArrowDown size={18} className="text-white" />
+            </motion.div>
+          </a>
+        </motion.div>
       </section>
 
       {/* Features Section */}
@@ -276,21 +276,21 @@ const SpongeIron = () => {
                   </h3>
                   <p className="text-muted-foreground">{processSteps[activeStep].description}</p>
                   
-                  <motion.div 
-      initial={{ width: 0 }}
-      animate={{ width: `${(activeStep + 1) / processSteps.length * 100}%` }}
-      className="h-full bg-rashmi-red rounded-full absolute top-0 left-0"
-      transition={{ 
-        duration: 0.5,
-        ease: "easeInOut",
-        type: "tween"  // Explicitly set the animation type
-      }}
-    ></motion.div>
-  </div>
-  <span className="ml-4 text-sm font-medium">
-    {Math.round((activeStep + 1) / processSteps.length * 100)}%
-  </span>
-</div>
+                  <div className="mt-6 relative h-2 w-full bg-border/30 rounded-full overflow-hidden">
+                    <motion.div 
+                      initial={{ width: 0 }}
+                      animate={{ width: `${(activeStep + 1) / processSteps.length * 100}%` }}
+                      className="h-full bg-rashmi-red rounded-full absolute top-0 left-0"
+                      transition={{ 
+                        duration: 0.5,
+                        ease: "easeInOut",
+                        type: "tween"
+                      }}
+                    ></motion.div>
+                    <span className="ml-4 text-sm font-medium absolute top-4">
+                      {Math.round((activeStep + 1) / processSteps.length * 100)}%
+                    </span>
+                  </div>
                 </div>
               </div>
             </motion.div>

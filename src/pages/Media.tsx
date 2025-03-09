@@ -1,260 +1,290 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Search, Calendar, ArrowRight, Eye, Clock } from 'lucide-react';
+import { Calendar, Globe, Search, Filter, EyeIcon, Download } from 'lucide-react';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+import RevealText from '../components/ui/RevealText';
 
-// Example news data
-const mockNewsData = [
+// Sample news data - in a real app, this would come from an API or CMS
+const newsData = [
   {
     id: 1,
-    title: "Rashmi Group Achieves Record Production",
-    date: "2023-10-15",
-    excerpt: "Rashmi Metaliks sets new industry benchmarks with record DI pipe production volume this quarter.",
-    image: "https://images.unsplash.com/photo-1611486212557-88be5ff6f941?ixlib=rb-4.0.3&auto=format&fit=crop&q=80",
+    title: "Rashmi Group Achieves Record Production Targets",
+    date: "2023-05-15",
     category: "Achievement",
-    slug: "record-production-2023"
+    excerpt: "Rashmi Group has achieved record-breaking production targets in the first quarter of 2023, surpassing industry standards.",
+    image: "https://images.unsplash.com/photo-1518640467707-6811f4a6ab73?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nunc sit amet ultricies lacinia, nunc nisl aliquam nisl, eget aliquam nunc nisl sit amet nisl. Sed euismod, nunc sit amet ultricies lacinia, nunc nisl aliquam nisl, eget aliquam nunc nisl sit amet nisl."
   },
   {
     id: 2,
-    title: "New Sustainability Initiative Launched",
-    date: "2023-09-22",
-    excerpt: "Rashmi Group introduces comprehensive sustainability program to reduce carbon footprint by 30% by 2025.",
-    image: "https://images.unsplash.com/photo-1473448912268-2022ce9509d8?ixlib=rb-4.0.3&auto=format&fit=crop&q=80",
-    category: "Sustainability",
-    slug: "sustainability-initiative-2023"
+    title: "New Manufacturing Facility Inaugurated in West Bengal",
+    date: "2023-03-22",
+    category: "Expansion",
+    excerpt: "Rashmi Group has inaugurated a state-of-the-art manufacturing facility in West Bengal, creating over 1000 new jobs.",
+    image: "https://images.unsplash.com/photo-1611284446314-60a58ac0deb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nunc sit amet ultricies lacinia, nunc nisl aliquam nisl, eget aliquam nunc nisl sit amet nisl. Sed euismod, nunc sit amet ultricies lacinia, nunc nisl aliquam nisl, eget aliquam nunc nisl sit amet nisl."
   },
   {
     id: 3,
-    title: "Expansion of Manufacturing Capacity",
-    date: "2023-08-10",
-    excerpt: "Rashmi Metaliks announces significant capacity expansion at Kharagpur facility to meet growing demand.",
-    image: "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?ixlib=rb-4.0.3&auto=format&fit=crop&q=80",
-    category: "Growth",
-    slug: "capacity-expansion-2023"
+    title: "Rashmi Group Receives International Quality Award",
+    date: "2023-02-10",
+    category: "Award",
+    excerpt: "Rashmi Group has been recognized with an International Quality Award for its exceptional product standards and quality control.",
+    image: "https://images.unsplash.com/photo-1607603750909-408f193a2cea?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nunc sit amet ultricies lacinia, nunc nisl aliquam nisl, eget aliquam nunc nisl sit amet nisl. Sed euismod, nunc sit amet ultricies lacinia, nunc nisl aliquam nisl, eget aliquam nunc nisl sit amet nisl."
   },
   {
     id: 4,
-    title: "Excellence in Quality Award 2023",
-    date: "2023-07-05",
-    excerpt: "Rashmi Metaliks receives prestigious industry recognition for exceptional product quality standards.",
-    image: "https://images.unsplash.com/photo-1603202662731-9a854e6a73a5?ixlib=rb-4.0.3&auto=format&fit=crop&q=80",
-    category: "Award",
-    slug: "quality-award-2023"
-  },
-  {
-    id: 5,
-    title: "New International Partnership Announced",
-    date: "2023-06-18",
-    excerpt: "Rashmi Group forms strategic alliance with European infrastructure development consortium.",
-    image: "https://images.unsplash.com/photo-1521791136064-7986c2920216?ixlib=rb-4.0.3&auto=format&fit=crop&q=80",
-    category: "Partnership",
-    slug: "international-partnership-2023"
-  },
-  {
-    id: 6,
-    title: "Community Development Initiative",
-    date: "2023-05-30",
-    excerpt: "Rashmi Group launches education and healthcare program for communities near manufacturing facilities.",
-    image: "https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?ixlib=rb-4.0.3&auto=format&fit=crop&q=80",
-    category: "CSR",
-    slug: "community-initiative-2023"
+    title: "Sustainable Manufacturing Initiative Launched",
+    date: "2023-01-05",
+    category: "Sustainability",
+    excerpt: "Rashmi Group has launched a groundbreaking sustainability initiative to reduce carbon footprint across all manufacturing processes.",
+    image: "https://images.unsplash.com/photo-1473646590311-c48e1bc1e1d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nunc sit amet ultricies lacinia, nunc nisl aliquam nisl, eget aliquam nunc nisl sit amet nisl. Sed euismod, nunc sit amet ultricies lacinia, nunc nisl aliquam nisl, eget aliquam nunc nisl sit amet nisl."
   }
 ];
 
 const Media = () => {
+  const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
-  const [activeCategory, setActiveCategory] = useState('All');
-  const [filteredNews, setFilteredNews] = useState(mockNewsData);
+  const [expandedArticle, setExpandedArticle] = useState<number | null>(null);
   
-  // Categories derived from news data
-  const categories = ['All', ...Array.from(new Set(mockNewsData.map(item => item.category)))];
+  const categories = ['All', 'Achievement', 'Expansion', 'Award', 'Sustainability'];
   
-  // Filter news based on search term and active category
-  useEffect(() => {
-    let filtered = mockNewsData;
-    
-    if (searchTerm) {
-      filtered = filtered.filter(item => 
-        item.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-        item.excerpt.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-    
-    if (activeCategory !== 'All') {
-      filtered = filtered.filter(item => item.category === activeCategory);
-    }
-    
-    setFilteredNews(filtered);
-  }, [searchTerm, activeCategory]);
-
-  // Format date function
-  const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString(undefined, options);
+  const filteredNews = newsData.filter(item => 
+    (selectedCategory === 'All' || item.category === selectedCategory) &&
+    (item.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+     item.excerpt.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
+  
+  const toggleArticle = (id: number) => {
+    setExpandedArticle(expandedArticle === id ? null : id);
   };
-
+  
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
         <title>Media & News | Rashmi Metaliks</title>
-        <meta name="description" content="Stay updated with the latest news, events, and announcements from Rashmi Metaliks, a global leader in steel manufacturing." />
+        <meta name="description" content="Latest news, press releases, and media coverage about Rashmi Metaliks and our industry-leading steel products." />
+        <meta name="keywords" content="Rashmi Metaliks news, steel industry news, company updates, press releases" />
+        <link rel="canonical" href="https://www.rashmi.com/media" />
       </Helmet>
+      
       <Header />
       
       {/* Hero Section */}
-      <section className="relative py-24 overflow-hidden">
-        {/* Background gradient */}
-        <div className="absolute inset-0 bg-gradient-to-b from-rashmi-dark to-background"></div>
-        
-        {/* Grid overlay pattern */}
-        <div className="absolute inset-0 opacity-20">
-          <div className="grid grid-cols-10 grid-rows-10 h-full w-full">
-            {Array.from({ length: 100 }).map((_, index) => (
-              <div key={index} className="border border-rashmi-red/5"></div>
-            ))}
-          </div>
+      <section className="pt-32 pb-16 relative overflow-hidden">
+        <div className="absolute inset-0 z-0 bg-gradient-to-b from-rashmi-dark to-background/80">
+          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1585974738771-84483dd9f89f?ixlib=rb-4.0.3&auto=format&fit=crop&q=80')] bg-fixed bg-center bg-cover opacity-10"></div>
         </div>
         
-        <div className="container mx-auto px-4 relative">
-          <div className="max-w-3xl mx-auto text-center">
-            <motion.h1 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="text-4xl md:text-5xl font-display font-bold mb-6"
-            >
-              Media & <span className="text-rashmi-red">Updates</span>
-            </motion.h1>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-muted-foreground text-lg mb-8"
-            >
-              Stay updated with the latest news, events, and announcements from Rashmi Metaliks
-            </motion.p>
+        <div className="container mx-auto px-4 relative z-10">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: a1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="max-w-4xl mx-auto text-center"
+          >
+            <RevealText
+              text="Media & News"
+              as="h1"
+              className="text-4xl md:text-5xl font-display font-bold text-foreground mb-4"
+              staggerDelay={0.08}
+            />
+            <RevealText
+              text="Latest Updates from Rashmi Group"
+              as="h2"
+              className="text-2xl md:text-3xl font-display text-muted-foreground mb-6"
+              staggerDelay={0.05}
+              initialDelay={0.5}
+            />
+            <p className="text-muted-foreground text-lg max-w-3xl mx-auto mb-8 animate-fade-in" style={{ animationDelay: '1s' }}>
+              Stay informed about the latest developments, achievements, and initiatives from Rashmi Group, 
+              a leader in the steel manufacturing industry.
+            </p>
+          </motion.div>
+        </div>
+        
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.1 }}
+          transition={{ duration: 1, delay: 0.5 }}
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-5xl pointer-events-none z-[-1]"
+        >
+          <div className="bg-rashmi-red/20 rounded-full w-[600px] h-[600px] blur-[150px] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+        </motion.div>
+      </section>
+      
+      {/* Filters Section */}
+      <section className="py-8 bg-card border-y border-border/40">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center space-x-2 overflow-x-auto pb-2 md:pb-0 w-full md:w-auto">
+              <Filter size={16} className="text-muted-foreground flex-shrink-0" />
+              {categories.map(category => (
+                <button
+                  key={category}
+                  className={`px-4 py-1 rounded-full text-sm whitespace-nowrap transition-colors
+                            ${selectedCategory === category 
+                              ? 'bg-rashmi-red text-white' 
+                              : 'bg-muted hover:bg-muted/80 text-foreground'}`}
+                  onClick={() => setSelectedCategory(category)}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
             
-            {/* Search Box */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="max-w-md mx-auto relative"
-            >
+            <div className="relative w-full md:w-64">
               <input
                 type="text"
                 placeholder="Search news..."
+                className="w-full py-2 pl-10 pr-4 rounded-md border border-border bg-background focus:outline-none focus:ring-2 focus:ring-rashmi-red/50"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full px-5 py-3 pl-12 rounded-full border border-border bg-card/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-rashmi-red/30"
               />
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={18} />
-            </motion.div>
+              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            </div>
           </div>
         </div>
       </section>
       
-      {/* Category Filters */}
-      <section className="py-8 bg-background">
+      {/* News Grid Section */}
+      <section className="py-16">
         <div className="container mx-auto px-4">
-          <div className="flex flex-wrap justify-center gap-3 mb-12">
-            {categories.map(category => (
-              <button
-                key={category}
-                onClick={() => setActiveCategory(category)}
-                className={`px-5 py-2 rounded-full text-sm font-medium transition-colors ${
-                  activeCategory === category
-                    ? 'bg-rashmi-red text-white'
-                    : 'bg-card hover:bg-muted border border-border'
-                }`}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-          
-          {/* News Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredNews.length > 0 ? (
-              filteredNews.map(news => (
-                <NewsCard key={news.id} news={news} formatDate={formatDate} />
-              ))
-            ) : (
-              <div className="col-span-full text-center py-20">
-                <h3 className="text-2xl font-bold mb-3">No results found</h3>
-                <p className="text-muted-foreground mb-6">Try adjusting your search or filter criteria</p>
-                <button 
-                  onClick={() => {
-                    setSearchTerm('');
-                    setActiveCategory('All');
-                  }}
-                  className="px-6 py-2 bg-rashmi-red text-white rounded-md hover:bg-rashmi-red/90 transition-colors"
+          {filteredNews.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredNews.map(news => (
+                <motion.article
+                  key={news.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5 }}
+                  className="bg-card border border-border rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col h-full"
                 >
-                  Reset Filters
-                </button>
+                  <div className="relative">
+                    <img 
+                      src={news.image} 
+                      alt={news.title}
+                      className="w-full h-48 object-cover"
+                    />
+                    <div className="absolute top-0 right-0 m-2 px-3 py-1 bg-card/80 backdrop-blur-sm text-xs font-medium rounded-full border border-border/40">
+                      {news.category}
+                    </div>
+                  </div>
+                  
+                  <div className="p-6 flex-grow flex flex-col">
+                    <div className="flex items-center text-sm text-muted-foreground mb-3">
+                      <Calendar size={14} className="mr-1" />
+                      {new Date(news.date).toLocaleDateString('en-US', {
+                        year: 'numeric', month: 'long', day: 'numeric'
+                      })}
+                    </div>
+                    
+                    <h3 className="text-xl font-bold mb-2">{news.title}</h3>
+                    <p className="text-muted-foreground mb-4 flex-grow">{news.excerpt}</p>
+                    
+                    <button
+                      onClick={() => toggleArticle(news.id)}
+                      className="inline-flex items-center text-rashmi-red hover:text-rashmi-red/80 transition-colors"
+                    >
+                      {expandedArticle === news.id ? 'Read Less' : 'Read More'}
+                      <EyeIcon size={16} className="ml-1" />
+                    </button>
+                    
+                    {expandedArticle === news.id && (
+                      <motion.div 
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        transition={{ duration: 0.3 }}
+                        className="mt-4 pt-4 border-t border-border/40"
+                      >
+                        <p className="text-muted-foreground">{news.content}</p>
+                        <div className="mt-4 pt-4 border-t border-border/40 flex justify-between">
+                          <div className="flex items-center text-sm text-muted-foreground">
+                            <Globe size={14} className="mr-1" />
+                            News
+                          </div>
+                          <button className="text-sm inline-flex items-center text-rashmi-red hover:text-rashmi-red/80 transition-colors">
+                            <Download size={14} className="mr-1" />
+                            Download PDF
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </div>
+                </motion.article>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-16">
+              <div className="bg-card border border-border rounded-xl p-10 inline-block">
+                <Search size={48} className="mx-auto text-muted-foreground mb-4" />
+                <h3 className="text-xl font-bold mb-2">No results found</h3>
+                <p className="text-muted-foreground">
+                  Try adjusting your search or filter criteria
+                </p>
               </div>
-            )}
-          </div>
+            </div>
+          )}
+        </div>
+      </section>
+      
+      {/* Press Releases CTA Section */}
+      <section className="py-16 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="max-w-5xl mx-auto text-center bg-card border border-border p-10 md:p-16 rounded-2xl relative"
+          >
+            <div className="absolute top-0 left-0 w-full h-full overflow-hidden rounded-2xl z-0">
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-2xl">
+                <div className="bg-rashmi-red/5 rounded-full w-[600px] h-[600px] blur-[150px] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+              </div>
+            </div>
+            
+            <div className="relative z-10">
+              <h2 className="text-3xl md:text-4xl font-display font-bold mb-6">
+                Press & Media <span className="text-rashmi-red">Inquiries</span>
+              </h2>
+              <p className="text-muted-foreground text-lg mb-10 max-w-2xl mx-auto">
+                For press releases, media kits, or interview requests, please contact our media relations team.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <motion.a
+                  href="/contact-us"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                  className="inline-flex items-center px-6 py-3 bg-rashmi-red text-white font-medium rounded-lg transition-colors hover:bg-rashmi-red/90"
+                >
+                  Contact Media Team
+                </motion.a>
+                <motion.a
+                  href="#subscribe"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                  className="inline-flex items-center px-6 py-3 bg-card border border-border text-foreground font-medium rounded-lg transition-colors hover:bg-muted"
+                >
+                  Subscribe to Updates
+                </motion.a>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </section>
       
       <Footer />
     </div>
-  );
-};
-
-// News Card Component
-const NewsCard = ({ news, formatDate }) => {
-  return (
-    <motion.article 
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5 }}
-      className="bg-card border border-border/40 rounded-xl overflow-hidden group hover:border-rashmi-red/30 transition-colors"
-    >
-      <div className="relative overflow-hidden h-48">
-        <img 
-          src={news.image} 
-          alt={news.title}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-rashmi-dark/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-end">
-          <Link 
-            to={`/media/${news.slug}`}
-            className="m-4 p-2 bg-rashmi-red rounded-full hover:bg-rashmi-red/90 transition-colors"
-          >
-            <Eye className="w-5 h-5 text-white" />
-          </Link>
-        </div>
-        <div className="absolute top-4 left-4 px-3 py-1 bg-background/80 backdrop-blur-sm rounded-full text-xs font-medium">
-          {news.category}
-        </div>
-      </div>
-      
-      <div className="p-6">
-        <div className="flex items-center text-sm text-muted-foreground mb-3">
-          <Calendar className="w-4 h-4 mr-2" />
-          {formatDate(news.date)}
-        </div>
-        <h3 className="text-xl font-bold mb-3 leading-tight group-hover:text-rashmi-red transition-colors">
-          {news.title}
-        </h3>
-        <p className="text-muted-foreground text-sm mb-4 line-clamp-3">
-          {news.excerpt}
-        </p>
-        <Link 
-          to={`/media/${news.slug}`}
-          className="inline-flex items-center text-sm font-medium text-rashmi-red hover:text-rashmi-red/80 transition-colors"
-        >
-          Read More <ArrowRight size={16} className="ml-1 group-hover:translate-x-1 transition-transform" />
-        </Link>
-      </div>
-    </motion.article>
   );
 };
 
