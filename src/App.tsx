@@ -1,79 +1,58 @@
 
-import { Helmet } from "react-helmet";
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { ThemeProvider } from "@/context/ThemeContext";
-import Index from "./pages/Index";
-import DiPipes from "./pages/DiPipes";
-import DiFittings from "./pages/DiFittings";
-import TmtBar from "./pages/TmtBar";
-import SpongeIron from "./pages/SpongeIron";
-import PigIron from "./pages/PigIron";
-import IronOrePellet from "./pages/IronOrePellet";
-import Sinter from "./pages/Sinter";
-import Certifications from "./pages/Certifications";
-import QualityAssurance from "./pages/QualityAssurance";
-import WhyRashmiDiPipes from "./pages/WhyRashmiDiPipes";
-import AboutRashmi from "./pages/AboutRashmi";
-import ContactUs from "./pages/ContactUs";
-import Media from "./pages/Media";
-import Careers from "./pages/Careers";
-import CSR from "./pages/CSR";
-import Brochures from "./pages/Brochures";
-import NotFound from "./pages/NotFound";
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import './App.css';
+import { ThemeProvider } from './context/ThemeContext';
+import { Toaster } from './components/ui/toaster';
 
-const queryClient = new QueryClient();
+// Pages
+import Index from './pages/Index';
+import AboutRashmi from './pages/AboutRashmi';
+import DiPipes from './pages/DiPipes';
+import DiFittings from './pages/DiFittings';
+import TmtBar from './pages/TmtBar';
+import PigIron from './pages/PigIron';
+import SpongeIron from './pages/SpongeIron';
+import IronOrePellet from './pages/IronOrePellet';
+import Sinter from './pages/Sinter';
+import Media from './pages/Media';
+import Careers from './pages/Careers';
+import ContactUs from './pages/ContactUs';
+import QualityAssurance from './pages/QualityAssurance';
+import WhyRashmiDiPipes from './pages/WhyRashmiDiPipes';
+import Certifications from './pages/Certifications';
+import NotFound from './pages/NotFound';
+import CSR from './pages/CSR';
+import Brochures from './pages/Brochures';
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
+function App() {
+  return (
     <ThemeProvider>
-      <Helmet>
-        <title>Rashmi Metaliks - Premium Steel Products & Solutions</title>
-        <meta name="description" content="Rashmi Metaliks - Leading manufacturer of high-quality steel products including DI Pipes, TMT Bars, Pig Iron, and more with industry-leading quality standards." />
-        <meta name="keywords" content="Rashmi Metaliks, Steel Products, DI Pipes, TMT Bars, Sponge Iron, Pig Iron" />
-        <meta name="author" content="Rashmi Metaliks" />
-        <meta property="og:title" content="Rashmi Metaliks - Premium Steel Products" />
-        <meta property="og:description" content="Leading manufacturer of high-quality steel products with industry-leading quality standards." />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://www.rashmi.com" />
-        <meta property="og:image" content="https://www.rashmi.com/og-image.png" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Rashmi Metaliks - Premium Steel Products" />
-        <meta name="twitter:description" content="Leading manufacturer of high-quality steel products with industry-leading quality standards." />
-        <meta name="twitter:image" content="https://www.rashmi.com/og-image.png" />
-      </Helmet>
-      <TooltipProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/about-rashmi" element={<AboutRashmi />} />
+          <Route path="/di-pipes" element={<DiPipes />} />
+          <Route path="/di-fittings" element={<DiFittings />} />
+          <Route path="/tmt-bar" element={<TmtBar />} />
+          <Route path="/pig-iron" element={<PigIron />} />
+          <Route path="/sponge-iron" element={<SpongeIron />} />
+          <Route path="/iron-ore-pellet" element={<IronOrePellet />} />
+          <Route path="/sinter" element={<Sinter />} />
+          <Route path="/media" element={<Media />} />
+          <Route path="/careers" element={<Careers />} />
+          <Route path="/contact-us" element={<ContactUs />} />
+          <Route path="/quality-assurance" element={<QualityAssurance />} />
+          <Route path="/why-rashmi-di-pipes" element={<WhyRashmiDiPipes />} />
+          <Route path="/certifications" element={<Certifications />} />
+          <Route path="/csr" element={<CSR />} />
+          <Route path="/brochures" element={<Brochures />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
         <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/di-pipes" element={<DiPipes />} />
-            <Route path="/di-fittings" element={<DiFittings />} />
-            <Route path="/tmt-bar" element={<TmtBar />} />
-            <Route path="/sponge-iron" element={<SpongeIron />} />
-            <Route path="/pig-iron" element={<PigIron />} />
-            <Route path="/iron-ore-pellet" element={<IronOrePellet />} />
-            <Route path="/sinter" element={<Sinter />} />
-            <Route path="/certifications" element={<Certifications />} />
-            <Route path="/quality-assurance" element={<QualityAssurance />} />
-            <Route path="/why-rashmi-di-pipes" element={<WhyRashmiDiPipes />} />
-            <Route path="/about-rashmi" element={<AboutRashmi />} />
-            <Route path="/contact-us" element={<ContactUs />} />
-            <Route path="/media" element={<Media />} />
-            <Route path="/careers" element={<Careers />} />
-            <Route path="/csr" element={<CSR />} />
-            <Route path="/brochures" element={<Brochures />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
+      </Router>
     </ThemeProvider>
-  </QueryClientProvider>
-);
+  );
+}
 
 export default App;

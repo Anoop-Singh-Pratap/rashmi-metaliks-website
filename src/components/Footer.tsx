@@ -2,8 +2,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Phone, Mail, MapPin, Facebook, Twitter, Instagram, Youtube, Linkedin, ArrowRight } from 'lucide-react';
+import { useTheme } from '@/context/ThemeContext';
 
 const Footer = () => {
+  const { theme } = useTheme();
   // Function to scroll to section
   const scrollToSection = (sectionId: string) => {
     // If we're on the homepage, just scroll to the section
@@ -24,7 +26,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div>
             <img 
-              src="/lovable-uploads/rashmi-logo.png" 
+              src={theme === 'dark' ? '/lovable-uploads/Rashmi-logo-dark.png' : '/lovable-uploads/Rashmi-logo-light.png'} 
               alt="Rashmi Metaliks" 
               className="h-14 mb-4" 
             />
@@ -60,7 +62,7 @@ const Footer = () => {
               </li>
               <li>
                 <a 
-                  href="/#products" 
+                  href="/"
                   onClick={(e) => {
                     e.preventDefault();
                     scrollToSection('products');

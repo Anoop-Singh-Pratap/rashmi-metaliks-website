@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Link } from 'react-router-dom';
@@ -7,6 +6,7 @@ import { ArrowDown, Check, Ruler, Pipette, Waves, ShieldCheck, ChevronDown, Book
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import ProductViewer from '../components/ui/ProductViewer';
+import DIPipesManufacturing from '../components/DIPipesManufacturing';
 
 // Fixed TypeScript error by specifying literal types for repeatType
 const floatAnimation = {
@@ -347,6 +347,9 @@ const DiPipes = () => {
           </div>
         </div>
       </section>
+      
+      {/* Manufacturing Process Section */}
+      <DIPipesManufacturing />
       
       {/* Applications Section */}
       <section id="applications" className="py-20 relative overflow-hidden">

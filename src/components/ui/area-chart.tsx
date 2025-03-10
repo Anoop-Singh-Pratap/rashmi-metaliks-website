@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Area, AreaChart as RechartsAreaChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip, Legend } from "recharts";
+import { Area, AreaChart as RechartsAreaChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip, Legend, LegendProps } from "recharts";
 
 interface AreaChartProps {
   data: any[];
@@ -81,6 +81,31 @@ export const AreaChart = ({
     return null;
   };
 
+  // Custom formatter for the legend
+  const CustomizedLegend = (props: LegendProps) => {
+    const { payload } = props;
+    if (!payload) return null;
+    
+    return (
+      <ul className="flex flex-wrap justify-center gap-4 mt-2">
+        {payload.map((entry, index) => {
+          const dataKey = entry.dataKey as string;
+          if (!dataKey || !config[dataKey]) return null;
+          
+          return (
+            <li key={`item-${index}`} className="flex items-center">
+              <div 
+                className="w-3 h-3 rounded-full mr-2" 
+                style={{ backgroundColor: config[dataKey].color }}
+              ></div>
+              <span className="text-sm">{config[dataKey].label}</span>
+            </li>
+          );
+        })}
+      </ul>
+    );
+  };
+
   return (
     <div className={`w-full rounded-xl overflow-hidden ${className}`}>
       {(title || description) && (
@@ -112,10 +137,7 @@ export const AreaChart = ({
               tick={{ fill: 'var(--foreground)', fontSize: 12 }}
             />
             <Tooltip content={<CustomTooltip />} />
-            <Legend formatter={(value, entry) => {
-              const key = entry.dataKey as string;
-              return <span className="text-sm">{config[key]?.label}</span>;
-            }} />
+            <Legend content={<CustomizedLegend />} />
             {chartKeys.map((key) => (
               <Area
                 key={key}

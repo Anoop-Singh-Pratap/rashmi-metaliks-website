@@ -1,404 +1,292 @@
 
 import React, { useState, useEffect } from 'react';
-import RevealText from './ui/RevealText';
-import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend, LabelList } from 'recharts';
-import { Leaf, Droplets, Wind, XCircle, BarChartIcon, PieChartIcon, LineChartIcon } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useTheme } from '@/context/ThemeContext';
+import { 
+  Leaf, 
+  Droplets, 
+  Factory, 
+  Recycle, 
+  Wind, 
+  TreePine, 
+  Zap, 
+  BarChart3,
+  ChevronLeft,
+  ChevronRight
+} from 'lucide-react';
 import { AreaChart } from './ui/area-chart';
 
-const emissionsData = [
-  { year: '2018', value: 100 },
-  { year: '2019', value: 85 },
-  { year: '2020', value: 70 },
-  { year: '2021', value: 55 },
-  { year: '2022', value: 45 },
-  { year: '2023', value: 35 },
-];
-
-const energySourceData = [
-  { name: 'Solar', value: 35, color: '#22c55e' },
-  { name: 'Wind', value: 25, color: '#3b82f6' },
-  { name: 'Hydroelectric', value: 15, color: '#6366f1' },
-  { name: 'Biomass', value: 10, color: '#f59e0b' },
-  { name: 'Traditional', value: 15, color: '#64748b' },
-];
-
-// Convert water usage data to the format needed for the area chart
-const waterUsageData = [
-  { date: '2023-01-01', recycled: 40, fresh: 60 },
-  { date: '2023-03-01', recycled: 45, fresh: 55 },
-  { date: '2023-05-01', recycled: 55, fresh: 45 },
-  { date: '2023-07-01', recycled: 65, fresh: 35 },
-  { date: '2023-09-01', recycled: 70, fresh: 30 },
-  { date: '2023-11-01', recycled: 75, fresh: 25 },
-];
-
-const waterChartConfig = {
-  label: {
-    label: "Water Usage",
-  },
-  recycled: {
-    label: "Recycled Water",
-    color: "hsl(217, 91%, 60%)",  // Blue color
-  },
-  fresh: {
-    label: "Fresh Water",
-    color: "hsl(215, 16%, 47%)",  // Gray color
-  },
+const textVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: { duration: 0.6 }
+  }
 };
 
-const COLORS = ['#22c55e', '#3b82f6', '#6366f1', '#f59e0b', '#64748b'];
-
-const chartTypes = ['emissions', 'energy', 'water'] as const;
-type ChartType = typeof chartTypes[number];
+const cardVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: (i: number) => ({ 
+    opacity: 1, 
+    y: 0,
+    transition: { 
+      duration: 0.6,
+      delay: 0.2 + i * 0.1 
+    }
+  })
+};
 
 const Sustainability = () => {
-  const { theme } = useTheme();
-  const [activeChart, setActiveChart] = useState<ChartType>('emissions');
-  const [isInView, setIsInView] = useState(false);
+  const [activeChart, setActiveChart] = useState('emissions');
   const [animateChart, setAnimateChart] = useState(false);
   
-  // Dynamic color based on theme
-  const textColor = theme === 'dark' ? '#fff' : '#000';
-  const axisColor = theme === 'dark' ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)';
-  
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          setIsInView(true);
-          setTimeout(() => setAnimateChart(true), 500);
-        }
-      },
-      { threshold: 0.3 }
-    );
-    
-    const section = document.getElementById('sustainability');
-    if (section) observer.observe(section);
-    
-    return () => {
-      if (section) observer.unobserve(section);
-    };
-  }, []);
+  // Data for emissions chart
+  const emissionsData = [
+    { date: '2020-01', co2: 100 },
+    { date: '2020-02', co2: 98 },
+    { date: '2020-03', co2: 96 },
+    { date: '2020-04', co2: 94 },
+    { date: '2020-05', co2: 90 },
+    { date: '2020-06', co2: 88 },
+    { date: '2020-07', co2: 85 },
+    { date: '2020-08', co2: 82 },
+    { date: '2020-09', co2: 79 },
+    { date: '2020-10', co2: 75 },
+    { date: '2020-11', co2: 72 },
+    { date: '2020-12', co2: 70 },
+    { date: '2021-01', co2: 68 },
+    { date: '2021-02', co2: 65 },
+    { date: '2021-03', co2: 63 },
+    { date: '2021-04', co2: 60 },
+    { date: '2021-05', co2: 58 },
+    { date: '2021-06', co2: 55 },
+    { date: '2021-07', co2: 53 },
+    { date: '2021-08', co2: 50 },
+    { date: '2021-09', co2: 48 },
+    { date: '2021-10', co2: 45 },
+    { date: '2021-11', co2: 43 },
+    { date: '2021-12', co2: 40 },
+  ];
 
-  // Format percentage values without decimals
-  const formatPercentage = (value: number) => `${Math.round(value)}%`;
+  // Data for water usage chart
+  const waterUsageData = [
+    { date: '2021-01', recycled: 60, fresh: 40 },
+    { date: '2021-02', recycled: 62, fresh: 38 },
+    { date: '2021-03', recycled: 65, fresh: 35 },
+    { date: '2021-04', recycled: 68, fresh: 32 },
+    { date: '2021-05', recycled: 70, fresh: 30 },
+    { date: '2021-06', recycled: 72, fresh: 28 },
+    { date: '2021-07', recycled: 75, fresh: 25 },
+    { date: '2021-08', recycled: 78, fresh: 22 },
+    { date: '2021-09', recycled: 80, fresh: 20 },
+    { date: '2021-10', recycled: 82, fresh: 18 },
+    { date: '2021-11', recycled: 85, fresh: 15 },
+    { date: '2021-12', recycled: 88, fresh: 12 },
+  ];
 
-  // Custom tooltip content for better dark mode visibility
-  const CustomTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="custom-tooltip bg-background border border-border p-4 rounded shadow-md">
-          <p className="text-rashmi-red font-semibold">{label}</p>
-          {payload.map((entry: any, index: number) => (
-            <p key={`item-${index}`} className="text-foreground">
-              {entry.name}: {entry.value}{entry.unit || '%'}
-            </p>
-          ))}
-        </div>
-      );
+  const emissionsChartConfig = {
+    co2: {
+      label: "CO₂ Emissions",
+      color: "#16a34a",
     }
-    return null;
   };
 
-  // Axis tick formatter for better visibility
-  const axisTickFormatter = (value: any) => value.toString();
+  const waterChartConfig = {
+    recycled: {
+      label: "Recycled Water",
+      color: "#3b82f6",
+    },
+    fresh: {
+      label: "Fresh Water",
+      color: "#64748b",
+    }
+  };
+
+  useEffect(() => {
+    setAnimateChart(false);
+    const timer = setTimeout(() => {
+      setAnimateChart(true);
+    }, 300);
+    
+    return () => clearTimeout(timer);
+  }, [activeChart]);
 
   return (
-    <section id="sustainability" className="py-20 md:py-32 bg-background relative overflow-hidden">
-      {/* Background Decorations */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-64 h-64 rounded-full bg-rashmi-red/5 animate-pulse-slow"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 rounded-full bg-green-500/5 animate-pulse-slow" style={{ animationDelay: '1s' }}></div>
-      </div>
-      
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="text-rashmi-red font-medium mb-3">
-            <RevealText text="Sustainability" />
-          </div>
-          <RevealText
-            text="Our Commitment to the Environment"
-            as="h2"
-            className="text-3xl md:text-4xl font-display font-bold mb-6 text-foreground"
-          />
-          <p className="text-muted-foreground">
-            At Rashmi Metaliks, sustainability is not just a goal but a commitment. We continuously 
-            strive to reduce our environmental footprint while maintaining the highest quality standards.
-          </p>
+    <div id="sustainability" className="py-24 relative overflow-hidden bg-background">
+      <div className="container mx-auto px-4">
+        <motion.div 
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          className="mb-16 text-center"
+        >
+          <motion.h2 
+            variants={textVariants}
+            className="text-3xl md:text-4xl font-bold mb-4"
+          >
+            Our Commitment to <span className="text-rashmi-red">Sustainability</span>
+          </motion.h2>
+          <motion.p 
+            variants={textVariants}
+            className="text-muted-foreground text-lg max-w-3xl mx-auto"
+          >
+            Rashmi Group is dedicated to responsible manufacturing through environmental stewardship, 
+            resource conservation, and community development.
+          </motion.p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-16">
+          {[
+            {
+              icon: <Leaf className="h-6 w-6 text-white" />,
+              title: "Environmental Protection",
+              description: "Minimizing our ecological footprint through sustainable practices and technologies.",
+              color: "from-green-400 to-green-600",
+              borderColor: "border-green-400"
+            },
+            {
+              icon: <Recycle className="h-6 w-6 text-white" />,
+              title: "Circular Economy",
+              description: "Reducing waste and promoting recycling throughout our production chain.",
+              color: "from-blue-400 to-blue-600",
+              borderColor: "border-blue-400"
+            },
+            {
+              icon: <Factory className="h-6 w-6 text-white" />,
+              title: "Sustainable Manufacturing",
+              description: "Investing in clean technologies to reduce emissions and energy consumption.",
+              color: "from-amber-400 to-amber-600",
+              borderColor: "border-amber-400"
+            },
+            {
+              icon: <Droplets className="h-6 w-6 text-white" />,
+              title: "Water Conservation",
+              description: "Implementing comprehensive water recycling systems across our facilities.",
+              color: "from-cyan-400 to-cyan-600",
+              borderColor: "border-cyan-400"
+            },
+            {
+              icon: <Wind className="h-6 w-6 text-white" />,
+              title: "Clean Energy",
+              description: "Transitioning to renewable energy sources to power our operations.",
+              color: "from-sky-400 to-sky-600",
+              borderColor: "border-sky-400"
+            },
+            {
+              icon: <TreePine className="h-6 w-6 text-white" />,
+              title: "Reforestation Efforts",
+              description: "Supporting large-scale tree planting initiatives to offset carbon emissions.",
+              color: "from-emerald-400 to-emerald-600",
+              borderColor: "border-emerald-400"
+            }
+          ].map((item, i) => (
+            <motion.div
+              key={item.title}
+              custom={i}
+              variants={cardVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-50px" }}
+              whileHover={{ y: -8 }}
+              className="bg-card border border-border rounded-xl overflow-hidden shadow-sm group"
+            >
+              <div className="p-6">
+                <div className={`h-12 w-12 rounded-full bg-gradient-to-r ${item.color} flex items-center justify-center mb-4 transform group-hover:scale-110 transition-transform duration-300`}>
+                  {item.icon}
+                </div>
+                <h3 className="text-xl font-bold mb-3">{item.title}</h3>
+                <p className="text-muted-foreground">{item.description}</p>
+              </div>
+              <div className={`h-1 w-full bg-gradient-to-r ${item.color}`}></div>
+            </motion.div>
+          ))}
         </div>
-        
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-          <SustainabilityCard 
-            icon={<Leaf className="h-6 w-6" />}
-            title="Environmental Protection"
-            description="Our advanced filtration systems minimize emissions and promote cleaner production processes."
-            isInView={isInView}
-            delay={0}
-          />
-          <SustainabilityCard 
-            icon={<Droplets className="h-6 w-6" />}
-            title="Water Conservation"
-            description="We've implemented water recycling systems that have reduced our fresh water consumption by 65%."
-            isInView={isInView}
-            delay={0.2}
-          />
-          <SustainabilityCard 
-            icon={<Wind className="h-6 w-6" />}
-            title="Renewable Energy"
-            description="Our facilities increasingly rely on renewable energy sources, including our own 300MW power plant."
-            isInView={isInView}
-            delay={0.4}
-          />
-        </div>
-        
-        {/* Interactive Charts */}
-        <div className="bg-card/30 border border-border/40 rounded-xl p-6 md:p-8">
-          <div className="flex flex-wrap gap-4 mb-8">
-            <ChartButton 
-              icon={<LineChartIcon size={18} />}
-              label="Emissions Reduction"
-              active={activeChart === 'emissions'}
-              onClick={() => setActiveChart('emissions')}
-            />
-            <ChartButton 
-              icon={<PieChartIcon size={18} />}
-              label="Energy Sources"
-              active={activeChart === 'energy'}
-              onClick={() => setActiveChart('energy')}
-            />
-            <ChartButton 
-              icon={<BarChartIcon size={18} />}
-              label="Water Usage"
-              active={activeChart === 'water'}
-              onClick={() => setActiveChart('water')}
-            />
-          </div>
-          
-          <div className="h-[400px] w-full">
-            {activeChart === 'emissions' && (
-              <div className={`transition-opacity duration-700 h-full ${animateChart ? 'opacity-100' : 'opacity-0'}`}>
-                <h3 className="text-xl md:text-2xl font-semibold text-center mb-4 text-foreground">CO₂ Emissions Reduction (2018-2023)</h3>
-                <ResponsiveContainer width="100%" height="90%">
-                  <LineChart
+
+        <div className="max-w-6xl mx-auto">
+          <motion.div 
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={textVariants}
+            className="mb-8 text-center"
+          >
+            <h3 className="text-2xl md:text-3xl font-bold mb-3">
+              Measuring Our <span className="text-rashmi-red">Impact</span>
+            </h3>
+            <p className="text-muted-foreground max-w-3xl mx-auto">
+              Tracking our environmental performance with transparent metrics and continuous improvement.
+            </p>
+          </motion.div>
+
+          <div className="bg-card border border-border rounded-xl p-6 md:p-8 lg:p-10 shadow-sm">
+            <div className="flex justify-center mb-8 space-x-4">
+              <button 
+                onClick={() => setActiveChart('emissions')}
+                className={`flex items-center px-4 py-2 rounded-lg transition-colors ${
+                  activeChart === 'emissions' 
+                    ? 'bg-rashmi-red text-white'
+                    : 'bg-muted hover:bg-muted/80'
+                }`}
+              >
+                <Zap size={18} className="mr-2" />
+                Emissions Reduction
+              </button>
+              <button 
+                onClick={() => setActiveChart('water')}
+                className={`flex items-center px-4 py-2 rounded-lg transition-colors ${
+                  activeChart === 'water' 
+                    ? 'bg-rashmi-red text-white'
+                    : 'bg-muted hover:bg-muted/80'
+                }`}
+              >
+                <Droplets size={18} className="mr-2" />
+                Water Usage
+              </button>
+            </div>
+
+            <div className="h-[400px]">
+              {activeChart === 'emissions' && (
+                <div className={`transition-opacity duration-700 h-full ${animateChart ? 'opacity-100' : 'opacity-0'}`}>
+                  <div className="text-center mb-4">
+                    <h3 className="text-xl md:text-2xl font-semibold text-foreground">CO₂ Emissions Reduction</h3>
+                    <p className="text-muted-foreground text-sm">Tracking our progress in reducing carbon emissions</p>
+                  </div>
+                  <AreaChart 
                     data={emissionsData}
-                    margin={{ top: 20, right: 30, left: 0, bottom: 20 }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.3} />
-                    <XAxis 
-                      dataKey="year" 
-                      stroke={textColor} 
-                      tick={{ fill: textColor }}
-                      tickFormatter={axisTickFormatter}
-                    />
-                    <YAxis 
-                      stroke={textColor} 
-                      tick={{ fill: textColor }}
-                      tickFormatter={value => `${value}%`}
-                    />
-                    <Tooltip content={<CustomTooltip />} />
-                    <Line 
-                      type="monotone" 
-                      dataKey="value" 
-                      stroke="#E7251F" 
-                      strokeWidth={3}
-                      name="CO₂ Emissions"
-                      unit="%"
-                      activeDot={{ r: 8 }}
-                      label={({ x, y, value }) => (
-                        <text 
-                          x={x} 
-                          y={y-10} 
-                          fill={textColor} 
-                          textAnchor="middle"
-                          fontSize={12}
-                        >
-                          {value}%
-                        </text>
-                      )}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            )}
-            
-            {activeChart === 'energy' && (
-              <div className={`transition-opacity duration-700 h-full ${animateChart ? 'opacity-100' : 'opacity-0'}`}>
-                <div className="text-center mb-4">
-                  <h3 className="text-xl md:text-2xl font-semibold text-foreground">Energy Sources Distribution</h3>
-                  <p className="text-muted-foreground text-sm">Current energy mix (2023)</p>
+                    config={emissionsChartConfig}
+                    height={300}
+                  />
                 </div>
-                <ResponsiveContainer width="100%" height="90%">
-                  <PieChart>
-                    <Pie
-                      data={energySourceData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={80}
-                      outerRadius={140}
-                      fill="#8884d8"
-                      paddingAngle={5}
-                      dataKey="value"
-                      nameKey="name"
-                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                      labelLine={false}
-                    >
-                      {energySourceData.map((entry, index) => (
-                        <Cell 
-                          key={`cell-${index}`} 
-                          fill={entry.color} 
-                        />
-                      ))}
-                    </Pie>
-                    <Tooltip content={<CustomTooltip />} />
-                    <Legend 
-                      layout="horizontal"
-                      verticalAlign="bottom"
-                      align="center"
-                      formatter={(value, entry: any, index) => (
-                        <span style={{ color: textColor }}>
-                          {value} - {energySourceData[index].value}%
-                        </span>
-                      )}
-                    />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-            )}
-            
-            {activeChart === 'water' && (
-              <div className={`transition-opacity duration-700 h-full ${animateChart ? 'opacity-100' : 'opacity-0'}`}>
-                <div className="text-center mb-4">
-                  <h3 className="text-xl md:text-2xl font-semibold text-foreground">Water Usage Efficiency</h3>
-                  <p className="text-muted-foreground text-sm">Recycled vs Fresh Water Consumption</p>
+              )}
+
+              {activeChart === 'water' && (
+                <div className={`transition-opacity duration-700 h-full ${animateChart ? 'opacity-100' : 'opacity-0'}`}>
+                  <div className="text-center mb-4">
+                    <h3 className="text-xl md:text-2xl font-semibold text-foreground">Water Usage Efficiency</h3>
+                    <p className="text-muted-foreground text-sm">Recycled vs Fresh Water Consumption</p>
+                  </div>
+                  <AreaChart 
+                    data={waterUsageData}
+                    config={waterChartConfig}
+                    height={300}
+                  />
                 </div>
-                <AreaChart 
-                  data={waterUsageData}
-                  config={waterChartConfig}
-                  height="90%"
-                />
-              </div>
-            )}
+              )}
+            </div>
+
+            <div className="text-center mt-6">
+              <a 
+                href="/csr" 
+                className="inline-flex items-center px-4 py-2 text-rashmi-red hover:text-rashmi-red/80 font-medium"
+              >
+                Learn more about our CSR initiatives
+                <ChevronRight size={16} className="ml-1" />
+              </a>
+            </div>
           </div>
         </div>
       </div>
-      
-      {/* Add custom CSS for animations and effects */}
-      <style dangerouslySetInnerHTML={{
-        __html: `
-        /* Custom chart tooltip styles for dark mode */
-        .recharts-tooltip-cursor {
-          stroke: var(--foreground) !important;
-        }
-        
-        .recharts-text.recharts-label {
-          fill: var(--foreground) !important;
-        }
-        
-        .recharts-layer.recharts-pie-labels text {
-          fill: var(--foreground) !important;
-        }
-        
-        .recharts-legend-item-text {
-          color: var(--foreground) !important;
-        }
-        
-        /* Water animation effect */
-        @keyframes wave {
-          0% {
-            background-position: 0% 50%;
-          }
-          100% {
-            background-position: 100% 50%;
-          }
-        }
-        
-        .water-bar rect {
-          fill: url(#waterGradient);
-        }
-        
-        .water-effect {
-          position: relative;
-          overflow: hidden;
-        }
-        
-        .water-effect::after {
-          content: '';
-          position: absolute;
-          top: -10px;
-          left: 0;
-          width: 200%;
-          height: 10px;
-          background: rgba(255, 255, 255, 0.3);
-          border-radius: 50%;
-          animation: wave 3s linear infinite;
-        }
-
-        /* Add chart colors to CSS variables */
-        :root {
-          --chart-1: 217 91% 60%;
-          --chart-2: 215 16% 47%;
-        }
-      `
-      }} />
-    </section>
-  );
-};
-
-interface SustainabilityCardProps {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-  isInView: boolean;
-  delay: number;
-}
-
-const SustainabilityCard: React.FC<SustainabilityCardProps> = ({ icon, title, description, isInView, delay }) => {
-  return (
-    <motion.div 
-      className="p-6 bg-card/30 border border-border/40 rounded-xl transition-all duration-1000"
-      initial={{ opacity: 0, y: 20 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-      transition={{ duration: 0.6, delay }}
-      whileHover={{ 
-        y: -10, 
-        boxShadow: "0 10px 30px -15px rgba(0, 0, 0, 0.2)",
-        backgroundColor: "hsl(var(--card))"
-      }}
-    >
-      <div className="w-12 h-12 flex items-center justify-center rounded-full bg-green-500/10 text-green-500 mb-4 group-hover:scale-110 transition-all duration-300">
-        {icon}
-      </div>
-      <h3 className="text-xl font-semibold mb-3 text-foreground">{title}</h3>
-      <p className="text-muted-foreground">{description}</p>
-    </motion.div>
-  );
-};
-
-interface ChartButtonProps {
-  icon: React.ReactNode;
-  label: string;
-  active: boolean;
-  onClick: () => void;
-}
-
-const ChartButton: React.FC<ChartButtonProps> = ({ icon, label, active, onClick }) => {
-  return (
-    <motion.button
-      onClick={onClick}
-      className={`flex items-center space-x-2 px-4 py-2 rounded-md transition-colors ${
-        active 
-          ? 'bg-rashmi-red text-white' 
-          : 'bg-muted/50 text-muted-foreground hover:bg-muted'
-      }`}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-    >
-      {icon}
-      <span>{label}</span>
-      {active && <XCircle size={16} className="ml-2" />}
-    </motion.button>
+    </div>
   );
 };
 
