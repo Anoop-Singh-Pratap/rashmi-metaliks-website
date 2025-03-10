@@ -5,7 +5,7 @@ import Footer from '@/components/Footer';
 import RevealText from '@/components/ui/RevealText';
 import ExploreButton from '@/components/ui/ExploreButton';
 import { motion } from 'framer-motion';
-import { Award, Factory, Check, MapPin, FileText, Briefcase, Clock, Users } from 'lucide-react';
+import { Award, Factory, Check, MapPin, FileText, Briefcase, Clock, Users, Globe, Target, Lightbulb } from 'lucide-react';
 
 const AboutRashmi = () => {
   return (
@@ -150,6 +150,144 @@ const AboutRashmi = () => {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </section>
+        
+        {/* CEO Section */}
+        <section className="py-20 bg-background overflow-hidden">
+          <div className="container mx-auto px-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              {/* Image Side */}
+              <motion.div 
+                initial={{ opacity: 0, x: -50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.7 }}
+                className="relative"
+              >
+                <div className="relative z-10">
+                  <div className="overflow-hidden rounded-2xl transform">
+                    <motion.div
+                      initial={{ scale: 1.1 }}
+                      whileInView={{ scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 1.2 }}
+                    >
+                      <img 
+                        src="/lovable-uploads/Ceo-pic.png" 
+                        alt="Mr. Sunil Kumar Patwari, CEO of Rashmi Group" 
+                        className="w-full rounded-2xl object-cover"
+                      />
+                    </motion.div>
+                  </div>
+                </div>
+                
+                <div className="absolute -bottom-10 -left-10 w-72 h-72 bg-rashmi-red/5 rounded-full filter blur-3xl z-0"></div>
+                <div className="absolute -top-10 -right-10 w-72 h-72 bg-rashmi-red/5 rounded-full filter blur-3xl z-0"></div>
+                
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.4, duration: 0.5 }}
+                  className="absolute bottom-6 left-6 right-6 bg-background/80 backdrop-blur-md p-4 rounded-xl z-10 border border-border/20"
+                >
+                  <h3 className="text-xl font-semibold flex items-center">
+                    <Globe className="w-5 h-5 text-rashmi-red mr-2" />
+                    Global Business Leader
+                  </h3>
+                  <p className="text-sm text-muted-foreground">Transforming Rashmi Group into a global conglomerate</p>
+                </motion.div>
+              </motion.div>
+              
+              {/* Text Content */}
+              <motion.div 
+                initial={{ opacity: 0, x: 50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.7 }}
+                className="space-y-6"
+              >
+                <div className="text-rashmi-red font-medium mb-3">
+                  <RevealText text="Leadership" />
+                </div>
+                <RevealText
+                  text="About our CEO"
+                  as="h2"
+                  className="text-3xl md:text-4xl font-display font-bold mb-6 text-foreground"
+                />
+                
+                <motion.div 
+                  className="space-y-4 text-muted-foreground"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.2, duration: 0.5 }}
+                >
+                  <p>
+                    Mr. Sunil Kumar Patwari, a Commerce Graduate, joined the family business which then was centered 
+                    around the steel industry. Within a very short period of time, Mr. Patwari turned the greatest 
+                    chapter in the group's history with his highly effective managerial and leadership skills.
+                  </p>
+                  <p>
+                    His largest focus areas have been infusing the latest cutting-edge technology into the businesses 
+                    and constantly innovate and produce world class products. He is the main reason why Rashmi Group 
+                    has become a force to reckon with – not just in India, but so also in global markets.
+                  </p>
+                  <p>
+                    Mr. Patwari has singlehandedly led the group towards its current transformation as a global business 
+                    conglomerate. The technology adopted under his guidance is world class. This combined with the constant 
+                    capacity expansion has led to market domination by Rashmi Group.
+                  </p>
+                </motion.div>
+                
+                {/* Key Achievements */}
+                <motion.div 
+                  className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.4, duration: 0.5 }}
+                >
+                  <div className="flex items-start space-x-3">
+                    <div className="mt-1 bg-rashmi-red/10 p-1.5 rounded-full text-rashmi-red">
+                      <Check className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <h4 className="font-medium text-foreground">Technology Integration</h4>
+                      <p className="text-sm text-muted-foreground">Implementing cutting-edge manufacturing processes</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start space-x-3">
+                    <div className="mt-1 bg-rashmi-red/10 p-1.5 rounded-full text-rashmi-red">
+                      <Check className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <h4 className="font-medium text-foreground">Global Expansion</h4>
+                      <p className="text-sm text-muted-foreground">Strategic market penetration worldwide</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start space-x-3">
+                    <div className="mt-1 bg-rashmi-red/10 p-1.5 rounded-full text-rashmi-red">
+                      <Check className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <h4 className="font-medium text-foreground">Product Innovation</h4>
+                      <p className="text-sm text-muted-foreground">Continuous development of world-class products</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start space-x-3">
+                    <div className="mt-1 bg-rashmi-red/10 p-1.5 rounded-full text-rashmi-red">
+                      <Check className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <h4 className="font-medium text-foreground">Capacity Expansion</h4>
+                      <p className="text-sm text-muted-foreground">Driving growth through strategic capacity increase</p>
+                    </div>
+                  </div>
+                </motion.div>
+              </motion.div>
             </div>
           </div>
         </section>
@@ -321,6 +459,140 @@ const AboutRashmi = () => {
                 title="Dimensional Accuracy" 
                 description="Precision manufacturing for proper fitment in all applications" 
               />
+            </div>
+          </div>
+        </section>
+        
+        {/* Mission & Vision Section */}
+        <section className="py-20 bg-muted/30">
+          <div className="container mx-auto px-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+              {/* Mission Column */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.7 }}
+                className="bg-card rounded-xl border border-border/40 p-8 relative overflow-hidden"
+              >
+                <div className="absolute top-0 right-0 p-4 opacity-10">
+                  <Target className="w-32 h-32 text-rashmi-red" />
+                </div>
+                
+                <div className="relative z-10">
+                  <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-rashmi-red/10 text-rashmi-red mb-6">
+                    <Target className="w-7 h-7" />
+                  </div>
+                  
+                  <h2 className="text-3xl font-display font-bold mb-6">Our Mission</h2>
+                  
+                  <div className="prose prose-sm max-w-none text-muted-foreground space-y-4">
+                    <p>
+                      Our mission is to achieve business excellence through delivering superior value to our customers, 
+                      shareholders, employees and society at large. We are committed to work in the true spirit of 
+                      entrepreneurship by making optimum utilization of resources, using environment friendly procedures 
+                      and practices, maintaining highest work ethics, hiring the best people and providing them with a 
+                      safe and healthy working environment.
+                    </p>
+                    <p>
+                      We aim to achieve leadership status in Iron & Steel, Cement, Power and Ferro Alloy industries by 
+                      being a customer-driven, quality-obsessed and socially responsible corporate entity. We uphold the 
+                      following values – integrity, empathy, commitment, trust, passion, concern, and loyalty and ensure 
+                      to be wedded to these ideals while we work our way to the top and offer best quality products and 
+                      services at most competitive prices.
+                    </p>
+                  </div>
+                  
+                  <div className="mt-6 flex flex-wrap gap-3">
+                    <motion.span 
+                      whileHover={{ scale: 1.05 }}
+                      className="inline-flex items-center px-3 py-1 bg-rashmi-red/10 text-rashmi-red rounded-full text-xs font-medium"
+                    >
+                      Excellence
+                    </motion.span>
+                    <motion.span 
+                      whileHover={{ scale: 1.05 }}
+                      className="inline-flex items-center px-3 py-1 bg-rashmi-red/10 text-rashmi-red rounded-full text-xs font-medium"
+                    >
+                      Sustainability
+                    </motion.span>
+                    <motion.span 
+                      whileHover={{ scale: 1.05 }}
+                      className="inline-flex items-center px-3 py-1 bg-rashmi-red/10 text-rashmi-red rounded-full text-xs font-medium"
+                    >
+                      Ethics
+                    </motion.span>
+                    <motion.span 
+                      whileHover={{ scale: 1.05 }}
+                      className="inline-flex items-center px-3 py-1 bg-rashmi-red/10 text-rashmi-red rounded-full text-xs font-medium"
+                    >
+                      Innovation
+                    </motion.span>
+                    <motion.span 
+                      whileHover={{ scale: 1.05 }}
+                      className="inline-flex items-center px-3 py-1 bg-rashmi-red/10 text-rashmi-red rounded-full text-xs font-medium"
+                    >
+                      Responsibility
+                    </motion.span>
+                  </div>
+                </div>
+              </motion.div>
+              
+              {/* Vision Column */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.7, delay: 0.2 }}
+                className="bg-card rounded-xl border border-border/40 p-8 relative overflow-hidden"
+              >
+                <div className="absolute top-0 right-0 p-4 opacity-10">
+                  <Lightbulb className="w-32 h-32 text-rashmi-red" />
+                </div>
+                
+                <div className="relative z-10">
+                  <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-rashmi-red/10 text-rashmi-red mb-6">
+                    <Lightbulb className="w-7 h-7" />
+                  </div>
+                  
+                  <h2 className="text-3xl font-display font-bold mb-6">Our Vision</h2>
+                  
+                  <div className="prose prose-sm max-w-none text-muted-foreground space-y-4">
+                    <p>
+                      Our vision is to be a premium global business conglomerate, consistently achieving breakthroughs 
+                      and setting new benchmarks in Iron & Steel, Cement, Power and Ferro Alloy industries. Going 
+                      forward, we plan to employ more ingenious technologies that empower us to meet the highest 
+                      global standards in products and services and enrich lives of all through sustainable industrial 
+                      and business development.
+                    </p>
+                  </div>
+                  
+                  <motion.div 
+                    className="mt-8 grid grid-cols-2 gap-4"
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.5, duration: 0.7 }}
+                  >
+                    <div className="bg-muted/30 rounded-lg p-4 text-center hover:bg-muted/50 transition-colors">
+                      <h4 className="text-xl font-bold text-rashmi-red mb-1">2025</h4>
+                      <p className="text-sm text-muted-foreground">Target expansion into new global markets</p>
+                    </div>
+                    <div className="bg-muted/30 rounded-lg p-4 text-center hover:bg-muted/50 transition-colors">
+                      <h4 className="text-xl font-bold text-rashmi-red mb-1">10M MT</h4>
+                      <p className="text-sm text-muted-foreground">Future production capacity goal</p>
+                    </div>
+                    <div className="bg-muted/30 rounded-lg p-4 text-center hover:bg-muted/50 transition-colors">
+                      <h4 className="text-xl font-bold text-rashmi-red mb-1">40+</h4>
+                      <p className="text-sm text-muted-foreground">Global export destinations</p>
+                    </div>
+                    <div className="bg-muted/30 rounded-lg p-4 text-center hover:bg-muted/50 transition-colors">
+                      <h4 className="text-xl font-bold text-rashmi-red mb-1">#1</h4>
+                      <p className="text-sm text-muted-foreground">Global leadership position goal</p>
+                    </div>
+                  </motion.div>
+                </div>
+              </motion.div>
             </div>
           </div>
         </section>

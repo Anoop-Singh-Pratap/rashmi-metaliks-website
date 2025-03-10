@@ -1,4 +1,3 @@
-
 import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
@@ -6,6 +5,7 @@ import { CheckCircle, Layers, Shield, Zap, Award, Factory, AlertCircle } from 'l
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import SpecificationTable from '../components/ui/SpecificationTable';
+import InteractiveSpecTable from '../components/ui/InteractiveSpecTable';
 import ExploreButton from '../components/ui/ExploreButton';
 
 interface TableRow {
@@ -18,135 +18,135 @@ const DiFittings = () => {
   const socketsData = [
     {
       "nominal_size": "80",
-      "outside_diameter": "98",
-      "socket_depth": "84",
-      "weight": "2.3"
+      "outside_diameter": 98,
+      "socket_depth": 84,
+      "weight": 2.3
     },
     {
       "nominal_size": "100",
-      "outside_diameter": "118",
-      "socket_depth": "87",
-      "weight": "2.84"
+      "outside_diameter": 118,
+      "socket_depth": 87,
+      "weight": 2.84
     },
     {
       "nominal_size": "150",
-      "outside_diameter": "170",
-      "socket_depth": "91",
-      "weight": "4.15"
+      "outside_diameter": 170,
+      "socket_depth": 91,
+      "weight": 4.15
     },
     {
       "nominal_size": "200",
-      "outside_diameter": "222",
-      "socket_depth": "95",
-      "weight": "5.63"
+      "outside_diameter": 222,
+      "socket_depth": 95,
+      "weight": 5.63
     },
     {
       "nominal_size": "250",
-      "outside_diameter": "274",
-      "socket_depth": "99",
-      "weight": "7.34"
+      "outside_diameter": 274,
+      "socket_depth": 99,
+      "weight": 7.34
     },
     {
       "nominal_size": "300",
-      "outside_diameter": "326",
-      "socket_depth": "103",
-      "weight": "9.28"
+      "outside_diameter": 326,
+      "socket_depth": 103,
+      "weight": 9.28
     }
   ];
 
   const flangesData = [
     {
       "nominal_size": "80",
-      "outside_diameter": "200",
-      "bolt_circle": "160",
-      "no_of_bolts": "8",
-      "weight": "5.6"
+      "outside_diameter": 200,
+      "bolt_circle": 160,
+      "no_of_bolts": 8,
+      "weight": 5.6
     },
     {
       "nominal_size": "100",
-      "outside_diameter": "220",
-      "bolt_circle": "180",
-      "no_of_bolts": "8",
-      "weight": "6.7"
+      "outside_diameter": 220,
+      "bolt_circle": 180,
+      "no_of_bolts": 8,
+      "weight": 6.7
     },
     {
       "nominal_size": "150",
-      "outside_diameter": "285",
-      "bolt_circle": "240",
-      "no_of_bolts": "8",
-      "weight": "10.2"
+      "outside_diameter": 285,
+      "bolt_circle": 240,
+      "no_of_bolts": 8,
+      "weight": 10.2
     },
     {
       "nominal_size": "200",
-      "outside_diameter": "340",
-      "bolt_circle": "295",
-      "no_of_bolts": "12",
-      "weight": "13.6"
+      "outside_diameter": 340,
+      "bolt_circle": 295,
+      "no_of_bolts": 12,
+      "weight": 13.6
     },
     {
       "nominal_size": "250",
-      "outside_diameter": "400",
-      "bolt_circle": "350",
-      "no_of_bolts": "12",
-      "weight": "17.3"
+      "outside_diameter": 400,
+      "bolt_circle": 350,
+      "no_of_bolts": 12,
+      "weight": 17.3
     },
     {
       "nominal_size": "300",
-      "outside_diameter": "455",
-      "bolt_circle": "400",
-      "no_of_bolts": "12",
-      "weight": "21.5"
+      "outside_diameter": 455,
+      "bolt_circle": 400,
+      "no_of_bolts": 12,
+      "weight": 21.5
     }
   ];
 
   const bendData = [
     {
       "nominal_size": "80",
-      "l_mm": "170",
-      "weight_11_deg": "3.2",
-      "weight_22_deg": "3.5",
-      "weight_45_deg": "4.1",
-      "weight_90_deg": "6.8"
+      "l_mm": 170,
+      "weight_11_deg": 3.2,
+      "weight_22_deg": 3.5,
+      "weight_45_deg": 4.1,
+      "weight_90_deg": 6.8
     },
     {
       "nominal_size": "100",
-      "l_mm": "180",
-      "weight_11_deg": "4.1",
-      "weight_22_deg": "4.5",
-      "weight_45_deg": "5.2",
-      "weight_90_deg": "8.6"
+      "l_mm": 180,
+      "weight_11_deg": 4.1,
+      "weight_22_deg": 4.5,
+      "weight_45_deg": 5.2,
+      "weight_90_deg": 8.6
     },
     {
       "nominal_size": "150",
-      "l_mm": "200",
-      "weight_11_deg": "6.5",
-      "weight_22_deg": "7.2",
-      "weight_45_deg": "8.5",
-      "weight_90_deg": "14.1"
+      "l_mm": 200,
+      "weight_11_deg": 6.5,
+      "weight_22_deg": 7.2,
+      "weight_45_deg": 8.5,
+      "weight_90_deg": 14.1
     },
     {
       "nominal_size": "200",
-      "l_mm": "220",
-      "weight_11_deg": "9.8",
-      "weight_22_deg": "10.9",
-      "weight_45_deg": "12.7",
-      "weight_90_deg": "21.3"
+      "l_mm": 220,
+      "weight_11_deg": 9.8,
+      "weight_22_deg": 10.9,
+      "weight_45_deg": 12.7,
+      "weight_90_deg": 21.3
     },
     {
       "nominal_size": "250",
-      "l_mm": "240",
-      "weight_11_deg": "13.8",
-      "weight_22_deg": "15.3",
-      "weight_45_deg": "17.9",
-      "weight_90_deg": "30.1"
+      "l_mm": 240,
+      "weight_11_deg": 13.8,
+      "weight_22_deg": 15.3,
+      "weight_45_deg": 17.9,
+      "weight_90_deg": 30.1
     },
     {
       "nominal_size": "300",
-      "l_mm": "260",
-      "weight_11_deg": "18.6",
-      "weight_22_deg": "20.6",
-      "weight_45_deg": "24.1",
-      "weight_90_deg": "40.5"
+      "l_mm": 260,
+      "weight_11_deg": 18.6,
+      "weight_22_deg": 20.6,
+      "weight_45_deg": 24.1,
+      "weight_90_deg": 40.5
     }
   ];
 
@@ -169,7 +169,6 @@ const DiFittings = () => {
     }
   ];
 
-  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -193,7 +192,6 @@ const DiFittings = () => {
     <div className="min-h-screen bg-background" ref={containerRef}>
       <Header />
       
-      {/* Hero Section */}
       <section className="pt-32 pb-16 relative overflow-hidden">
         <div className="container mx-auto px-4">
           <motion.div 
@@ -249,7 +247,6 @@ const DiFittings = () => {
         />
       </section>
 
-      {/* Advantages Section */}
       <section id="advantages" className="py-16 bg-muted/30">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto mb-16 text-center">
@@ -299,7 +296,6 @@ const DiFittings = () => {
         </div>
       </section>
       
-      {/* Specifications Section */}
       <section id="specifications" className="py-16 mt-6">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto mb-12 text-center">
@@ -323,27 +319,74 @@ const DiFittings = () => {
             </motion.p>
           </div>
           
-          <SpecificationTable 
-            headers={["Nominal Size", "Outside Diameter", "Socket Depth", "Weight"]}
-            rows={socketsData}
-            className="mb-6"
-          />
-
-          <SpecificationTable 
-            headers={["Nominal Size", "Outside Diameter", "Bolt Circle", "No. of Bolts", "Weight"]}
-            rows={flangesData}
-            className="mb-6"
-          />
-
-          <SpecificationTable 
-            headers={["Nominal Size", "L (mm)", "11° Weight", "22° Weight", "45° Weight", "90° Weight"]}
-            rows={bendData}
-            className="mb-6"
-          />
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="bg-card shadow-sm border border-border rounded-xl p-6 md:p-8 mb-12"
+          >
+            <InteractiveSpecTable 
+              data={{
+                sockets: socketsData,
+                flanges: flangesData,
+                bends: bendData
+              }}
+            />
+          </motion.div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="bg-card border border-border p-6 rounded-lg"
+            >
+              <div className="w-12 h-12 bg-rashmi-red/10 text-rashmi-red flex items-center justify-center rounded-full mb-4">
+                <AlertCircle />
+              </div>
+              <h3 className="text-lg font-semibold mb-2">Quality Assurance</h3>
+              <p className="text-muted-foreground text-sm">
+                All our fittings undergo rigorous testing and quality checks to ensure durability and perfect fitment.
+              </p>
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="bg-card border border-border p-6 rounded-lg"
+            >
+              <div className="w-12 h-12 bg-rashmi-red/10 text-rashmi-red flex items-center justify-center rounded-full mb-4">
+                <Factory />
+              </div>
+              <h3 className="text-lg font-semibold mb-2">Manufacturing Process</h3>
+              <p className="text-muted-foreground text-sm">
+                Manufactured using state-of-the-art technology and precision casting techniques.
+              </p>
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="bg-card border border-border p-6 rounded-lg"
+            >
+              <div className="w-12 h-12 bg-rashmi-red/10 text-rashmi-red flex items-center justify-center rounded-full mb-4">
+                <Layers />
+              </div>
+              <h3 className="text-lg font-semibold mb-2">Coating Options</h3>
+              <p className="text-muted-foreground text-sm">
+                Available with various coating options to suit different environmental conditions.
+              </p>
+            </motion.div>
+          </div>
         </div>
       </section>
       
-      {/* CTA Section */}
       <section className="py-16 bg-muted/30">
         <div className="container mx-auto px-4">
           <motion.div 

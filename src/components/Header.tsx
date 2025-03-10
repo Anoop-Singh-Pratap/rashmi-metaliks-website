@@ -13,9 +13,11 @@ import {
   Recycle,
   Leaf,
   FileCheck,
-  Award
+  Award,
+  Phone,
+  Briefcase
 } from 'lucide-react';
-import ThemeToggle from './ThemeToggle';
+import ThemeToggle from '@/components/ThemeToggle';
 import { useTheme } from '@/context/ThemeContext';
 
 const Header = () => {
@@ -33,7 +35,6 @@ const Header = () => {
       items: [
         { label: 'About Rashmi', href: '/about-rashmi' },
         { label: 'Media & News', href: '/media' },
-        { label: 'Careers', href: '/careers' },
         { label: 'Contact Us', href: '/contact-us' },
       ]
     },
@@ -56,6 +57,14 @@ const Header = () => {
       items: [
         { label: 'CSR Initiatives', href: '/csr' },
         { label: 'Quality Assurance', href: '/quality-assurance' },
+      ]
+    },
+    { 
+      label: 'Careers & Contact', 
+      dropdown: true,
+      items: [
+        { label: 'Careers', href: '/careers' },
+        { label: 'Contact Us', href: '/contact-us' },
       ]
     },
     { 
