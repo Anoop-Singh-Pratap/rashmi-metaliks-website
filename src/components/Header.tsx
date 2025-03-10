@@ -226,7 +226,7 @@ const Header = () => {
                   </>
                 ) : (
                   <Link 
-                    to={link.href || '#'}
+                    to={link.dropdown ? '#' : link.items[0].href}
                     className="nav-link px-3 py-2 rounded-md text-foreground hover:text-rashmi-red hover:bg-muted/50 transition-colors"
                   >
                     {link.label}
@@ -300,7 +300,7 @@ const Header = () => {
                     </>
                   ) : (
                     <Link 
-                      to={link.href || '#'}
+                      to={link.dropdown ? '#' : link.items[0].href}
                       className="block py-4 text-foreground hover:text-rashmi-red transition-colors"
                     >
                       {link.label}

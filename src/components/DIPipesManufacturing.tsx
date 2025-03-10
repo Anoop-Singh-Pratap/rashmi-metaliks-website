@@ -1,7 +1,15 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Factory, Flask, Droplets, Gauge, Ruler, Wrench, CheckCircle, FlaskConical } from 'lucide-react';
+import { 
+  Factory, 
+  FlaskConical, 
+  Droplets, 
+  Gauge, 
+  Ruler, 
+  Wrench, 
+  CheckCircle 
+} from 'lucide-react';
 
 interface ProcessStep {
   id: string;
@@ -26,7 +34,7 @@ const DIPipesManufacturing: React.FC = () => {
       id: 'material',
       title: 'Selection of Material',
       description: 'If the molten iron composition deviates from established standards, it is rectified by introducing alloy and other elements.',
-      icon: <Flask size={24} />,
+      icon: <FlaskConical size={24} />,
       imageUrl: 'https://images.unsplash.com/photo-1619468129361-605ebea04b44?q=80&w=1471&auto=format&fit=crop'
     },
     {

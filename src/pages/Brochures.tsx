@@ -1,229 +1,206 @@
 
 import React from 'react';
-import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet';
-import { FileText, Download, Check, Info } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { FileText, Download, Eye, ArrowRight } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
-interface BrochureCardProps {
+interface BrochureItem {
+  id: string;
   title: string;
   description: string;
-  image: string;
-  downloadUrl: string;
+  thumbnail: string;
+  fileUrl: string;
   fileSize: string;
-  fileType: string;
+  category: string;
 }
 
-const BrochureCard: React.FC<BrochureCardProps> = ({ title, description, image, downloadUrl, fileSize, fileType }) => {
-  return (
-    <motion.div 
-      whileHover={{ y: -8 }}
-      className="bg-card border border-border rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300"
-    >
-      <div className="relative aspect-[4/3] overflow-hidden">
-        <img 
-          src={image} 
-          alt={title} 
-          className="w-full h-full object-cover transition-transform duration-500 hover:scale-105" 
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-rashmi-dark/90 to-transparent flex items-end">
-          <div className="p-4">
-            <h3 className="text-xl font-bold text-white">{title}</h3>
-            <p className="text-white/80 text-sm">{description}</p>
-          </div>
-        </div>
-      </div>
-      <div className="p-4 border-t border-border">
-        <div className="flex justify-between items-center mb-3">
-          <div className="flex items-center">
-            <FileText size={16} className="mr-2 text-muted-foreground" />
-            <span className="text-sm text-muted-foreground">{fileType} · {fileSize}</span>
-          </div>
-        </div>
-        <a 
-          href={downloadUrl}
-          className="inline-flex items-center justify-center w-full py-2 px-4 bg-rashmi-red text-white rounded-lg hover:bg-rashmi-red/90 transition-colors font-medium"
-          download
-        >
-          <Download size={18} className="mr-2" />
-          Download Brochure
-        </a>
-      </div>
-    </motion.div>
-  );
-};
-
-const Brochures: React.FC = () => {
-  const brochures = [
+const Brochures = () => {
+  const brochures: BrochureItem[] = [
     {
-      title: "Ductile Iron Pipes Brochure",
-      description: "Complete technical specifications and applications",
-      image: "https://images.unsplash.com/photo-1518770660439-4636190af475",
-      downloadUrl: "/brochures/ductile-iron-pipes.pdf", 
-      fileSize: "4.2 MB",
-      fileType: "PDF"
+      id: 'di-pipes-brochure',
+      title: 'DI Pipes Product Catalogue',
+      description: 'Complete specifications and applications for our premium Ductile Iron Pipes range.',
+      thumbnail: 'https://images.unsplash.com/photo-1518281361980-b26bfd556770?q=80&w=1374&auto=format&fit=crop',
+      fileUrl: '#',
+      fileSize: '4.2 MB',
+      category: 'Products'
     },
     {
-      title: "TMT Bar Product Catalog",
-      description: "Size guide and strength specifications",
-      image: "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7",
-      downloadUrl: "/brochures/tmt-bars.pdf", 
-      fileSize: "3.8 MB",
-      fileType: "PDF"
+      id: 'di-fittings-brochure',
+      title: 'DI Fittings Technical Guide',
+      description: 'Technical specifications and installation guide for Ductile Iron Fittings.',
+      thumbnail: 'https://images.unsplash.com/photo-1581093806997-124204d9fa9d?q=80&w=1470&auto=format&fit=crop',
+      fileUrl: '#',
+      fileSize: '3.8 MB',
+      category: 'Products'
     },
     {
-      title: "DI Fittings Technical Guide",
-      description: "Installation procedures and specifications",
-      image: "https://images.unsplash.com/photo-1531297484001-80022131f5a1",
-      downloadUrl: "/brochures/di-fittings.pdf", 
-      fileSize: "5.1 MB",
-      fileType: "PDF"
+      id: 'tmt-bar-brochure',
+      title: 'TMT Bar Product Range',
+      description: 'Comprehensive guide to our TMT Bar range with technical specifications.',
+      thumbnail: 'https://images.unsplash.com/photo-1629115576910-40164a4e90cc?q=80&w=1470&auto=format&fit=crop',
+      fileUrl: '#',
+      fileSize: '5.1 MB',
+      category: 'Products'
     },
     {
-      title: "Pig Iron Quality Standards",
-      description: "Chemical composition and applications",
-      image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085",
-      downloadUrl: "/brochures/pig-iron.pdf", 
-      fileSize: "2.7 MB",
-      fileType: "PDF"
+      id: 'csr-report',
+      title: 'Corporate Social Responsibility Report',
+      description: 'Annual CSR report detailing our initiatives and impacts across communities.',
+      thumbnail: 'https://images.unsplash.com/photo-1454789548928-9efd52dc4031?q=80&w=1480&auto=format&fit=crop',
+      fileUrl: '#',
+      fileSize: '6.3 MB',
+      category: 'Corporate'
     },
     {
-      title: "Iron Ore Pellet Specifications",
-      description: "Technical details and usage guidelines",
-      image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d",
-      downloadUrl: "/brochures/iron-ore-pellet.pdf", 
-      fileSize: "3.5 MB",
-      fileType: "PDF"
+      id: 'sustainability-report',
+      title: 'Sustainability Performance Report',
+      description: 'Our commitment to sustainable manufacturing and environmental stewardship.',
+      thumbnail: 'https://images.unsplash.com/photo-1623011132181-e2cee3ce2ceb?q=80&w=1471&auto=format&fit=crop',
+      fileUrl: '#',
+      fileSize: '5.7 MB',
+      category: 'Corporate'
     },
     {
-      title: "Sinter Production Brochure",
-      description: "Manufacturing process and applications",
-      image: "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7",
-      downloadUrl: "/brochures/sinter.pdf", 
-      fileSize: "4.0 MB",
-      fileType: "PDF"
+      id: 'company-profile',
+      title: 'Rashmi Group Company Profile',
+      description: 'Complete overview of Rashmi Group, our vision, values and achievements.',
+      thumbnail: 'https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?q=80&w=1374&auto=format&fit=crop',
+      fileUrl: '#',
+      fileSize: '7.2 MB',
+      category: 'Corporate'
     }
   ];
+
+  const categories = Array.from(new Set(brochures.map(item => item.category)));
+  const [activeCategory, setActiveCategory] = React.useState('All');
+  
+  const filteredBrochures = activeCategory === 'All' 
+    ? brochures 
+    : brochures.filter(item => item.category === activeCategory);
 
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Product Brochures | Rashmi Metaliks</title>
-        <meta name="description" content="Download detailed brochures for Rashmi Metaliks' products, including technical specifications, applications, and quality standards." />
+        <title>Brochures & Downloads | Rashmi Group</title>
+        <meta name="description" content="Download brochures, technical specifications, and product catalogs from Rashmi Group." />
       </Helmet>
 
       <Header />
-      
-      <section className="pt-32 pb-8">
+
+      <section className="pt-32 pb-12">
         <div className="container mx-auto px-4">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="max-w-3xl mx-auto text-center mb-10"
+            className="max-w-3xl mx-auto text-center mb-12"
           >
-            <h1 className="text-4xl md:text-5xl font-display font-bold mb-6">
-              Product <span className="text-rashmi-red">Brochures</span>
-            </h1>
-            <p className="text-lg text-muted-foreground">
-              Download detailed information about our high-quality products, including technical 
-              specifications, applications, and quality standards.
+            <h1 className="text-3xl md:text-4xl font-bold mb-4">Brochures & Downloads</h1>
+            <p className="text-muted-foreground text-lg">
+              Access our product catalogs, technical guides, and corporate publications
             </p>
           </motion.div>
 
-          <div className="bg-muted/30 p-5 rounded-xl mb-10">
-            <div className="flex items-start gap-4">
-              <Info size={24} className="text-rashmi-red flex-shrink-0 mt-1" />
-              <div>
-                <h3 className="font-bold text-foreground mb-1">Need More Information?</h3>
-                <p className="text-muted-foreground">
-                  Can't find what you're looking for? Contact our team for custom product 
-                  specifications or schedule a consultation.
-                </p>
-                <div className="mt-3 flex flex-wrap gap-3">
-                  <a 
-                    href="/contact-us" 
-                    className="inline-flex items-center px-4 py-2 bg-card border border-border rounded-lg text-foreground hover:bg-muted transition-colors"
-                  >
-                    Contact Sales
-                  </a>
-                  <a 
-                    href="mailto:info@rashmi.com" 
-                    className="inline-flex items-center px-4 py-2 bg-card border border-border rounded-lg text-foreground hover:bg-muted transition-colors"
-                  >
-                    Email Us
-                  </a>
-                </div>
-              </div>
-            </div>
+          <div className="flex flex-wrap justify-center gap-3 mb-10">
+            <button 
+              onClick={() => setActiveCategory('All')}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                activeCategory === 'All' 
+                  ? 'bg-rashmi-red text-white' 
+                  : 'bg-muted hover:bg-muted/80'
+              }`}
+            >
+              All
+            </button>
+            {categories.map(category => (
+              <button 
+                key={category}
+                onClick={() => setActiveCategory(category)}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                  activeCategory === category 
+                    ? 'bg-rashmi-red text-white' 
+                    : 'bg-muted hover:bg-muted/80'
+                }`}
+              >
+                {category}
+              </button>
+            ))}
           </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {brochures.map((brochure, index) => (
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            {filteredBrochures.map((brochure) => (
               <motion.div
-                key={brochure.title}
+                key={brochure.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+                transition={{ duration: 0.5 }}
+                className="bg-card rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all border border-border"
               >
-                <BrochureCard {...brochure} />
+                <div className="relative h-52">
+                  <img 
+                    src={brochure.thumbnail} 
+                    alt={brochure.title} 
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute top-3 right-3">
+                    <span className="bg-background/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium">
+                      {brochure.category}
+                    </span>
+                  </div>
+                </div>
+                <div className="p-5">
+                  <h3 className="text-xl font-bold mb-2">{brochure.title}</h3>
+                  <p className="text-muted-foreground text-sm mb-4">
+                    {brochure.description}
+                  </p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-muted-foreground">
+                      <FileText size={14} className="inline mr-1" />
+                      {brochure.fileSize}
+                    </span>
+                    <div className="flex gap-2">
+                      <a 
+                        href={brochure.fileUrl} 
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-2 rounded-full bg-muted hover:bg-muted/80 transition-colors"
+                        title="View"
+                      >
+                        <Eye size={18} />
+                      </a>
+                      <a 
+                        href={brochure.fileUrl} 
+                        download
+                        className="p-2 rounded-full bg-rashmi-red text-white hover:bg-rashmi-red/90 transition-colors"
+                        title="Download"
+                      >
+                        <Download size={18} />
+                      </a>
+                    </div>
+                  </div>
+                </div>
               </motion.div>
             ))}
+          </div>
+
+          <div className="text-center mt-12">
+            <p className="text-muted-foreground mb-4">
+              Can't find what you're looking for?
+            </p>
+            <a 
+              href="/contact-us" 
+              className="inline-flex items-center text-rashmi-red hover:underline"
+            >
+              Contact our team for assistance
+              <ArrowRight size={16} className="ml-1" />
+            </a>
           </div>
         </div>
       </section>
 
-      <section className="py-12">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-2xl font-bold mb-6">Why Download Our Brochures?</h2>
-            <div className="grid md:grid-cols-2 gap-8">
-              <div className="flex items-start">
-                <Check className="text-rashmi-red mr-3 flex-shrink-0 mt-1" />
-                <div>
-                  <h3 className="font-bold mb-2">Complete Specifications</h3>
-                  <p className="text-muted-foreground">
-                    Access detailed technical specifications, dimensions, and performance characteristics
-                    for all of our products.
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start">
-                <Check className="text-rashmi-red mr-3 flex-shrink-0 mt-1" />
-                <div>
-                  <h3 className="font-bold mb-2">Installation Guidelines</h3>
-                  <p className="text-muted-foreground">
-                    Step-by-step instructions for proper installation and handling of our products
-                    to ensure optimal performance.
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start">
-                <Check className="text-rashmi-red mr-3 flex-shrink-0 mt-1" />
-                <div>
-                  <h3 className="font-bold mb-2">Quality Certifications</h3>
-                  <p className="text-muted-foreground">
-                    Information about our product certifications, quality standards, and 
-                    testing procedures.
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start">
-                <Check className="text-rashmi-red mr-3 flex-shrink-0 mt-1" />
-                <div>
-                  <h3 className="font-bold mb-2">Application Examples</h3>
-                  <p className="text-muted-foreground">
-                    Real-world examples of how our products are used in various industries
-                    and applications around the globe.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-      
       <Footer />
     </div>
   );

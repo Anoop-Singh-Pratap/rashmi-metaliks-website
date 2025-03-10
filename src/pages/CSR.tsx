@@ -2,20 +2,25 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet';
-import { TreePine, Sun, Droplets, HeartPulse, Users, Check } from 'lucide-react';
+import { TreePine, Sun, Droplets, HeartPulse, Users } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import RevealText from '../components/ui/RevealText';
 
-interface CSRCardProps {
-  icon: React.ReactNode;
-  title: string;
-  image: string;
-  stats: string;
-  children: React.ReactNode;
-}
+const StatBox = ({ value, label }: { value: string, label: string }) => (
+  <div className="bg-background border border-border p-4 rounded-lg text-center">
+    <div className="text-2xl font-bold text-rashmi-red mb-1">{value}</div>
+    <div className="text-sm text-muted-foreground">{label}</div>
+  </div>
+);
 
-const CSRCard = ({ icon, title, image, stats, children }: CSRCardProps) => (
+const CSRCard = ({ icon, title, image, stats, children }: { 
+  icon: React.ReactNode,
+  title: string,
+  image: string,
+  stats: string,
+  children: React.ReactNode
+}) => (
   <motion.div 
     whileHover={{ y: -10 }}
     className="bg-background border border-border rounded-xl overflow-hidden hover:shadow-xl transition-all"
@@ -43,18 +48,6 @@ const CSRCard = ({ icon, title, image, stats, children }: CSRCardProps) => (
   </motion.div>
 );
 
-interface StatBoxProps {
-  value: string;
-  label: string;
-}
-
-const StatBox = ({ value, label }: StatBoxProps) => (
-  <div className="bg-background border border-border p-4 rounded-lg text-center">
-    <div className="text-2xl font-bold text-rashmi-red mb-1">{value}</div>
-    <div className="text-sm text-muted-foreground">{label}</div>
-  </div>
-);
-
 const CSR = () => {
   return (
     <div className="min-h-screen bg-background">
@@ -69,7 +62,7 @@ const CSR = () => {
       <section className="relative pt-32 pb-24 overflow-hidden">
         <div className="absolute inset-0 z-0 bg-gradient-to-b from-rashmi-dark/90 to-background/80">
           <img 
-            src="https://images.unsplash.com/photo-1466611653911-95081537e5b7"
+            src="https://images.unsplash.com/photo-1466611653911-95081537e5b7" 
             alt="CSR background"
             className="w-full h-full object-cover opacity-20"
             loading="lazy"
@@ -191,9 +184,9 @@ const CSR = () => {
                 with continuous skill development initiatives.
               </p>
               <ul className="text-left space-y-2 text-muted-foreground">
-                <li className="flex items-center"><Check size={16} className="text-rashmi-red mr-2" /> Annual health checkups</li>
-                <li className="flex items-center"><Check size={16} className="text-rashmi-red mr-2" /> Vaccination drives</li>
-                <li className="flex items-center"><Check size={16} className="text-rashmi-red mr-2" /> Technical training programs</li>
+                <li>• Annual health checkups</li>
+                <li>• Vaccination drives</li>
+                <li>• Technical training programs</li>
               </ul>
             </motion.div>
 
@@ -220,43 +213,6 @@ const CSR = () => {
                 <StatBox value="10k+" label="Lives Impacted" />
               </div>
             </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* CSR Initiatives Text */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto prose prose-lg">
-            <h2 className="text-3xl font-bold text-center text-foreground mb-8">
-              Our <span className="text-rashmi-red">Commitment</span>
-            </h2>
-            <div className="text-muted-foreground">
-              <p>
-                At the Rashmi Group, all facets of CSR is a self-regulation that has been imposed by the leaders. 
-                We constantly dedicate the organisation to the well being of the eco-system from which we derive our business.
-              </p>
-              <p>
-                Accordingly, CSR is a core business operation philosophy, held in high regard by the management as well as the employees. 
-                We sincerely believe in reducing and minimizing the impact our business operations may have on the environment.
-              </p>
-              <p>
-                At our plants, we have successfully implemented rain water harvesting programs. We aim to set an example on 
-                conserving every drop of rain water. Our plants also harvest the solar energy to the most extensive levels. 
-                Over fifty thousand trees of various varieties have been planted by us and we truly believe that taking care 
-                of our green cover is an important part of our corporate responsibility to our environment.
-              </p>
-              <p>
-                Not only do we deeply believe in environmental conservation, we also believe in providing adequate healthcare 
-                facilities to employees and their constant skill development.
-              </p>
-              <p>
-                We constantly engage with several communities at ground level, understand their requirements and assist them 
-                monetarily in the implementation of projects.
-                In other words, we are truly invested in CSR initiatives and sincerely believe that Rashmi Group can truly 
-                make a positive impact in the social and environmental ecosystem.
-              </p>
-            </div>
           </div>
         </div>
       </section>
