@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import Header from '@/components/Header';
@@ -464,8 +465,34 @@ const AboutRashmi = () => {
         </section>
         
         {/* Mission & Vision Section */}
-        <section className="py-20 bg-muted/30">
-          <div className="container mx-auto px-4">
+        <section className="py-20 bg-background relative overflow-hidden">
+          {/* Animated Background Elements */}
+          <div className="absolute inset-0 pointer-events-none">
+            {Array.from({ length: 15 }).map((_, index) => (
+              <motion.div
+                key={index}
+                className="absolute bg-rashmi-red/5 rounded-full filter blur-3xl"
+                style={{
+                  width: `${Math.random() * 300 + 100}px`,
+                  height: `${Math.random() * 300 + 100}px`,
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                }}
+                animate={{
+                  x: [0, Math.random() * 100 - 50, 0],
+                  y: [0, Math.random() * 100 - 50, 0],
+                  opacity: [0.1, 0.3, 0.1],
+                }}
+                transition={{
+                  duration: Math.random() * 20 + 10,
+                  ease: "easeInOut",
+                  repeat: Infinity,
+                }}
+              />
+            ))}
+          </div>
+          
+          <div className="container mx-auto px-4 relative z-10">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
               {/* Mission Column */}
               <motion.div
@@ -504,36 +531,19 @@ const AboutRashmi = () => {
                   </div>
                   
                   <div className="mt-6 flex flex-wrap gap-3">
-                    <motion.span 
-                      whileHover={{ scale: 1.05 }}
-                      className="inline-flex items-center px-3 py-1 bg-rashmi-red/10 text-rashmi-red rounded-full text-xs font-medium"
-                    >
-                      Excellence
-                    </motion.span>
-                    <motion.span 
-                      whileHover={{ scale: 1.05 }}
-                      className="inline-flex items-center px-3 py-1 bg-rashmi-red/10 text-rashmi-red rounded-full text-xs font-medium"
-                    >
-                      Sustainability
-                    </motion.span>
-                    <motion.span 
-                      whileHover={{ scale: 1.05 }}
-                      className="inline-flex items-center px-3 py-1 bg-rashmi-red/10 text-rashmi-red rounded-full text-xs font-medium"
-                    >
-                      Ethics
-                    </motion.span>
-                    <motion.span 
-                      whileHover={{ scale: 1.05 }}
-                      className="inline-flex items-center px-3 py-1 bg-rashmi-red/10 text-rashmi-red rounded-full text-xs font-medium"
-                    >
-                      Innovation
-                    </motion.span>
-                    <motion.span 
-                      whileHover={{ scale: 1.05 }}
-                      className="inline-flex items-center px-3 py-1 bg-rashmi-red/10 text-rashmi-red rounded-full text-xs font-medium"
-                    >
-                      Responsibility
-                    </motion.span>
+                    {["Excellence", "Sustainability", "Ethics", "Innovation", "Responsibility"].map((value, index) => (
+                      <motion.span 
+                        key={value}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: index * 0.1, duration: 0.5 }}
+                        whileHover={{ scale: 1.05, backgroundColor: "hsl(var(--rashmi-red))", color: "white" }}
+                        className="inline-flex items-center px-3 py-1 bg-rashmi-red/10 text-rashmi-red rounded-full text-xs font-medium transition-all duration-300"
+                      >
+                        {value}
+                      </motion.span>
+                    ))}
                   </div>
                 </div>
               </motion.div>
@@ -574,22 +584,21 @@ const AboutRashmi = () => {
                     viewport={{ once: true }}
                     transition={{ delay: 0.5, duration: 0.7 }}
                   >
-                    <div className="bg-muted/30 rounded-lg p-4 text-center hover:bg-muted/50 transition-colors">
-                      <h4 className="text-xl font-bold text-rashmi-red mb-1">2025</h4>
-                      <p className="text-sm text-muted-foreground">Target expansion into new global markets</p>
-                    </div>
-                    <div className="bg-muted/30 rounded-lg p-4 text-center hover:bg-muted/50 transition-colors">
-                      <h4 className="text-xl font-bold text-rashmi-red mb-1">10M MT</h4>
-                      <p className="text-sm text-muted-foreground">Future production capacity goal</p>
-                    </div>
-                    <div className="bg-muted/30 rounded-lg p-4 text-center hover:bg-muted/50 transition-colors">
-                      <h4 className="text-xl font-bold text-rashmi-red mb-1">40+</h4>
-                      <p className="text-sm text-muted-foreground">Global export destinations</p>
-                    </div>
-                    <div className="bg-muted/30 rounded-lg p-4 text-center hover:bg-muted/50 transition-colors">
-                      <h4 className="text-xl font-bold text-rashmi-red mb-1">#1</h4>
-                      <p className="text-sm text-muted-foreground">Global leadership position goal</p>
-                    </div>
+                    {[
+                      { label: "Target expansion", value: "2025" },
+                      { label: "Production capacity goal", value: "10M MT" },
+                      { label: "Global export destinations", value: "40+" },
+                      { label: "Global leadership position goal", value: "#1" }
+                    ].map((item, index) => (
+                      <motion.div 
+                        key={index}
+                        whileHover={{ scale: 1.05, backgroundColor: "hsl(var(--muted))" }}
+                        className="bg-muted/30 rounded-lg p-4 text-center transition-all duration-300"
+                      >
+                        <h4 className="text-xl font-bold text-rashmi-red mb-1">{item.value}</h4>
+                        <p className="text-sm text-muted-foreground">{item.label}</p>
+                      </motion.div>
+                    ))}
                   </motion.div>
                 </div>
               </motion.div>

@@ -21,6 +21,7 @@ const InteractiveSpecTable: React.FC<InteractiveSpecTableProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<'sockets' | 'flanges' | 'bends'>('sockets');
   const [hoveredRow, setHoveredRow] = useState<number | null>(null);
+  const [animateValue, setAnimateValue] = useState<boolean>(false);
 
   // Helper to determine max value in a column for visual scaling
   const getMaxValue = (rows: TableRow[], key: string): number => {
@@ -38,6 +39,38 @@ const InteractiveSpecTable: React.FC<InteractiveSpecTableProps> = ({
     });
   };
 
+  // Animation variants
+  const tabVariants = {
+    inactive: { backgroundColor: "hsl(var(--muted)/50)", color: "hsl(var(--foreground))" },
+    active: { backgroundColor: "hsl(var(--rashmi-red))", color: "hsl(var(--primary-foreground))" }
+  };
+
+  const tableVariants = {
+    hidden: { opacity: 0, x: -20 },
+    visible: { opacity: 1, x: 0, transition: { duration: 0.5 } }
+  };
+
+  const barVariants = {
+    initial: { width: 0 },
+    animate: (width: number) => ({
+      width: `${width}px`,
+      transition: { duration: 0.8, ease: "easeOut" }
+    })
+  };
+
+  const cardVariants = {
+    initial: { y: 20, opacity: 0 },
+    animate: { y: 0, opacity: 1, transition: { duration: 0.5 } },
+    hover: { y: -5, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)" }
+  };
+
+  // Trigger value animation on tab change
+  React.useEffect(() => {
+    setAnimateValue(false);
+    const timer = setTimeout(() => setAnimateValue(true), 100);
+    return () => clearTimeout(timer);
+  }, [activeTab]);
+
   return (
     <div className={`${className}`}>
       {/* Tab Navigation */}
@@ -47,44 +80,44 @@ const InteractiveSpecTable: React.FC<InteractiveSpecTableProps> = ({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <button
+        <motion.button
           onClick={() => setActiveTab('sockets')}
-          className={`px-4 py-2 rounded-md transition-colors ${
-            activeTab === 'sockets' 
-              ? 'bg-rashmi-red text-white' 
-              : 'bg-muted/50 hover:bg-muted text-foreground'
-          }`}
+          variants={tabVariants}
+          animate={activeTab === 'sockets' ? 'active' : 'inactive'}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="px-4 py-2 rounded-md transition-all duration-300"
         >
           Sockets
-        </button>
-        <button
+        </motion.button>
+        <motion.button
           onClick={() => setActiveTab('flanges')}
-          className={`px-4 py-2 rounded-md transition-colors ${
-            activeTab === 'flanges' 
-              ? 'bg-rashmi-red text-white' 
-              : 'bg-muted/50 hover:bg-muted text-foreground'
-          }`}
+          variants={tabVariants}
+          animate={activeTab === 'flanges' ? 'active' : 'inactive'}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="px-4 py-2 rounded-md transition-all duration-300"
         >
           Flanges
-        </button>
-        <button
+        </motion.button>
+        <motion.button
           onClick={() => setActiveTab('bends')}
-          className={`px-4 py-2 rounded-md transition-colors ${
-            activeTab === 'bends' 
-              ? 'bg-rashmi-red text-white' 
-              : 'bg-muted/50 hover:bg-muted text-foreground'
-          }`}
+          variants={tabVariants}
+          animate={activeTab === 'bends' ? 'active' : 'inactive'}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="px-4 py-2 rounded-md transition-all duration-300"
         >
           Bends
-        </button>
+        </motion.button>
       </motion.div>
 
       {/* Table Content */}
       <motion.div
         key={activeTab}
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.4 }}
+        variants={tableVariants}
+        initial="hidden"
+        animate="visible"
         className="overflow-x-auto"
       >
         {data[activeTab] && data[activeTab]!.length > 0 ? (
@@ -112,6 +145,7 @@ const InteractiveSpecTable: React.FC<InteractiveSpecTableProps> = ({
                     className={`border-b border-border transition-colors ${
                       hoveredRow === rowIndex ? 'bg-muted/70' : 'hover:bg-muted/50'
                     }`}
+                    whileHover={{ backgroundColor: "hsl(var(--muted)/70)" }}
                   >
                     {Object.entries(row).map(([key, value], colIndex) => {
                       // For special columns that should have visual indicators
@@ -124,6 +158,8 @@ const InteractiveSpecTable: React.FC<InteractiveSpecTableProps> = ({
                         ? getMaxValue(data[activeTab]!, key) 
                         : 1;
                       
+                      const barWidth = Math.max(20, (Number(value) / maxValue) * 80);
+                      
                       return (
                         <td 
                           key={`${rowIndex}-${colIndex}`}
@@ -131,21 +167,34 @@ const InteractiveSpecTable: React.FC<InteractiveSpecTableProps> = ({
                         >
                           {isSpecialVisualCol ? (
                             <div className="flex items-center gap-2">
-                              <span className={hoveredRow === rowIndex ? 'font-medium text-foreground' : ''}>
+                              <motion.span 
+                                className={hoveredRow === rowIndex ? 'font-medium text-foreground' : ''}
+                                initial={{ scale: 1 }}
+                                animate={animateValue ? { scale: [0.8, 1.2, 1] } : { scale: 1 }}
+                                transition={{ duration: 0.5 }}
+                              >
                                 {value}
-                              </span>
-                              <div 
+                              </motion.span>
+                              <motion.div 
                                 className="h-2 bg-rashmi-red/30 rounded-full transition-all"
+                                variants={barVariants}
+                                initial="initial"
+                                animate={animateValue ? "animate" : "initial"}
+                                custom={barWidth}
                                 style={{ 
-                                  width: `${Math.max(20, (Number(value) / maxValue) * 80)}px`,
                                   opacity: hoveredRow === rowIndex ? 0.8 : 0.4
                                 }}
                               />
                             </div>
                           ) : (
-                            <span className={hoveredRow === rowIndex ? 'font-medium text-foreground' : ''}>
+                            <motion.span 
+                              className={hoveredRow === rowIndex ? 'font-medium text-foreground' : ''}
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              transition={{ duration: 0.3, delay: colIndex * 0.05 }}
+                            >
                               {value || '-'}
-                            </span>
+                            </motion.span>
                           )}
                         </td>
                       );
@@ -160,7 +209,11 @@ const InteractiveSpecTable: React.FC<InteractiveSpecTableProps> = ({
               {data[activeTab]!.map((row, rowIndex) => (
                 <motion.div
                   key={rowIndex}
-                  whileHover={{ y: -4 }}
+                  variants={cardVariants}
+                  initial="initial"
+                  animate="animate"
+                  whileHover="hover"
+                  transition={{ duration: 0.3, delay: rowIndex * 0.1 }}
                   className="bg-card border border-border rounded-lg p-4 space-y-3"
                 >
                   {Object.entries(row).map(([key, value], colIndex) => {
@@ -176,9 +229,23 @@ const InteractiveSpecTable: React.FC<InteractiveSpecTableProps> = ({
                       <div key={`mobile-${rowIndex}-${colIndex}`} className="flex justify-between items-center">
                         <span className="text-muted-foreground">{formattedHeader}:</span>
                         {isSpecialVisualCol ? (
-                          <span className="font-medium text-rashmi-red">{value}</span>
+                          <motion.span 
+                            className="font-medium text-rashmi-red"
+                            initial={{ scale: 1 }}
+                            animate={animateValue ? { scale: [0.8, 1.2, 1] } : { scale: 1 }}
+                            transition={{ duration: 0.5, delay: colIndex * 0.05 }}
+                          >
+                            {value}
+                          </motion.span>
                         ) : (
-                          <span className="font-medium">{value || '-'}</span>
+                          <motion.span 
+                            className="font-medium"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ duration: 0.3, delay: colIndex * 0.05 }}
+                          >
+                            {value || '-'}
+                          </motion.span>
                         )}
                       </div>
                     );
@@ -188,9 +255,14 @@ const InteractiveSpecTable: React.FC<InteractiveSpecTableProps> = ({
             </div>
           </>
         ) : (
-          <div className="text-center p-8 bg-muted/30 rounded-lg">
+          <motion.div 
+            className="text-center p-8 bg-muted/30 rounded-lg"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+          >
             <p className="text-muted-foreground">No data available for this category</p>
-          </div>
+          </motion.div>
         )}
       </motion.div>
     </div>

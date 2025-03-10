@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, useAnimation, useMotionValue, useTransform } from 'framer-motion';
 import RevealText from './ui/RevealText';
 import ProductViewer from './ui/ProductViewer';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -81,6 +81,28 @@ const Products = () => {
   const autoplayRef = useRef<NodeJS.Timeout | null>(null);
   const navigate = useNavigate();
   
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const rotateX = useTransform(mouseY, [-300, 300], [10, -10]);
+  const rotateY = useTransform(mouseX, [-300, 300], [-10, 10]);
+  const productControls = useAnimation();
+  
+  // Handle mouse move for 3D effect
+  const handleMouseMove = (e: React.MouseEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    mouseX.set(x);
+    mouseY.set(y);
+  };
+  
+  // Handle mouse leave to reset 3D effect
+  const handleMouseLeave = () => {
+    mouseX.set(0);
+    mouseY.set(0);
+    setAutoplayEnabled(true);
+  };
+  
   // Setup autoplay
   useEffect(() => {
     if (!autoplayEnabled) return;
@@ -96,21 +118,35 @@ const Products = () => {
   
   // Pause autoplay on hover
   const handleMouseEnter = () => setAutoplayEnabled(false);
-  const handleMouseLeave = () => setAutoplayEnabled(true);
   
   const nextProduct = () => {
+    productControls.start({ 
+      opacity: [1, 0, 1], 
+      x: [0, 20, 0], 
+      transition: { duration: 0.5 } 
+    });
     setActiveIndex((prev) => (prev + 1) % productData.length);
     setAutoplayEnabled(false);
     setTimeout(() => setAutoplayEnabled(true), 10000); // Resume autoplay after 10 seconds
   };
   
   const prevProduct = () => {
+    productControls.start({ 
+      opacity: [1, 0, 1], 
+      x: [0, -20, 0], 
+      transition: { duration: 0.5 } 
+    });
     setActiveIndex((prev) => (prev - 1 + productData.length) % productData.length);
     setAutoplayEnabled(false);
     setTimeout(() => setAutoplayEnabled(true), 10000); // Resume autoplay after 10 seconds
   };
 
   const goToProduct = (index: number) => {
+    productControls.start({ 
+      opacity: [1, 0, 1], 
+      y: [0, 10, 0], 
+      transition: { duration: 0.5 } 
+    });
     setActiveIndex(index);
     setAutoplayEnabled(false);
     setTimeout(() => setAutoplayEnabled(true), 10000); // Resume autoplay after 10 seconds
@@ -144,9 +180,45 @@ const Products = () => {
     }
   };
 
+  // Particle animation for the 3D effect
+  const particles = Array.from({ length: 30 }).map((_, i) => ({
+    id: i,
+    size: Math.random() * 4 + 1,
+    x: Math.random() * 400 - 200,
+    y: Math.random() * 400 - 200,
+    z: Math.random() * 200 - 100,
+  }));
+
   return (
-    <section id="products" className="py-20 md:py-32 bg-muted/30">
-      <div className="container mx-auto px-4">
+    <section id="products" className="py-20 md:py-32 bg-muted/30 relative overflow-hidden">
+      {/* Background particles */}
+      <div className="absolute inset-0 z-0">
+        {particles.map((particle) => (
+          <motion.div
+            key={particle.id}
+            className="absolute rounded-full bg-rashmi-red/20"
+            style={{
+              width: particle.size,
+              height: particle.size,
+              x: particle.x,
+              y: particle.y,
+              z: particle.z,
+            }}
+            animate={{
+              x: [particle.x, particle.x + Math.random() * 100 - 50],
+              y: [particle.y, particle.y + Math.random() * 100 - 50],
+              opacity: [0.1, 0.5, 0.1],
+            }}
+            transition={{
+              duration: Math.random() * 10 + 10,
+              repeat: Infinity,
+              repeatType: "reverse",
+            }}
+          />
+        ))}
+      </div>
+      
+      <div className="container mx-auto px-4 relative z-10">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <div className="text-rashmi-red font-medium mb-3">
             <RevealText text="Our Products" />
@@ -173,15 +245,48 @@ const Products = () => {
             whileInView={{ opacity: [0, 1], scale: [0.9, 1] }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
+            onMouseMove={handleMouseMove}
+            style={{ perspective: 1000 }}
           >
             <motion.div
-              whileHover={{ rotateY: 10, rotateX: -5 }}
+              style={{ 
+                rotateX, 
+                rotateY,
+                transformStyle: "preserve-3d",
+              }}
+              whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              className="relative"
             >
               <ProductViewer 
-                className="w-full h-[400px] max-w-lg mx-auto drop-shadow-xl" 
+                className="w-full h-[400px] max-w-lg mx-auto drop-shadow-xl relative z-10" 
                 productName={activeProduct.name} 
               />
+              
+              {/* 3D floating elements around the product */}
+              {[...Array(5)].map((_, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute rounded-full bg-rashmi-red/10 backdrop-blur-md"
+                  style={{
+                    width: Math.random() * 60 + 20,
+                    height: Math.random() * 60 + 20,
+                    top: `${Math.random() * 80 + 10}%`,
+                    left: `${Math.random() * 80 + 10}%`,
+                    z: Math.random() * 100 - 50,
+                  }}
+                  animate={{
+                    y: [0, Math.random() * 30 - 15, 0],
+                    rotate: [0, Math.random() * 360, 0],
+                    opacity: [0.2, 0.5, 0.2],
+                  }}
+                  transition={{
+                    duration: Math.random() * 5 + 5,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                />
+              ))}
             </motion.div>
             
             {/* Loading progress indicator */}
