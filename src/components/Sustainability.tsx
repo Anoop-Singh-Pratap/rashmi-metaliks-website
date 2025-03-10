@@ -1,9 +1,11 @@
+
 import React, { useState, useEffect } from 'react';
 import RevealText from './ui/RevealText';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend, LabelList } from 'recharts';
 import { Leaf, Droplets, Wind, XCircle, BarChartIcon, PieChartIcon, LineChartIcon } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTheme } from '@/context/ThemeContext';
+import { AreaChart } from './ui/area-chart';
 
 const emissionsData = [
   { year: '2018', value: 100 },
@@ -22,14 +24,29 @@ const energySourceData = [
   { name: 'Traditional', value: 15, color: '#64748b' },
 ];
 
+// Convert water usage data to the format needed for the area chart
 const waterUsageData = [
-  { month: 'Jan', recycled: 40, fresh: 60 },
-  { month: 'Mar', recycled: 45, fresh: 55 },
-  { month: 'May', recycled: 55, fresh: 45 },
-  { month: 'Jul', recycled: 65, fresh: 35 },
-  { month: 'Sep', recycled: 70, fresh: 30 },
-  { month: 'Nov', recycled: 75, fresh: 25 },
+  { date: '2023-01-01', recycled: 40, fresh: 60 },
+  { date: '2023-03-01', recycled: 45, fresh: 55 },
+  { date: '2023-05-01', recycled: 55, fresh: 45 },
+  { date: '2023-07-01', recycled: 65, fresh: 35 },
+  { date: '2023-09-01', recycled: 70, fresh: 30 },
+  { date: '2023-11-01', recycled: 75, fresh: 25 },
 ];
+
+const waterChartConfig = {
+  label: {
+    label: "Water Usage",
+  },
+  recycled: {
+    label: "Recycled Water",
+    color: "hsl(217, 91%, 60%)",  // Blue color
+  },
+  fresh: {
+    label: "Fresh Water",
+    color: "hsl(215, 16%, 47%)",  // Gray color
+  },
+};
 
 const COLORS = ['#22c55e', '#3b82f6', '#6366f1', '#f59e0b', '#64748b'];
 
@@ -256,70 +273,11 @@ const Sustainability = () => {
                   <h3 className="text-xl md:text-2xl font-semibold text-foreground">Water Usage Efficiency</h3>
                   <p className="text-muted-foreground text-sm">Recycled vs Fresh Water Consumption</p>
                 </div>
-                <ResponsiveContainer width="100%" height="90%">
-                  <BarChart
-                    data={waterUsageData}
-                    margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
-                    stackOffset="expand"
-                    barSize={40}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.3} />
-                    <XAxis 
-                      dataKey="month" 
-                      stroke={textColor} 
-                      tick={{ fill: textColor }}
-                      tickFormatter={axisTickFormatter}
-                    />
-                    <YAxis 
-                      stroke={textColor} 
-                      tick={{ fill: textColor }}
-                      tickFormatter={formatPercentage}
-                      domain={[0, 100]}
-                    />
-                    <Tooltip 
-                      content={<CustomTooltip />}
-                      formatter={(value) => [`${value}%`, '']}
-                    />
-                    <Legend
-                      layout="horizontal"
-                      verticalAlign="bottom"
-                      align="center"
-                      formatter={(value, entry, index) => (
-                        <span style={{ color: textColor }}>{value}</span>
-                      )}
-                    />
-                    <Bar 
-                      dataKey="recycled" 
-                      name="Recycled Water" 
-                      stackId="a" 
-                      fill="#3b82f6"
-                      radius={[4, 4, 0, 0]}
-                    >
-                      <LabelList 
-                        dataKey="recycled" 
-                        position="center" 
-                        formatter={(value: number) => `${Math.round(value)}%`}
-                        fill="white"
-                        className="font-medium"
-                      />
-                    </Bar>
-                    <Bar 
-                      dataKey="fresh" 
-                      name="Fresh Water" 
-                      stackId="a" 
-                      fill="#64748b"
-                      radius={[4, 4, 0, 0]}
-                    >
-                      <LabelList 
-                        dataKey="fresh" 
-                        position="center" 
-                        formatter={(value: number) => `${Math.round(value)}%`}
-                        fill="white"
-                        className="font-medium"
-                      />
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
+                <AreaChart 
+                  data={waterUsageData}
+                  config={waterChartConfig}
+                  height="90%"
+                />
               </div>
             )}
           </div>
@@ -375,6 +333,12 @@ const Sustainability = () => {
           background: rgba(255, 255, 255, 0.3);
           border-radius: 50%;
           animation: wave 3s linear infinite;
+        }
+
+        /* Add chart colors to CSS variables */
+        :root {
+          --chart-1: 217 91% 60%;
+          --chart-2: 215 16% 47%;
         }
       `
       }} />

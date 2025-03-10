@@ -1,185 +1,182 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Mail, Phone, MapPin, Linkedin, Twitter, Facebook, Instagram } from 'lucide-react';
-import ThemeToggle from '@/components/ThemeToggle';
+import { Phone, Mail, MapPin, Facebook, Twitter, Instagram, Youtube, Linkedin, ArrowRight } from 'lucide-react';
 
 const Footer = () => {
-  const currentYear = new Date().getFullYear();
-  
+  // Function to scroll to section
+  const scrollToSection = (sectionId: string) => {
+    // If we're on the homepage, just scroll to the section
+    if (window.location.pathname === '/') {
+      const section = document.getElementById(sectionId);
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      // If we're on another page, navigate to the homepage with anchor
+      window.location.href = `/#${sectionId}`;
+    }
+  };
+
   return (
-    <footer id="contact" className="bg-rashmi-dark text-white">
-      <div className="container mx-auto px-4 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
-          {/* Column 1: Logo & About */}
+    <footer className="bg-rashmi-dark/95 text-white pt-16">
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div>
-            <Link to="/" className="inline-block mb-6">
-              <img 
-                src="/lovable-uploads/rashmi-logo.png" 
-                alt="Rashmi Metaliks" 
-                className="h-12"
-              />
-            </Link>
-            <p className="text-white/70 mb-6">
-              One of the fastest growing Business Conglomerates in the eastern region of India, 
-              pioneer in manufacturing of integrated Iron & Steel Products, Cement, Power and Ferro Alloys & Mining.
+            <img 
+              src="/lovable-uploads/rashmi-logo.png" 
+              alt="Rashmi Metaliks" 
+              className="h-14 mb-4" 
+            />
+            <p className="text-gray-300 mb-6">
+              Leading manufacturer of high-quality steel products with a commitment to excellence and sustainability.
             </p>
             <div className="flex space-x-4">
-              <SocialLink href="https://www.linkedin.com/company/rashmi-metaliks-limited/posts/?feedView=all" icon={<Linkedin size={18} />} />
-              <SocialLink href="https://twitter.com/rashmi_group" icon={<Twitter size={18} />} />
-              <SocialLink href="https://www.facebook.com" icon={<Facebook size={18} />} />
-              <SocialLink href="https://www.instagram.com/rashmimetaliksltd/" icon={<Instagram size={18} />} />
-              <ThemeToggle />
+              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-rashmi-red transition-colors">
+                <Facebook size={20} />
+              </a>
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-rashmi-red transition-colors">
+                <Twitter size={20} />
+              </a>
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-rashmi-red transition-colors">
+                <Instagram size={20} />
+              </a>
+              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-rashmi-red transition-colors">
+                <Youtube size={20} />
+              </a>
+              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-rashmi-red transition-colors">
+                <Linkedin size={20} />
+              </a>
             </div>
           </div>
           
-          {/* Column 2: Quick Links */}
           <div>
-            <h4 className="text-xl font-display font-semibold mb-6">Quick Links</h4>
-            <ul className="space-y-3">
-              <FooterLink href="/about-rashmi">About Us</FooterLink>
-              <FooterLink href="/#products">Products</FooterLink>
-              <FooterLink href="/quality-assurance">Quality Assurance</FooterLink>
-              <FooterLink href="/certifications">Certifications</FooterLink>
-              <FooterLink href="/careers">Careers</FooterLink>
-              <FooterLink href="/contact-us">Contact Us</FooterLink>
-              <FooterLink href="/media">Media</FooterLink>
+            <h3 className="text-xl font-bold mb-4">Quick Links</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link to="/about-rashmi" className="text-gray-300 hover:text-rashmi-red transition-colors flex items-center">
+                  <ArrowRight size={16} className="mr-2" /> About Us
+                </Link>
+              </li>
+              <li>
+                <a 
+                  href="/#products" 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    scrollToSection('products');
+                  }}
+                  className="text-gray-300 hover:text-rashmi-red transition-colors flex items-center"
+                >
+                  <ArrowRight size={16} className="mr-2" /> Our Products
+                </a>
+              </li>
+              <li>
+                <Link to="/media" className="text-gray-300 hover:text-rashmi-red transition-colors flex items-center">
+                  <ArrowRight size={16} className="mr-2" /> Media & News
+                </Link>
+              </li>
+              <li>
+                <Link to="/careers" className="text-gray-300 hover:text-rashmi-red transition-colors flex items-center">
+                  <ArrowRight size={16} className="mr-2" /> Careers
+                </Link>
+              </li>
+              <li>
+                <Link to="/quality-assurance" className="text-gray-300 hover:text-rashmi-red transition-colors flex items-center">
+                  <ArrowRight size={16} className="mr-2" /> Quality Assurance
+                </Link>
+              </li>
+              <li>
+                <Link to="/csr" className="text-gray-300 hover:text-rashmi-red transition-colors flex items-center">
+                  <ArrowRight size={16} className="mr-2" /> CSR Initiatives
+                </Link>
+              </li>
             </ul>
           </div>
           
-          {/* Column 3: Products */}
           <div>
-            <h4 className="text-xl font-display font-semibold mb-6">Our Products</h4>
-            <ul className="space-y-3">
-              <FooterLink href="/di-pipes">Ductile Iron Pipes</FooterLink>
-              <FooterLink href="/di-fittings">DI Fittings</FooterLink>
-              <FooterLink href="/tmt-bar">TMT Bars</FooterLink>
-              <FooterLink href="/sponge-iron">Sponge Iron</FooterLink>
-              <FooterLink href="/pig-iron">Pig Iron</FooterLink>
-              <FooterLink href="/iron-ore-pellet">Iron Ore Pellet</FooterLink>
-              <FooterLink href="/sinter">Sinter</FooterLink>
+            <h3 className="text-xl font-bold mb-4">Products</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link to="/di-pipes" className="text-gray-300 hover:text-rashmi-red transition-colors flex items-center">
+                  <ArrowRight size={16} className="mr-2" /> DI Pipes
+                </Link>
+              </li>
+              <li>
+                <Link to="/di-fittings" className="text-gray-300 hover:text-rashmi-red transition-colors flex items-center">
+                  <ArrowRight size={16} className="mr-2" /> DI Fittings
+                </Link>
+              </li>
+              <li>
+                <Link to="/tmt-bar" className="text-gray-300 hover:text-rashmi-red transition-colors flex items-center">
+                  <ArrowRight size={16} className="mr-2" /> TMT Bar
+                </Link>
+              </li>
+              <li>
+                <Link to="/pig-iron" className="text-gray-300 hover:text-rashmi-red transition-colors flex items-center">
+                  <ArrowRight size={16} className="mr-2" /> Pig Iron
+                </Link>
+              </li>
+              <li>
+                <Link to="/iron-ore-pellet" className="text-gray-300 hover:text-rashmi-red transition-colors flex items-center">
+                  <ArrowRight size={16} className="mr-2" /> Iron Ore Pellet
+                </Link>
+              </li>
+              <li>
+                <Link to="/sinter" className="text-gray-300 hover:text-rashmi-red transition-colors flex items-center">
+                  <ArrowRight size={16} className="mr-2" /> Sinter
+                </Link>
+              </li>
             </ul>
           </div>
           
-          {/* Column 4: Contact */}
           <div>
-            <h4 className="text-xl font-display font-semibold mb-6">Contact Us</h4>
-            <div className="space-y-4">
-              <ContactItem icon={<MapPin size={18} />}>
-                First Floor, Ideal Center 9, A J C Bose Road<br />
-                Kolkata, West Bengal 700017<br />
-                India
-              </ContactItem>
-              <ContactItem icon={<Phone size={18} />}>
-                <a href="tel:+913322421200" className="hover:text-rashmi-red transition-colors">+91 33 2242 1200</a>
-              </ContactItem>
-              <ContactItem icon={<Mail size={18} />}>
-                <a href="mailto:info@rashmigroup.com" className="hover:text-rashmi-red transition-colors">info@rashmigroup.com</a>
-              </ContactItem>
-            </div>
+            <h3 className="text-xl font-bold mb-4">Contact Us</h3>
+            <ul className="space-y-3">
+              <li className="flex items-start">
+                <MapPin size={20} className="mr-2 text-rashmi-red flex-shrink-0 mt-1" />
+                <span className="text-gray-300">
+                  Corporate Office:<br />
+                  7/1 Anandilal Poddar Sarani,<br />
+                  Kankaria Centre, 5th Floor<br />
+                  Kolkata - 700071, West Bengal
+                </span>
+              </li>
+              <li className="flex items-center">
+                <Phone size={20} className="mr-2 text-rashmi-red" />
+                <a href="tel:+913322690730" className="text-gray-300 hover:text-rashmi-red transition-colors">
+                  +91 33 2269 0730
+                </a>
+              </li>
+              <li className="flex items-center">
+                <Mail size={20} className="mr-2 text-rashmi-red" />
+                <a href="mailto:info@rashmi.com" className="text-gray-300 hover:text-rashmi-red transition-colors">
+                  info@rashmi.com
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
         
-        {/* Bottom Bar */}
-        <div className="pt-10 mt-10 border-t border-white/10 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-white/60 text-sm">
-            © {currentYear} Rashmi Metaliks Ltd. All Rights Reserved.
-          </p>
-          <div className="flex flex-wrap gap-4 mt-4 md:mt-0 text-sm text-white/60">
-            <a href="#privacy" className="hover:text-white transition-colors">Privacy Policy</a>
-            <span>|</span>
-            <a href="#terms" className="hover:text-white transition-colors">Terms of Service</a>
-            <span>|</span>
-            <a href="#sitemap" className="hover:text-white transition-colors">Sitemap</a>
+        <div className="border-t border-gray-800 mt-10 py-6">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <p className="text-gray-400 text-sm mb-4 md:mb-0">
+              &copy; {new Date().getFullYear()} Rashmi Metaliks. All rights reserved.
+            </p>
+            <div className="flex space-x-4">
+              <Link to="/privacy-policy" className="text-gray-400 text-sm hover:text-rashmi-red transition-colors">
+                Privacy Policy
+              </Link>
+              <Link to="/terms-of-service" className="text-gray-400 text-sm hover:text-rashmi-red transition-colors">
+                Terms of Service
+              </Link>
+              <Link to="/sitemap" className="text-gray-400 text-sm hover:text-rashmi-red transition-colors">
+                Sitemap
+              </Link>
+            </div>
           </div>
         </div>
       </div>
     </footer>
-  );
-};
-
-interface SocialLinkProps {
-  href: string;
-  icon: React.ReactNode;
-}
-
-const SocialLink: React.FC<SocialLinkProps> = ({ href, icon }) => {
-  return (
-    <a 
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="w-10 h-10 rounded-full flex items-center justify-center bg-white/10 hover:bg-rashmi-red transition-colors"
-      aria-label="Social media link"
-    >
-      {icon}
-    </a>
-  );
-};
-
-interface FooterLinkProps {
-  href: string;
-  children: React.ReactNode;
-}
-
-const FooterLink: React.FC<FooterLinkProps> = ({ href, children }) => {
-  const isExternalLink = href.startsWith('http');
-  
-  if (isExternalLink) {
-    return (
-      <li>
-        <a 
-          href={href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-white/70 hover:text-rashmi-red transition-colors inline-block"
-        >
-          {children}
-        </a>
-      </li>
-    );
-  }
-  
-  if (href.startsWith('#')) {
-    return (
-      <li>
-        <a 
-          href={href} 
-          className="text-white/70 hover:text-rashmi-red transition-colors inline-block"
-        >
-          {children}
-        </a>
-      </li>
-    );
-  }
-  
-  return (
-    <li>
-      <Link 
-        to={href} 
-        className="text-white/70 hover:text-rashmi-red transition-colors inline-block"
-      >
-        {children}
-      </Link>
-    </li>
-  );
-};
-
-interface ContactItemProps {
-  icon: React.ReactNode;
-  children: React.ReactNode;
-}
-
-const ContactItem: React.FC<ContactItemProps> = ({ icon, children }) => {
-  return (
-    <div className="flex">
-      <div className="text-rashmi-red mr-3 mt-1 flex-shrink-0">
-        {icon}
-      </div>
-      <div className="text-white/70">
-        {children}
-      </div>
-    </div>
   );
 };
 
