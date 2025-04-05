@@ -1,3 +1,23 @@
+/**
+ * Accordion Component
+ * 
+ * A collapsible content component built on Radix UI's Accordion primitive that
+ * provides accessible expandable sections for organizing content.
+ * 
+ * Features:
+ * - Accessible keyboard interaction and screen reader support
+ * - Smooth animations for expanding and collapsing content
+ * - Visual indicators (chevron) showing expansion state
+ * - Support for single or multiple expanded sections
+ * - Proper ARIA attributes for accessibility
+ * - Responsive design that adapts to container width
+ * - Consistent styling with subtle borders and spacing
+ * - Hover states for interactive feedback
+ * 
+ * This component is used throughout the application for FAQs, settings panels,
+ * collapsible sections in documentation, and anywhere content needs to be
+ * organized into expandable/collapsible sections to save space and improve readability.
+ */
 import * as React from "react"
 import * as AccordionPrimitive from "@radix-ui/react-accordion"
 import { ChevronDown } from "lucide-react"

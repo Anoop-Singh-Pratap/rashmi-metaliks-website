@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
@@ -104,11 +103,17 @@ const Sustainability = () => {
 
   useEffect(() => {
     setAnimateChart(false);
-    const timer = setTimeout(() => {
-      setAnimateChart(true);
-    }, 300);
     
-    return () => clearTimeout(timer);
+    // Use requestAnimationFrame to ensure smoother transitions
+    const animationFrame = requestAnimationFrame(() => {
+      setTimeout(() => {
+        setAnimateChart(true);
+      }, 300);
+    });
+    
+    return () => {
+      cancelAnimationFrame(animationFrame);
+    };
   }, [activeChart]);
 
   return (

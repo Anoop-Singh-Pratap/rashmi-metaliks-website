@@ -1,0 +1,11 @@
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://www.rashmimetaliks.com/sitemap.xml
+
+# Private pages
+Disallow: /admin/
+Disallow: /login/
+Disallow: /dashboard/ 

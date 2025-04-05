@@ -1,3 +1,24 @@
+/**
+ * Command Component
+ * 
+ * A command palette interface built on the CMDK library that provides a searchable
+ * interface for navigating and executing commands within the application.
+ * 
+ * Features:
+ * - Powerful search and filtering capabilities
+ * - Keyboard-navigable interface with arrow key and Enter support
+ * - Groupable commands for organization by category or function
+ * - Responsive design with modal dialog presentation option
+ * - Support for keyboard shortcuts display
+ * - Clean, minimal UI with high contrast for readability
+ * - Built-in loading states and empty results handling
+ * - Accessible implementation with proper ARIA attributes
+ * 
+ * The Command component is ideal for power users who prefer keyboard navigation,
+ * providing a quick way to access functionality without using the mouse. It's commonly
+ * used for application-wide search, navigation between pages or views, and executing
+ * commands or actions without navigating through menus.
+ */
 import * as React from "react"
 import { type DialogProps } from "@radix-ui/react-dialog"
 import { Command as CommandPrimitive } from "cmdk"

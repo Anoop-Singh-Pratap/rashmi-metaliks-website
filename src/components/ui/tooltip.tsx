@@ -1,3 +1,24 @@
+/**
+ * Tooltip Component
+ * 
+ * A contextual popup component built on Radix UI's Tooltip primitive that displays
+ * additional information when users hover over or focus on an element.
+ * 
+ * Features:
+ * - Accessible implementation with proper focus handling
+ * - Smooth entrance and exit animations
+ * - Smart positioning that adjusts based on available space
+ * - Consistent styling with the application's design system
+ * - Configurable delay for showing and hiding
+ * - Support for custom triggers and content
+ * - Proper z-index handling for layering
+ * - Controllable through the TooltipProvider
+ * 
+ * This component is used throughout the application to provide supplementary
+ * information, explain functionality, display keyboard shortcuts, clarify
+ * icons or buttons with minimal labeling, and enhance the overall user
+ * experience with contextual help.
+ */
 import * as React from "react"
 import * as TooltipPrimitive from "@radix-ui/react-tooltip"
 

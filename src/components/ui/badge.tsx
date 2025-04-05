@@ -1,3 +1,22 @@
+/**
+ * Badge Component
+ * 
+ * A small, versatile label component used to highlight status, category, 
+ * or other metadata throughout the application.
+ * 
+ * Features:
+ * - Multiple visual variants (default, secondary, destructive, outline)
+ * - Consistent rounded pill shape for easy recognition
+ * - Appropriate size and padding for use inline with text or as standalone elements
+ * - Hover states for interactive badges
+ * - Focus styles for keyboard navigation
+ * - Customizable through className prop for specific use cases
+ * - Accessible text contrast ratios for all variants
+ * 
+ * This component is used to display status indicators, categories, counts,
+ * tags, and other short pieces of metadata that need visual distinction
+ * from surrounding content.
+ */
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 

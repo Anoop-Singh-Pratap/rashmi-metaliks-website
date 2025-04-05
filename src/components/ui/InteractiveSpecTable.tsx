@@ -1,4 +1,22 @@
-
+/**
+ * InteractiveSpecTable Component
+ * 
+ * An enhanced, interactive data table specifically designed for displaying
+ * technical specifications with visual indicators and animations.
+ * 
+ * Features:
+ * - Tab-based navigation between different spec categories (sockets, flanges, bends)
+ * - Interactive row highlighting on hover
+ * - Visual data representation with colored bars for numeric values
+ * - Animated data changes and transitions between views
+ * - Responsive design that adapts to different screen sizes
+ * - Automatic calculation of proportional value indicators
+ * - Support for various data types through the TableRow interface
+ * 
+ * This component is particularly useful for product specification pages where
+ * technical data needs to be presented in an engaging and readable format,
+ * making it easier for users to compare different specifications.
+ */
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 
@@ -145,7 +163,6 @@ const InteractiveSpecTable: React.FC<InteractiveSpecTableProps> = ({
                     className={`border-b border-border transition-colors ${
                       hoveredRow === rowIndex ? 'bg-muted/70' : 'hover:bg-muted/50'
                     }`}
-                    whileHover={{ backgroundColor: "hsl(var(--muted)/70)" }}
                   >
                     {Object.entries(row).map(([key, value], colIndex) => {
                       // For special columns that should have visual indicators
@@ -214,7 +231,7 @@ const InteractiveSpecTable: React.FC<InteractiveSpecTableProps> = ({
                   animate="animate"
                   whileHover="hover"
                   transition={{ duration: 0.3, delay: rowIndex * 0.1 }}
-                  className="bg-card border border-border rounded-lg p-4 space-y-3"
+                  className="bg-card border border-border rounded-lg p-4 space-y-3 text-foreground shadow-sm"
                 >
                   {Object.entries(row).map(([key, value], colIndex) => {
                     const header = key.replace(/_/g, ' ');
@@ -239,7 +256,7 @@ const InteractiveSpecTable: React.FC<InteractiveSpecTableProps> = ({
                           </motion.span>
                         ) : (
                           <motion.span 
-                            className="font-medium"
+                            className="font-medium text-foreground"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ duration: 0.3, delay: colIndex * 0.05 }}

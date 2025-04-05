@@ -1,6 +1,5 @@
-
 import React, { useState, useRef, useEffect } from 'react';
-import { motion, useAnimation, useMotionValue, useTransform } from 'framer-motion';
+import { motion, useAnimation, useMotionValue, useTransform, AnimatePresence } from 'framer-motion';
 import RevealText from './ui/RevealText';
 import ProductViewer from './ui/ProductViewer';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -21,7 +20,7 @@ const productData: Product[] = [
     name: "Ductile Iron Pipe",
     description: "Premium quality DI Pipes with ISO certification, designed for durability and longevity.",
     features: ["Corrosion resistant", "High tensile strength", "Long service life", "Easy installation"],
-    image: "https://images.unsplash.com/photo-1618761299062-ba2dbbcebd92?ixlib=rb-4.0.3&auto=format&fit=crop&q=80",
+    image: "https://pvc4pipes.com/wp-content/uploads/2019/02/pvc-piping-applications-faq.jpg",
     link: "/di-pipes"
   },
   {
@@ -34,6 +33,14 @@ const productData: Product[] = [
   },
   {
     id: 3,
+    name: "Rashmi-Lock Joint System",
+    description: "A self-restrained, semi-flexible jointing system for Ductile Iron Pipes designed for high-pressure applications.",
+    features: ["No thrust blocks needed", "High pressure capable", "Trenchless installation", "Earthquake resistant"],
+    image: "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?ixlib=rb-4.0.3&auto=format&fit=crop&q=80",
+    link: "/rashmi-lock"
+  },
+  {
+    id: 4,
     name: "TMT Bars",
     description: "High strength thermo-mechanically treated bars perfect for construction applications.",
     features: ["Earthquake resistant", "High yield strength", "Better ductility", "Optimal bonding"],
@@ -41,7 +48,7 @@ const productData: Product[] = [
     link: "/tmt-bar"
   },
   {
-    id: 4,
+    id: 5,
     name: "Sponge Iron",
     description: "Highest quality Sponge Iron produced in our Jhargram facility with superior production process.",
     features: ["Precision process", "Superior quality", "Controlled production", "Best-in-class result"],
@@ -49,7 +56,7 @@ const productData: Product[] = [
     link: "/sponge-iron"
   },
   {
-    id: 5,
+    id: 6,
     name: "Pig Iron",
     description: "High-grade pig iron for foundries and steel manufacturing with low sulfur and phosphorus content.",
     features: ["Low phosphorus content", "Controlled silicon", "Consistent quality", "Custom specifications"],
@@ -57,7 +64,7 @@ const productData: Product[] = [
     link: "/pig-iron"
   },
   {
-    id: 6,
+    id: 7,
     name: "Iron Ore Pellet",
     description: "First manufacturer of pellets in West Bengal with significant production capacity.",
     features: ["Superior quality", "Corrosion resistant", "Faster reduction", "High metallization"],
@@ -65,7 +72,7 @@ const productData: Product[] = [
     link: "/iron-ore-pellet"
   },
   {
-    id: 7,
+    id: 8,
     name: "Sinter",
     description: "Essential component for blast furnace operations with perfect chemical composition.",
     features: ["Perfect composition", "Blast furnace ready", "Controlled production", "High quality standards"],
@@ -155,6 +162,8 @@ const Products = () => {
   const handleViewDetails = () => {
     if (activeProduct.link) {
       navigate(activeProduct.link);
+      // Scroll to top after navigation
+      window.scrollTo(0, 0);
     }
   };
 
@@ -223,11 +232,10 @@ const Products = () => {
           <div className="text-rashmi-red font-medium mb-3">
             <RevealText text="Our Products" />
           </div>
-          <RevealText
-            text="Premium Quality Steel Products"
-            as="h2"
-            className="text-3xl md:text-4xl font-display font-bold mb-6 text-foreground"
-          />
+          <h2 className="text-3xl md:text-4xl font-display font-bold mb-6 text-foreground">
+            <span>Premium Quality </span>
+            <span className="text-rashmi-red">Steel Products</span>
+          </h2>
           <p className="text-muted-foreground">
             Explore our diverse range of high-quality steel products manufactured with cutting-edge technology 
             and meeting international standards.
@@ -257,9 +265,12 @@ const Products = () => {
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
               className="relative"
+              onClick={handleViewDetails}
+              role="button"
+              aria-label={`View details for ${activeProduct.name}`}
             >
               <ProductViewer 
-                className="w-full h-[400px] max-w-lg mx-auto drop-shadow-xl relative z-10" 
+                className="w-full h-[400px] max-w-lg mx-auto drop-shadow-xl relative z-10 cursor-pointer" 
                 productName={activeProduct.name} 
               />
               
@@ -326,40 +337,173 @@ const Products = () => {
                       <motion.div 
                         key={idx}
                         variants={itemVariants}
-                        whileHover={{ 
-                          scale: 1.05, 
-                          backgroundColor: 'hsl(var(--card))',
-                          boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)'
-                        }}
-                        className="flex items-center p-3 bg-card/50 rounded-lg border border-border/30 transition-all duration-300 group"
+                        initial={{ opacity: 0, y: 10 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        whileHover={{ scale: 1.1 }}
+                        transition={{ duration: 0.3, delay: idx * 0.1 }}
+                        className="bg-transparent hover:bg-card transition-colors duration-300 cursor-pointer flex items-center h-10 px-2 rounded-md"
                       >
-                        <div className="w-2 h-2 rounded-full bg-rashmi-red mr-3 group-hover:scale-150 transition-all duration-300"></div>
-                        <span className="group-hover:font-medium transition-all duration-300">{feature}</span>
+                        <div className="w-2 h-2 rounded-full bg-rashmi-red mr-3 flex-shrink-0"></div>
+                        <span className="text-sm md:text-base">{feature}</span>
                       </motion.div>
                     ))}
                   </motion.div>
                   
                   {activeProduct.link ? (
                     <motion.div
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.97 }}
+                      className="relative inline-block"
+                      initial={{ opacity: 1 }}
+                      whileHover={{ 
+                        scale: 1.05,
+                        transition: { duration: 0.3, ease: "easeOut" }
+                      }}
+                      whileTap={{ 
+                        scale: 0.97,
+                        transition: { duration: 0.15 }
+                      }}
                     >
+                      <motion.div
+                        className="absolute -inset-1 bg-gradient-to-r from-pink-600 via-rashmi-red to-yellow-500 rounded-lg blur-md opacity-0 group-hover:opacity-70 transition-opacity duration-300"
+                        animate={{ rotate: [0, 360] }}
+                        transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                      />
                       <Link 
                         to={activeProduct.link} 
-                        className="bg-rashmi-red hover-glow text-white px-6 py-3 rounded-md hover:bg-rashmi-red/90 transition-all duration-300 inline-flex items-center gap-2 group"
+                        className="relative z-10 bg-gradient-to-br from-rashmi-red to-rashmi-red/90 text-white px-8 py-3 rounded-md shadow-lg inline-flex items-center gap-2 group overflow-hidden"
+                        onClick={() => window.scrollTo(0, 0)}
                       >
-                        Learn More
-                        <ChevronRight size={16} className="transition-transform duration-300 group-hover:translate-x-1"/>
+                        <span className="relative z-10 font-medium">Learn More</span>
+                        
+                        {/* Moving particles on hover */}
+                        <motion.div 
+                          className="absolute inset-0 z-0"
+                          initial={{ opacity: 0 }}
+                          whileHover={{ opacity: 1 }}
+                        >
+                          {[...Array(5)].map((_, i) => (
+                            <motion.div
+                              key={i}
+                              className="absolute w-1 h-1 bg-white rounded-full opacity-40"
+                              initial={{ 
+                                x: Math.random() * 100, 
+                                y: Math.random() * 40,
+                                opacity: 0
+                              }}
+                              animate={{ 
+                                x: [Math.random() * 100, Math.random() * 100 + 50],
+                                y: [Math.random() * 40, Math.random() * 40 - 20],
+                                opacity: [0, 0.6, 0]
+                              }}
+                              transition={{ 
+                                duration: Math.random() * 2 + 1,
+                                repeat: Infinity,
+                                repeatType: "loop"
+                              }}
+                            />
+                          ))}
+                        </motion.div>
+                        
+                        {/* Arrow animation */}
+                        <motion.div
+                          className="relative z-10 flex items-center justify-center"
+                          initial={{ x: 0 }}
+                          whileHover={{ x: 3 }}
+                          transition={{ 
+                            type: "spring", 
+                            stiffness: 400, 
+                            damping: 10,
+                            repeat: 1,
+                            repeatType: "reverse" 
+                          }}
+                        >
+                          <ChevronRight size={18} className="transition-all duration-300" />
+                        </motion.div>
+                        
+                        {/* Shine effect */}
+                        <motion.div
+                          className="absolute inset-0 z-0"
+                          initial={{ 
+                            background: "linear-gradient(45deg, transparent 0%, transparent 100%)" 
+                          }}
+                          whileHover={{ 
+                            background: [
+                              "linear-gradient(45deg, transparent 0%, transparent 25%, rgba(255, 255, 255, 0.4) 25%, rgba(255, 255, 255, 0.4) 26%, transparent 26%, transparent 100%)",
+                              "linear-gradient(45deg, transparent 0%, transparent 100%, rgba(255, 255, 255, 0.4) 100%, rgba(255, 255, 255, 0.4) 101%, transparent 101%, transparent 100%)"
+                            ],
+                            transition: { duration: 1.2 }
+                          }}
+                        />
                       </Link>
                     </motion.div>
                   ) : (
-                    <motion.button 
-                      className="bg-rashmi-red text-white px-6 py-3 rounded-md hover:bg-rashmi-red/90 transition-colors"
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.97 }}
+                    <motion.div
+                      className="relative inline-block"
+                      initial={{ opacity: 1 }}
+                      whileHover={{ 
+                        scale: 1.05,
+                        transition: { duration: 0.3, ease: "easeOut" }
+                      }}
+                      whileTap={{ 
+                        scale: 0.97,
+                        transition: { duration: 0.15 }
+                      }}
                     >
-                      Get Specifications
-                    </motion.button>
+                      <motion.div
+                        className="absolute -inset-1 bg-gradient-to-r from-pink-600 via-rashmi-red to-yellow-500 rounded-lg blur-md opacity-0 group-hover:opacity-70 transition-opacity duration-300"
+                        animate={{ rotate: [0, 360] }}
+                        transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                      />
+                      <motion.button 
+                        className="relative z-10 bg-gradient-to-br from-rashmi-red to-rashmi-red/90 text-white px-8 py-3 rounded-md shadow-lg inline-flex items-center gap-2 group overflow-hidden"
+                      >
+                        <span className="relative z-10 font-medium">Get Specifications</span>
+                        
+                        {/* Moving particles on hover */}
+                        <motion.div 
+                          className="absolute inset-0 z-0"
+                          initial={{ opacity: 0 }}
+                          whileHover={{ opacity: 1 }}
+                        >
+                          {[...Array(5)].map((_, i) => (
+                            <motion.div
+                              key={i}
+                              className="absolute w-1 h-1 bg-white rounded-full opacity-40"
+                              initial={{ 
+                                x: Math.random() * 100, 
+                                y: Math.random() * 40,
+                                opacity: 0
+                              }}
+                              animate={{ 
+                                x: [Math.random() * 100, Math.random() * 100 + 50],
+                                y: [Math.random() * 40, Math.random() * 40 - 20],
+                                opacity: [0, 0.6, 0]
+                              }}
+                              transition={{ 
+                                duration: Math.random() * 2 + 1,
+                                repeat: Infinity,
+                                repeatType: "loop"
+                              }}
+                            />
+                          ))}
+                        </motion.div>
+                        
+                        {/* Shine effect */}
+                        <motion.div
+                          className="absolute inset-0 z-0"
+                          initial={{ 
+                            background: "linear-gradient(45deg, transparent 0%, transparent 100%)" 
+                          }}
+                          whileHover={{ 
+                            background: [
+                              "linear-gradient(45deg, transparent 0%, transparent 25%, rgba(255, 255, 255, 0.4) 25%, rgba(255, 255, 255, 0.4) 26%, transparent 26%, transparent 100%)",
+                              "linear-gradient(45deg, transparent 0%, transparent 100%, rgba(255, 255, 255, 0.4) 100%, rgba(255, 255, 255, 0.4) 101%, transparent 101%, transparent 100%)"
+                            ],
+                            transition: { duration: 1.2 }
+                          }}
+                        />
+                      </motion.button>
+                    </motion.div>
                   )}
                 </motion.div>
               </AnimatePresence>
@@ -384,18 +528,20 @@ const Products = () => {
                 <motion.button
                   onClick={prevProduct}
                   className="w-10 h-10 rounded-full flex items-center justify-center border border-border hover:bg-card transition-colors"
-                  whileHover={{ scale: 1.1, backgroundColor: 'hsl(var(--card))' }}
+                  whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
                   aria-label="Previous product"
+                  title="Previous product"
                 >
                   <ChevronLeft size={20} />
                 </motion.button>
                 <motion.button
                   onClick={nextProduct}
                   className="w-10 h-10 rounded-full flex items-center justify-center border border-border hover:bg-card transition-colors"
-                  whileHover={{ scale: 1.1, backgroundColor: 'hsl(var(--card))' }}
+                  whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
                   aria-label="Next product"
+                  title="Next product"
                 >
                   <ChevronRight size={20} />
                 </motion.button>

@@ -1,3 +1,24 @@
+/**
+ * Select Component
+ * 
+ * A dropdown selection component built on Radix UI's Select primitive that provides
+ * accessible selection from a list of options with keyboard navigation.
+ * 
+ * Features:
+ * - Accessible keyboard navigation for selecting options
+ * - Support for option groups with labels
+ * - Custom styling for trigger, content, and item states
+ * - Visual indicators for selected items
+ * - Disabled states for both the select and individual options
+ * - Responsive dropdown positioning based on available space
+ * - Support for placeholder text when no option is selected
+ * - Consistent styling with the application's form controls
+ * - Proper ARIA attributes for screen readers
+ * 
+ * This component is used throughout the application for dropdown menus, form selects,
+ * filter controls, and other interfaces where users need to choose from a predefined
+ * list of options in a space-efficient manner.
+ */
 import * as React from "react"
 import * as SelectPrimitive from "@radix-ui/react-select"
 import { Check, ChevronDown, ChevronUp } from "lucide-react"

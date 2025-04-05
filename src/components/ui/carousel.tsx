@@ -1,3 +1,22 @@
+/**
+ * Carousel Component
+ * 
+ * A flexible, accessible slideshow component built on Embla Carousel
+ * for displaying multiple items with smooth navigation controls.
+ * 
+ * Features:
+ * - Responsive design that adapts to container size
+ * - Support for both horizontal and vertical orientations
+ * - Navigation controls (previous/next buttons and pagination dots)
+ * - Accessible keyboard navigation
+ * - Support for custom plugins and options from Embla Carousel
+ * - API exposure for external control when needed
+ * - Built with a compound component pattern for flexible composition
+ * 
+ * The carousel is ideal for showcasing product images, testimonials, 
+ * featured content, and other slidable content throughout the site.
+ * It includes auto-tracking of scroll state and responsive breakpoints.
+ */
 import * as React from "react"
 import useEmblaCarousel, {
   type UseEmblaCarouselType,

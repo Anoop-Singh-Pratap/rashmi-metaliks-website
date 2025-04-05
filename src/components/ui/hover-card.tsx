@@ -1,3 +1,24 @@
+/**
+ * HoverCard Component
+ * 
+ * An informational popup component built on Radix UI's HoverCard primitive that displays
+ * additional content when users hover over a trigger element.
+ * 
+ * Features:
+ * - Triggered by hover/mouse-over events
+ * - Rich content display with support for complex layouts
+ * - Configurable positioning around the trigger element
+ * - Smooth entrance and exit animations
+ * - Customizable delay for opening and closing
+ * - Proper handling of rapid mouse movements
+ * - Accessible implementation for keyboard users
+ * - Consistent styling with other popover elements
+ * 
+ * HoverCards are ideal for providing additional context without interrupting the user's
+ * flow. They're commonly used for user profile previews, term definitions, image previews,
+ * metadata displays, and other supplementary information that enhances the main content
+ * without requiring a click or navigating away from the current view.
+ */
 import * as React from "react"
 import * as HoverCardPrimitive from "@radix-ui/react-hover-card"
 

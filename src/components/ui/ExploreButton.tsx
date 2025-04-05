@@ -1,4 +1,20 @@
-
+/**
+ * ExploreButton Component
+ * 
+ * A visually attractive, animated button used for smooth page navigation to specific sections.
+ * Typically used in hero/landing sections to encourage users to explore more content below.
+ * 
+ * Features:
+ * - Smooth scrolling to target element with offset for better positioning
+ * - Animated entrance with fade-in and slide-up effect
+ * - Continuous bouncing animation on the arrow to draw attention
+ * - Hover and tap animations for interactive feedback
+ * - Customizable text and target element ID
+ * - Color transitions on hover states
+ * 
+ * The component prevents default anchor behavior and implements custom smooth scrolling
+ * with visual offset to ensure the target element is positioned correctly in the viewport.
+ */
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowDown } from 'lucide-react';

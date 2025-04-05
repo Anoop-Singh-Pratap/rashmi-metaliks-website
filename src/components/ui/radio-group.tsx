@@ -4,6 +4,27 @@ import { Circle } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
+/**
+ * RadioGroup Component
+ * 
+ * A set of checkable buttons built on Radix UI's RadioGroup primitive that allows
+ * users to select a single option from a list of mutually exclusive choices.
+ * 
+ * Features:
+ * - Semantic grouping of related radio options
+ * - Visual indication of selected state with inner circle
+ * - Keyboard navigation between options using arrow keys
+ * - Accessible implementation with proper ARIA attributes
+ * - Focus states for keyboard users
+ * - Disabled state styling for unavailable options
+ * - Proper label association for each option
+ * - Consistent styling with the application's form controls
+ * 
+ * RadioGroups are ideal for selection scenarios where only one choice is valid
+ * from a set of options. They're commonly used in forms for exclusive selections
+ * like gender, subscription plans, shipping methods, survey responses, and other
+ * scenarios where users must choose exactly one item from a list of alternatives.
+ */
 const RadioGroup = React.forwardRef<
   React.ElementRef<typeof RadioGroupPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Root>

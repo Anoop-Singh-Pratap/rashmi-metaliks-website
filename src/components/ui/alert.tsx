@@ -1,3 +1,23 @@
+/**
+ * Alert Component
+ * 
+ * A notification component that provides contextual feedback messages
+ * for user actions with appropriate styling and accessibility.
+ * 
+ * Features:
+ * - Multiple visual variants (default, destructive)
+ * - Structured content with title and description areas
+ * - Support for icons within the alert for visual cues
+ * - Proper semantic structure with appropriate ARIA roles
+ * - Consistent styling with the application's design system
+ * - Responsive design that adapts to container width
+ * - Clear visual hierarchy between title and description
+ * - Customizable through className prop for specific use cases
+ * 
+ * This component is used throughout the application for inline notifications,
+ * status messages, form validation feedback, error messages, success confirmations,
+ * and other contextual information that needs to be clearly presented to users.
+ */
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 

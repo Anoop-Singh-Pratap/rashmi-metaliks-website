@@ -1,7 +1,6 @@
-
-import React from 'react';
+import React, { useState, useRef, useEffect, FormEvent } from 'react';
 import { motion } from 'framer-motion';
-import { Map, Mail, Phone, Building, Globe, MapPin } from 'lucide-react';
+import { Map, Mail, Phone, Building, Globe, MapPin, Check, ChevronDown, X } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Link } from 'react-router-dom';
@@ -55,7 +54,85 @@ const internationalOffices = [
   }
 ];
 
+// Include the product data
+const products = [
+  { id: 1, name: "Ductile Iron Pipe" },
+  { id: 2, name: "DI Fittings" },
+  { id: 3, name: "TMT Bars" },
+  { id: 4, name: "Sponge Iron" },
+  { id: 5, name: "Pig Iron" },
+  { id: 6, name: "Iron Ore Pellet" },
+  { id: 7, name: "Sinter" }
+];
+
 const ContactUs = () => {
+  // Form state
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [subject, setSubject] = useState('');
+  const [message, setMessage] = useState('');
+  const [selectedProducts, setSelectedProducts] = useState<number[]>([]);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Toggle product selection
+  const toggleProduct = (productId: number) => {
+    if (selectedProducts.includes(productId)) {
+      setSelectedProducts(selectedProducts.filter(id => id !== productId));
+    } else {
+      setSelectedProducts([...selectedProducts, productId]);
+    }
+  };
+
+  // Remove a selected product
+  const removeProduct = (productId: number, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSelectedProducts(selectedProducts.filter(id => id !== productId));
+  };
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  // Handle form submission
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    
+    // Get selected product names for the message
+    const selectedProductNames = selectedProducts
+      .map(id => products.find(p => p.id === id)?.name)
+      .filter(Boolean);
+    
+    // In a real application, you would send this data to a server
+    console.log({
+      name,
+      email,
+      subject,
+      selectedProducts: selectedProductNames,
+      message
+    });
+
+    // Form validation and submission logic would go here
+    alert('Thank you for your message. We will get back to you shortly.');
+    
+    // Reset form
+    setName('');
+    setEmail('');
+    setSubject('');
+    setSelectedProducts([]);
+    setMessage('');
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
@@ -245,7 +322,7 @@ const ContactUs = () => {
               
               <div>
                 <h3 className="text-2xl font-display font-bold mb-6">Get In Touch</h3>
-                <form className="space-y-4">
+                <form className="space-y-4" onSubmit={handleSubmit}>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label htmlFor="name" className="block text-sm font-medium mb-1">Name</label>
@@ -254,6 +331,9 @@ const ContactUs = () => {
                         id="name" 
                         placeholder="Your name" 
                         className="w-full px-4 py-2 rounded-md border border-border bg-card focus:outline-none focus:ring-2 focus:ring-rashmi-red/50"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        required
                       />
                     </div>
                     <div>
@@ -263,6 +343,9 @@ const ContactUs = () => {
                         id="email" 
                         placeholder="Your email" 
                         className="w-full px-4 py-2 rounded-md border border-border bg-card focus:outline-none focus:ring-2 focus:ring-rashmi-red/50"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
                       />
                     </div>
                   </div>
@@ -274,7 +357,96 @@ const ContactUs = () => {
                       id="subject" 
                       placeholder="How can we help you?" 
                       className="w-full px-4 py-2 rounded-md border border-border bg-card focus:outline-none focus:ring-2 focus:ring-rashmi-red/50"
+                      value={subject}
+                      onChange={(e) => setSubject(e.target.value)}
+                      required
                     />
+                  </div>
+                  
+                  {/* Product Selection Dropdown */}
+                  <div className="relative" ref={dropdownRef}>
+                    <label htmlFor="products" className="block text-sm font-medium mb-1 flex items-center justify-between">
+                      <span>Products of Interest</span>
+                      {selectedProducts.length > 0 && (
+                        <span className="inline-flex items-center justify-center bg-rashmi-red text-white rounded-full text-xs w-5 h-5">
+                          {selectedProducts.length}
+                        </span>
+                      )}
+                    </label>
+                    <div 
+                      className="w-full min-h-[42px] px-4 py-2 rounded-md border border-border bg-card focus:outline-none focus:ring-2 focus:ring-rashmi-red/50 cursor-pointer flex flex-wrap items-center gap-2"
+                      onClick={() => setDropdownOpen(!dropdownOpen)}
+                    >
+                      {selectedProducts.length === 0 ? (
+                        <span className="text-muted-foreground">Select products you're interested in</span>
+                      ) : (
+                        <>
+                          {selectedProducts.map(productId => {
+                            const product = products.find(p => p.id === productId);
+                            return (
+                              <span key={productId} className="inline-flex items-center px-2 py-1 rounded-md bg-rashmi-red/10 text-rashmi-red text-sm">
+                                {product?.name}
+                                <button 
+                                  onClick={(e) => removeProduct(productId, e)}
+                                  className="ml-1 hover:text-rashmi-red/80"
+                                  aria-label={`Remove ${product?.name}`}
+                                >
+                                  <X size={14} />
+                                </button>
+                              </span>
+                            );
+                          })}
+                        </>
+                      )}
+                      <ChevronDown className={`ml-auto text-muted-foreground transition-transform duration-200 ${dropdownOpen ? 'transform rotate-180' : ''}`} size={18} />
+                    </div>
+                    
+                    {/* Dropdown */}
+                    {dropdownOpen && (
+                      <motion.div 
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.2 }}
+                        className="absolute z-20 mt-1 w-full rounded-md bg-card border border-border shadow-lg max-h-60 overflow-y-auto"
+                      >
+                        <div className="sticky top-0 bg-card border-b border-border z-10">
+                          <button
+                            className="w-full px-4 py-2 text-left hover:bg-muted flex items-center justify-between font-medium text-rashmi-red"
+                            onClick={() => {
+                              if (selectedProducts.length === products.length) {
+                                setSelectedProducts([]);
+                              } else {
+                                setSelectedProducts(products.map(p => p.id));
+                              }
+                            }}
+                          >
+                            <span>{selectedProducts.length === products.length ? 'Deselect All' : 'Select All Products'}</span>
+                            {selectedProducts.length === products.length && (
+                              <Check size={16} className="text-rashmi-red" />
+                            )}
+                          </button>
+                        </div>
+                        
+                        <ul className="py-1">
+                          {products.map(product => (
+                            <motion.li 
+                              key={product.id} 
+                              className={`px-4 py-2 cursor-pointer hover:bg-muted flex items-center justify-between transition-colors duration-150 ${
+                                selectedProducts.includes(product.id) ? 'bg-muted/50' : ''
+                              }`}
+                              onClick={() => toggleProduct(product.id)}
+                              whileHover={{ x: 2 }}
+                            >
+                              <span>{product.name}</span>
+                              {selectedProducts.includes(product.id) && (
+                                <Check size={16} className="text-rashmi-red" />
+                              )}
+                            </motion.li>
+                          ))}
+                        </ul>
+                      </motion.div>
+                    )}
                   </div>
                   
                   <div>
@@ -284,6 +456,9 @@ const ContactUs = () => {
                       rows={4} 
                       placeholder="Your message" 
                       className="w-full px-4 py-2 rounded-md border border-border bg-card focus:outline-none focus:ring-2 focus:ring-rashmi-red/50"
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      required
                     />
                   </div>
                   

@@ -1,3 +1,24 @@
+/**
+ * Toggle Component
+ * 
+ * A two-state button built on Radix UI's Toggle primitive that can be either
+ * on or off, providing a simple interaction for binary state changes.
+ * 
+ * Features:
+ * - Multiple visual variants (default, outline)
+ * - Multiple size options (sm, default, lg)
+ * - Clear visual indication of active/inactive states
+ * - Hover and focus states for interactive feedback
+ * - Accessible implementation with proper ARIA attributes
+ * - Keyboard support for toggling via Space or Enter
+ * - Disabled state styling for unavailable options
+ * - Consistent styling with the application's button controls
+ * 
+ * Toggles are useful for binary state controls that need to be more visually prominent
+ * than a checkbox but less complex than a switch. They're commonly used for toolbar buttons,
+ * view options (grid/list), feature toggles, filter controls, and other UI elements
+ * where users can toggle a single feature or mode on and off.
+ */
 import * as React from "react"
 import * as TogglePrimitive from "@radix-ui/react-toggle"
 import { cva, type VariantProps } from "class-variance-authority"

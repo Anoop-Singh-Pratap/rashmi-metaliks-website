@@ -1,3 +1,23 @@
+/**
+ * Checkbox Component
+ * 
+ * An accessible checkbox component built on Radix UI's Checkbox primitive that
+ * provides consistent styling and behavior for binary selection controls.
+ * 
+ * Features:
+ * - Accessible keyboard interactions and screen reader support
+ * - Visual check mark indicator when checked
+ * - Support for indeterminate state for partial selections
+ * - Focus states with visual ring indicator for keyboard navigation
+ * - Disabled state styling for inactive checkboxes
+ * - Consistent sizing and spacing with other form controls
+ * - Proper ARIA attributes for accessibility
+ * - Integration with form libraries through standard onChange handlers
+ * 
+ * This component is used throughout the application for boolean selections,
+ * multiple-choice lists, terms acceptance, configuration options, and other
+ * interfaces where users need to make binary or multiple selections.
+ */
 import * as React from "react"
 import * as CheckboxPrimitive from "@radix-ui/react-checkbox"
 import { Check } from "lucide-react"

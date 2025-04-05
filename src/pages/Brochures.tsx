@@ -1,8 +1,7 @@
-
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
-import { FileText, Download, Eye, ArrowRight } from 'lucide-react';
+import { FileText, Download, Eye, ArrowRight, FileIcon } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
@@ -11,6 +10,7 @@ interface BrochureItem {
   title: string;
   description: string;
   thumbnail: string;
+  fallbackImage?: string;
   fileUrl: string;
   fileSize: string;
   category: string;
@@ -20,59 +20,74 @@ const Brochures = () => {
   const brochures: BrochureItem[] = [
     {
       id: 'di-pipes-brochure',
-      title: 'DI Pipes Product Catalogue',
+      title: 'Rashmi Ductile Iron Pipes',
       description: 'Complete specifications and applications for our premium Ductile Iron Pipes range.',
-      thumbnail: 'https://images.unsplash.com/photo-1518281361980-b26bfd556770?q=80&w=1374&auto=format&fit=crop',
-      fileUrl: '#',
-      fileSize: '4.2 MB',
+      thumbnail: '/lovable-uploads/Rashmi Ductile Iron Pipes.pdf',
+      fallbackImage: '/lovable-uploads/About-Rashmi.jpg',
+      fileUrl: '/lovable-uploads/Rashmi Ductile Iron Pipes.pdf',
+      fileSize: '3.5 MB',
       category: 'Products'
     },
     {
       id: 'di-fittings-brochure',
-      title: 'DI Fittings Technical Guide',
+      title: 'Rashmi DI Fittings',
       description: 'Technical specifications and installation guide for Ductile Iron Fittings.',
-      thumbnail: 'https://images.unsplash.com/photo-1581093806997-124204d9fa9d?q=80&w=1470&auto=format&fit=crop',
-      fileUrl: '#',
-      fileSize: '3.8 MB',
+      thumbnail: '/lovable-uploads/Rashmi Di Fittings.pdf',
+      fallbackImage: '/lovable-uploads/About-Rashmi.jpg',
+      fileUrl: '/lovable-uploads/Rashmi Di Fittings.pdf',
+      fileSize: '2.0 MB',
       category: 'Products'
     },
     {
-      id: 'tmt-bar-brochure',
-      title: 'TMT Bar Product Range',
-      description: 'Comprehensive guide to our TMT Bar range with technical specifications.',
-      thumbnail: 'https://images.unsplash.com/photo-1629115576910-40164a4e90cc?q=80&w=1470&auto=format&fit=crop',
-      fileUrl: '#',
-      fileSize: '5.1 MB',
+      id: 'bi-products-brochure',
+      title: 'Rashmi BI Products',
+      description: 'Comprehensive guide to our BI Products range with technical specifications.',
+      thumbnail: '/lovable-uploads/Rashmi Bi Product.pdf',
+      fallbackImage: '/lovable-uploads/About-Rashmi.jpg',
+      fileUrl: '/lovable-uploads/Rashmi Bi Product.pdf',
+      fileSize: '6.1 MB',
       category: 'Products'
     },
     {
-      id: 'csr-report',
-      title: 'Corporate Social Responsibility Report',
-      description: 'Annual CSR report detailing our initiatives and impacts across communities.',
-      thumbnail: 'https://images.unsplash.com/photo-1454789548928-9efd52dc4031?q=80&w=1480&auto=format&fit=crop',
-      fileUrl: '#',
-      fileSize: '6.3 MB',
-      category: 'Corporate'
-    },
-    {
-      id: 'sustainability-report',
-      title: 'Sustainability Performance Report',
-      description: 'Our commitment to sustainable manufacturing and environmental stewardship.',
-      thumbnail: 'https://images.unsplash.com/photo-1623011132181-e2cee3ce2ceb?q=80&w=1471&auto=format&fit=crop',
-      fileUrl: '#',
-      fileSize: '5.7 MB',
-      category: 'Corporate'
+      id: 'rashmi-lock-brochure',
+      title: 'RASHMI-LOCK Restrained Jointing System',
+      description: 'Technical details for our advanced RASHMI-LOCK Restrained Jointing System.',
+      thumbnail: '/lovable-uploads/Rashmi Lock Joint.pdf',
+      fallbackImage: '/lovable-uploads/About-Rashmi.jpg',
+      fileUrl: '/lovable-uploads/Rashmi Lock Joint.pdf',
+      fileSize: '4.9 MB',
+      category: 'Products'
     },
     {
       id: 'company-profile',
       title: 'Rashmi Group Company Profile',
       description: 'Complete overview of Rashmi Group, our vision, values and achievements.',
-      thumbnail: 'https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?q=80&w=1374&auto=format&fit=crop',
-      fileUrl: '#',
-      fileSize: '7.2 MB',
+      thumbnail: '/lovable-uploads/Rashmi Combined.pdf',
+      fallbackImage: '/lovable-uploads/About-Rashmi.jpg',
+      fileUrl: '/lovable-uploads/Rashmi Combined.pdf',
+      fileSize: '38 MB',
       category: 'Corporate'
     }
   ];
+
+  // Generate thumbnails for the PDFs
+  const [pdfThumbnails, setPdfThumbnails] = useState<{[key: string]: string}>({});
+  
+  useEffect(() => {
+    // This is a placeholder. In a production app, you might want to
+    // use a server-side approach to generate thumbnails or use PDF.js
+    // For now, we'll use a placeholder approach
+    const generatePlaceholderThumbnails = () => {
+      const thumbnails: {[key: string]: string} = {};
+      brochures.forEach(brochure => {
+        // Using the first page as thumbnail is something that would require PDF.js in a real implementation
+        thumbnails[brochure.id] = brochure.fallbackImage || '/lovable-uploads/pdf-placeholder.jpg';
+      });
+      setPdfThumbnails(thumbnails);
+    };
+    
+    generatePlaceholderThumbnails();
+  }, [brochures]);
 
   const categories = Array.from(new Set(brochures.map(item => item.category)));
   const [activeCategory, setActiveCategory] = React.useState('All');
@@ -98,7 +113,9 @@ const Brochures = () => {
             transition={{ duration: 0.5 }}
             className="max-w-3xl mx-auto text-center mb-12"
           >
-            <h1 className="text-3xl md:text-4xl font-bold mb-4">Brochures & Downloads</h1>
+            <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">
+              <span className="text-rashmi-red">Brochures</span> & Downloads
+            </h1>
             <p className="text-muted-foreground text-lg">
               Access our product catalogs, technical guides, and corporate publications
             </p>
@@ -137,50 +154,104 @@ const Brochures = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
-                className="bg-card rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all border border-border"
+                className="bg-card rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all border border-border group"
               >
-                <div className="relative h-52">
-                  <img 
-                    src={brochure.thumbnail} 
-                    alt={brochure.title} 
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute top-3 right-3">
-                    <span className="bg-background/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium">
-                      {brochure.category}
-                    </span>
-                  </div>
+                <div className="relative h-52 bg-muted">
+                  {/* PDF thumbnails with styled overlay */}
+                  {brochure.thumbnail.endsWith('.pdf') ? (
+                    <div className="relative w-full h-full overflow-hidden">
+                      <img 
+                        src={pdfThumbnails[brochure.id] || brochure.fallbackImage} 
+                        alt={brochure.title} 
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/70 flex flex-col justify-between p-4">
+                        <div className="flex justify-end">
+                          <span className="bg-background/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium">
+                            {brochure.category}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <div className="bg-white p-2 rounded-md shadow-lg">
+                            <FileText size={22} className="text-rashmi-red" />
+                          </div>
+                          <div>
+                            <h4 className="text-white font-medium text-base">{brochure.title}</h4>
+                            <span className="text-white/70 text-xs">PDF • {brochure.fileSize}</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* View/Download overlay on hover */}
+                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4">
+                        <a 
+                          href={brochure.fileUrl} 
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-3 rounded-full bg-white hover:bg-gray-100 transition-colors"
+                          title="View PDF"
+                        >
+                          <Eye size={20} className="text-rashmi-red" />
+                        </a>
+                        <a 
+                          href={brochure.fileUrl} 
+                          download
+                          className="p-3 rounded-full bg-rashmi-red text-white hover:bg-rashmi-red/90 transition-colors"
+                          title="Download PDF"
+                        >
+                          <Download size={20} />
+                        </a>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <img 
+                        src={brochure.thumbnail} 
+                        alt={brochure.title} 
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute top-3 right-3">
+                        <span className="bg-background/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium">
+                          {brochure.category}
+                        </span>
+                      </div>
+                    </>
+                  )}
                 </div>
                 <div className="p-5">
-                  <h3 className="text-xl font-bold mb-2">{brochure.title}</h3>
+                  {!brochure.thumbnail.endsWith('.pdf') && (
+                    <h3 className="text-xl font-bold mb-2">{brochure.title}</h3>
+                  )}
                   <p className="text-muted-foreground text-sm mb-4">
                     {brochure.description}
                   </p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-muted-foreground">
-                      <FileText size={14} className="inline mr-1" />
-                      {brochure.fileSize}
-                    </span>
-                    <div className="flex gap-2">
-                      <a 
-                        href={brochure.fileUrl} 
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="p-2 rounded-full bg-muted hover:bg-muted/80 transition-colors"
-                        title="View"
-                      >
-                        <Eye size={18} />
-                      </a>
-                      <a 
-                        href={brochure.fileUrl} 
-                        download
-                        className="p-2 rounded-full bg-rashmi-red text-white hover:bg-rashmi-red/90 transition-colors"
-                        title="Download"
-                      >
-                        <Download size={18} />
-                      </a>
+                  {!brochure.thumbnail.endsWith('.pdf') && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-muted-foreground">
+                        <FileText size={14} className="inline mr-1" />
+                        {brochure.fileSize}
+                      </span>
+                      <div className="flex gap-2">
+                        <a 
+                          href={brochure.fileUrl} 
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-2 rounded-full bg-muted hover:bg-muted/80 transition-colors"
+                          title="View"
+                        >
+                          <Eye size={18} />
+                        </a>
+                        <a 
+                          href={brochure.fileUrl} 
+                          download
+                          className="p-2 rounded-full bg-rashmi-red text-white hover:bg-rashmi-red/90 transition-colors"
+                          title="Download"
+                        >
+                          <Download size={18} />
+                        </a>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               </motion.div>
             ))}

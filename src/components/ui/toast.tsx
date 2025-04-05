@@ -1,3 +1,23 @@
+/**
+ * Toast Component
+ * 
+ * A notification system built on Radix UI's Toast primitive that provides
+ * accessible, customizable notifications for user feedback.
+ * 
+ * Features:
+ * - Multiple variants for different notification types (default, destructive, success)
+ * - Responsive positioning across different screen sizes
+ * - Smooth entrance and exit animations
+ * - Support for action buttons within notifications
+ * - Customizable duration and auto-dismissal
+ * - Keyboard accessible for dismissing and interacting
+ * - Swipe gestures for dismissal on touch devices
+ * - Stacking behavior for multiple simultaneous notifications
+ * 
+ * This component is used throughout the application to provide non-intrusive
+ * feedback for user actions, system events, and status updates, enhancing
+ * the overall user experience with timely information.
+ */
 import * as React from "react"
 import * as ToastPrimitives from "@radix-ui/react-toast"
 import { cva, type VariantProps } from "class-variance-authority"

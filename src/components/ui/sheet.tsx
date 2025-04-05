@@ -5,6 +5,28 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
+/**
+ * Sheet Component
+ * 
+ * A slide-in panel component built on Radix UI's Dialog primitive that appears
+ * from the edge of the screen, providing additional content or controls.
+ * 
+ * Features:
+ * - Multiple position variants (top, right, bottom, left)
+ * - Customizable sizing options (sm, md, lg, xl, full)
+ * - Smooth slide-in and slide-out animations
+ * - Built-in backdrop overlay
+ * - Close button with accessible label
+ * - Optional header and footer sections
+ * - Focus trapping for keyboard navigation
+ * - Accessible implementation with proper ARIA attributes
+ * - Escape key support for dismissal
+ * 
+ * Sheets are ideal for secondary content or controls that don't need to interrupt
+ * the user's current context completely (unlike modals). They're commonly used for
+ * navigation menus on mobile, detailed views of list items, filtering options,
+ * or contextual forms that relate to the main content.
+ */
 const Sheet = SheetPrimitive.Root
 
 const SheetTrigger = SheetPrimitive.Trigger

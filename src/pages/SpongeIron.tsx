@@ -1,7 +1,6 @@
-
 import React, { useRef, useState } from 'react';
-import { Helmet } from 'react-helmet';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { Helmet } from 'react-helmet-async';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowDown, Check, ScrollText, BookOpen, Settings, Factory, Globe, Flame } from 'lucide-react';
 import Header from '../components/Header';
@@ -243,9 +242,11 @@ const SpongeIron = () => {
                   viewport={{ once: true }}
                   transition={{ duration: 0.3, delay: index * 0.05 }}
                   onClick={() => setActiveStep(index)}
+                  whileHover={{ scale: activeStep === index ? 1 : 1.05 }}
+                  whileTap={{ scale: 0.98 }}
                   className={`px-4 py-2 rounded-full text-sm md:text-base font-medium m-1 transition-all ${
                     activeStep === index 
-                      ? 'bg-rashmi-red text-white' 
+                      ? 'bg-rashmi-red text-white shadow-md' 
                       : 'bg-card border border-border text-foreground hover:bg-muted'
                   }`}
                 >
@@ -254,46 +255,55 @@ const SpongeIron = () => {
               ))}
             </div>
             
-            <motion.div
-              key={activeStep}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.5 }}
-              className="bg-card border border-border rounded-xl p-6 md:p-8"
-            >
-              <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
-                <div className="flex-shrink-0 bg-gradient-to-br from-rashmi-red/20 to-background border border-border/40 rounded-full w-20 h-20 flex items-center justify-center">
-                  {React.createElement(processSteps[activeStep].icon, { 
-                    className: "text-rashmi-red", 
-                    size: 32
-                  })}
+            {/* Progress Bar - Moved outside the keyed component */}
+            <div className="mt-8 mb-4">
+              <div className="flex items-center">
+                <div className="h-2 bg-muted rounded-full w-full">
+                  <motion.div 
+                    initial={{ width: "0%" }}
+                    animate={{
+                      width: `${(activeStep + 1) / processSteps.length * 100}%`,
+                    }}
+                    transition={{ 
+                      duration: 0.5, 
+                      ease: "easeOut", 
+                      type: "tween" 
+                    }}
+                    className="h-full bg-rashmi-red rounded-full"
+                  />
                 </div>
-                
-                <div>
-                  <h3 className="text-xl md:text-2xl font-bold mb-3">
-                    Step {activeStep + 1}: {processSteps[activeStep].title}
-                  </h3>
-                  <p className="text-muted-foreground">{processSteps[activeStep].description}</p>
+                <span className="ml-4 text-sm font-medium">
+                  {Math.round((activeStep + 1) / processSteps.length * 100)}%
+                </span>
+              </div>
+            </div>
+            
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeStep}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.5 }}
+                className="bg-card border border-border rounded-xl p-6 md:p-8"
+              >
+                <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
+                  <div className="flex-shrink-0 bg-gradient-to-br from-rashmi-red/20 to-background border border-border/40 rounded-full w-20 h-20 flex items-center justify-center">
+                    {React.createElement(processSteps[activeStep].icon, { 
+                      className: "text-rashmi-red", 
+                      size: 32
+                    })}
+                  </div>
                   
-                  <div className="mt-6 relative h-2 w-full bg-border/30 rounded-full overflow-hidden">
-                    <motion.div 
-                      initial={{ width: 0 }}
-                      animate={{ width: `${(activeStep + 1) / processSteps.length * 100}%` }}
-                      className="h-full bg-rashmi-red rounded-full absolute top-0 left-0"
-                      transition={{ 
-                        duration: 0.5,
-                        ease: "easeInOut",
-                        type: "tween"
-                      }}
-                    ></motion.div>
-                    <span className="ml-4 text-sm font-medium absolute top-4">
-                      {Math.round((activeStep + 1) / processSteps.length * 100)}%
-                    </span>
+                  <div>
+                    <h3 className="text-xl md:text-2xl font-bold mb-3">
+                      Step {activeStep + 1}: {processSteps[activeStep].title}
+                    </h3>
+                    <p className="text-muted-foreground">{processSteps[activeStep].description}</p>
                   </div>
                 </div>
-              </div>
-            </motion.div>
+              </motion.div>
+            </AnimatePresence>
           </div>
           
           {/* Visual Process Timeline */}

@@ -1,3 +1,25 @@
+/**
+ * InputOTP Component
+ * 
+ * A specialized input component designed for entering one-time passwords (OTP) or
+ * verification codes with individual character slots for better user experience.
+ * 
+ * Features:
+ * - Individual input slots for each character
+ * - Automatic focus management between slots
+ * - Visual caret animation showing active position
+ * - Keyboard navigation with arrow keys
+ * - Support for copy-paste of the entire code
+ * - Customizable separators between character groups
+ * - Accessible implementation for screen readers
+ * - Disabled state styling
+ * - Mobile-friendly design with virtual keyboard support
+ * 
+ * This component is ideal for authentication flows, two-factor authentication,
+ * email/phone verification, and any scenario where users need to enter
+ * verification codes. The separated slots improve readability and reduce
+ * input errors compared to a standard text input.
+ */
 import * as React from "react"
 import { OTPInput, OTPInputContext } from "input-otp"
 import { Dot } from "lucide-react"

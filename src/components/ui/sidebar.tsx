@@ -1,3 +1,25 @@
+/**
+ * Sidebar Component
+ * 
+ * A responsive, feature-rich sidebar navigation component that adapts to different
+ * screen sizes and supports collapsible states with persistent user preferences.
+ * 
+ * Features:
+ * - Responsive design with different layouts for mobile and desktop
+ * - Collapsible states (expanded/collapsed) with smooth transitions
+ * - Persistent state saved in cookies for user preference
+ * - Mobile drawer implementation for smaller screens
+ * - Keyboard shortcut support for quick toggling
+ * - Compound component pattern for flexible content organization
+ * - Support for icons, labels, nested navigation groups
+ * - Search functionality within sidebar content
+ * - Visual indicators for active/current items
+ * - Accessibility features including keyboard navigation
+ * 
+ * This component serves as the main navigation container for the application,
+ * providing access to different sections, products, and features while
+ * maximizing screen real estate through its collapsible design.
+ */
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { VariantProps, cva } from "class-variance-authority"

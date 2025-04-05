@@ -1,3 +1,22 @@
+/**
+ * Navigation Menu Component
+ * 
+ * A comprehensive, accessible navigation system built on Radix UI's NavigationMenu primitive.
+ * Provides a responsive, animated menu system for site navigation with dropdown capabilities.
+ * 
+ * Features:
+ * - Fully accessible with keyboard navigation support
+ * - Animated transitions for menu items and dropdown content
+ * - Responsive design with adaptive viewport container
+ * - Support for nested navigation structures
+ * - Visual indicators for active/current page
+ * - Customizable styling through class variance authority
+ * - Built with React's forward ref pattern for proper ref handling
+ * 
+ * This component implements a two-tier navigation system with primary navigation items
+ * and optional dropdown content, making it suitable for complex site structures while
+ * maintaining usability.
+ */
 import * as React from "react"
 import * as NavigationMenuPrimitive from "@radix-ui/react-navigation-menu"
 import { cva } from "class-variance-authority"

@@ -1,3 +1,24 @@
+/**
+ * Switch Component
+ * 
+ * A toggle control built on Radix UI's Switch primitive that allows users to
+ * turn an option on or off, similar to a physical switch.
+ * 
+ * Features:
+ * - Clear visual indication of current state (on/off)
+ * - Smooth transition animations between states
+ * - Accessible implementation with proper ARIA attributes
+ * - Keyboard navigation support (Tab and Space)
+ * - Focus states for keyboard users
+ * - Disabled state styling
+ * - Touch-friendly target size
+ * - Consistent styling with the application's design system
+ * 
+ * Switches are ideal for binary settings or preferences where immediate effect
+ * is desired. Unlike checkboxes which are often used in forms that require submission,
+ * switches typically apply changes immediately and are commonly used for enabling/disabling
+ * features, toggling modes (light/dark), or controlling visibility of UI elements.
+ */
 import * as React from "react"
 import * as SwitchPrimitives from "@radix-ui/react-switch"
 

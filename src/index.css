@@ -1,5 +1,4 @@
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
+@import "../styles/globals.css";
 
 @tailwind base;
 @tailwind components;
@@ -100,10 +99,6 @@
 }
  
 @layer base {
-  * {
-    @apply border-border;
-  }
-  
   body {
     @apply bg-background text-foreground;
   }
@@ -166,6 +161,12 @@
     perspective: 1000px;
   }
   
+  .glass-effect {
+    @apply bg-background/50;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+  
   .metal-surface {
     background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 50%, #d5d5d5 51%, #e8e8e8 100%);
     box-shadow: 
@@ -204,6 +205,14 @@
   
   .animate-pulse-slow {
     animation: pulseSlow 4s ease-in-out infinite;
+  }
+
+  .animate-wave1 {
+    animation: wave1 8s ease-in-out infinite;
+  }
+  
+  .animate-wave2 {
+    animation: wave2 12s ease-in-out infinite;
   }
 }
 
@@ -257,10 +266,172 @@
   }
 }
 
+@keyframes wave1 {
+  0% {
+    transform: translateY(100%);
+  }
+  50% {
+    transform: translateY(15%);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes wave2 {
+  0% {
+    transform: translateY(100%) scale(1.2);
+  }
+  50% {
+    transform: translateY(40%) scale(1.2);
+  }
+  100% {
+    transform: translateY(100%) scale(1.2);
+  }
+}
+
 /* Remove default App.css styles that might conflict */
 #root {
   max-width: none;
   margin: 0;
   padding: 0;
   text-align: left;
+}
+
+/* Mobile Optimization Styles */
+@supports (padding-top: env(safe-area-inset-top)) {
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
+  }
+  
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  .pl-safe {
+    padding-left: env(safe-area-inset-left);
+  }
+  
+  .pr-safe {
+    padding-right: env(safe-area-inset-right);
+  }
+  
+  .px-safe {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+  
+  .py-safe {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Improved touch targets */
+.touch-manipulation {
+  touch-action: manipulation;
+}
+
+/* Prevent overscroll bounce on iOS */
+html, body {
+  overscroll-behavior-y: none;
+}
+
+/* Larger tap targets on smaller screens */
+@media (max-width: 640px) {
+  button, 
+  [role="button"],
+  a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  .nav-link {
+    padding: 12px !important;
+  }
+}
+
+/* Form input styling for dark mode */
+.dark input[type="text"],
+.dark input[type="email"],
+.dark input[type="tel"],
+.dark input[type="number"],
+.dark input[type="password"],
+.dark input[type="date"],
+.dark input[type="time"],
+.dark select,
+.dark textarea {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  border-color: hsl(var(--border));
+}
+
+/* Success message styling for dark mode */
+.dark .bg-green-100 {
+  background-color: rgba(16, 185, 129, 0.2); /* Dark mode green background */
+}
+
+.dark .text-green-600 {
+  color: rgb(52, 211, 153); /* Brighter green for dark mode */
+}
+
+/* Fix button text colors in dark mode */
+.dark .text-white {
+  color: white !important;
+}
+
+/* Fix iframe scrolling issues */
+html, 
+body {
+  height: 100%;
+  overflow-y: auto !important;
+  position: relative;
+  scroll-behavior: smooth;
+}
+
+/* Prevent iframes from capturing scroll events */
+iframe {
+  pointer-events: auto;
+}
+
+/* Ensure map containers don't block scrolling */
+.map-container {
+  position: relative;
+  z-index: 10;
+  height: auto;
+  max-height: 85vh;
+}
+
+.map-container iframe {
+  max-height: 85vh;
+}
+
+/* Ensure sections after maps are still scrollable */
+section {
+  position: relative;
+  z-index: 5;
+  overflow: visible;
+}
+
+/* Add these scroll utilities */
+.scroll-enable {
+  overflow: auto !important;
+}
+
+.scroll-visible {
+  overflow: visible !important;
+}
+
+/* Ensure content is scrollable regardless of iframe interaction */
+#root {
+  position: relative;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+  position: relative;
+  z-index: 1;
 }

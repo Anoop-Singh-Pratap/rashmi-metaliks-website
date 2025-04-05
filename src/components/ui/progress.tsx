@@ -1,3 +1,24 @@
+/**
+ * Progress Component
+ * 
+ * A visual indicator built on Radix UI's Progress primitive that displays the
+ * completion status of a task or process.
+ * 
+ * Features:
+ * - Smooth animation for value changes
+ * - Accessible implementation with proper ARIA attributes
+ * - Clear visual representation of progress percentage
+ * - Customizable height and styling
+ * - Consistent color scheme with the application's design system
+ * - Rounded ends for a polished appearance
+ * - Supports indeterminate state for unknown progress
+ * - Responsive width that adapts to container size
+ * 
+ * Progress bars are used throughout the application to provide feedback for processes
+ * like file uploads, form completion, multi-step workflows, loading states, and other
+ * operations where it's helpful to indicate how much of a task has been completed and
+ * how much remains.
+ */
 import * as React from "react"
 import * as ProgressPrimitive from "@radix-ui/react-progress"
 

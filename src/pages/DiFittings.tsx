@@ -7,6 +7,8 @@ import Footer from '../components/Footer';
 import SpecificationTable from '../components/ui/SpecificationTable';
 import InteractiveSpecTable from '../components/ui/InteractiveSpecTable';
 import ExploreButton from '../components/ui/ExploreButton';
+import FittingsManufacturing from '../components/FittingsManufacturing';
+import { useTheme } from '@/context/ThemeContext';
 
 interface TableRow {
   [key: string]: string | number;
@@ -14,6 +16,7 @@ interface TableRow {
 
 const DiFittings = () => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const { theme } = useTheme();
   
   const socketsData = [
     {
@@ -200,10 +203,10 @@ const DiFittings = () => {
             transition={{ duration: 0.6 }}
             className="max-w-4xl mx-auto text-center"
           >
-            <h1 className="text-4xl md:text-5xl font-display font-bold mb-6">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-6 tracking-tight text-foreground">
               Precision <span className="text-rashmi-red">DI Fittings</span>
             </h1>
-            <p className="text-muted-foreground text-lg max-w-3xl mx-auto mb-8">
+            <p className="text-muted-foreground text-lg md:text-xl max-w-3xl mx-auto mb-10">
               High-quality ductile iron fittings that complement our DI pipe systems for complete water management solutions.
             </p>
             
@@ -214,17 +217,23 @@ const DiFittings = () => {
               className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-10 max-w-2xl mx-auto"
             >
               <motion.div 
-                className="bg-card hover:bg-card/90 border border-border p-6 rounded-lg transition-colors duration-300"
-                whileHover={{ y: -5, boxShadow: "0 10px 30px -15px rgba(0, 0, 0, 0.2)" }}
+                className="bg-card hover:bg-card/90 border border-border p-8 rounded-lg transition-all duration-300 hover:border-rashmi-red/30"
+                whileHover={{ 
+                  y: -5, 
+                  boxShadow: "0 15px 30px -10px rgba(0, 0, 0, 0.15)"
+                }}
               >
-                <h3 className="text-2xl font-bold mb-1">Perfect Fit</h3>
+                <h3 className="text-2xl font-bold mb-2 text-foreground">Perfect Fit</h3>
                 <p className="text-muted-foreground">Seamless Integration</p>
               </motion.div>
               <motion.div 
-                className="bg-card hover:bg-card/90 border border-border p-6 rounded-lg transition-colors duration-300"
-                whileHover={{ y: -5, boxShadow: "0 10px 30px -15px rgba(0, 0, 0, 0.2)" }}
+                className="bg-card hover:bg-card/90 border border-border p-8 rounded-lg transition-all duration-300 hover:border-rashmi-red/30"
+                whileHover={{ 
+                  y: -5, 
+                  boxShadow: "0 15px 30px -10px rgba(0, 0, 0, 0.15)"
+                }}
               >
-                <h3 className="text-2xl font-bold mb-1">High Pressure</h3>
+                <h3 className="text-2xl font-bold mb-2 text-foreground">High Pressure</h3>
                 <p className="text-muted-foreground">Capable Performance</p>
               </motion.div>
             </motion.div>
@@ -237,14 +246,21 @@ const DiFittings = () => {
           transition={{ duration: 1, delay: 0.5 }}
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-5xl pointer-events-none z-[-1]"
         >
-          <div className="bg-rashmi-red/20 rounded-full w-[600px] h-[600px] blur-[150px] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+          <div className="bg-rashmi-red/20 rounded-full w-[700px] h-[700px] blur-[180px] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
         </motion.div>
 
-        <ExploreButton 
-          text="Explore Specifications" 
-          targetId="specifications" 
-          className="mt-12" 
-        />
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.8 }}
+          className="mt-16 text-center"
+        >
+          <ExploreButton 
+            text="Explore Specifications" 
+            targetId="specifications" 
+            className="mt-4" 
+          />
+        </motion.div>
       </section>
 
       <section id="advantages" className="py-16 bg-muted/30">
@@ -255,7 +271,7 @@ const DiFittings = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
-              className="text-3xl md:text-4xl font-display font-bold mb-6"
+              className="text-3xl md:text-4xl font-display font-bold mb-6 text-foreground"
             >
               Key <span className="text-rashmi-red">Advantages</span>
             </motion.h2>
@@ -281,14 +297,14 @@ const DiFittings = () => {
                 transition={{ delay: index * 0.1 }}
                 whileHover={{ 
                   y: -10, 
-                  boxShadow: "0 10px 30px -15px rgba(0, 0, 0, 0.2)"
+                  boxShadow: "0 15px 30px -10px rgba(0, 0, 0, 0.15)"
                 }}
-                className="bg-card border border-border rounded-lg p-6 transition-all duration-300"
+                className="bg-card border border-border rounded-lg p-8 transition-all duration-300 hover:border-rashmi-red/30 text-foreground"
               >
-                <div className="mb-4 bg-rashmi-red/10 w-12 h-12 rounded-full flex items-center justify-center">
-                  <CheckCircle className="text-rashmi-red" size={22} />
+                <div className="mb-4 bg-rashmi-red/10 w-14 h-14 rounded-full flex items-center justify-center">
+                  <CheckCircle className="text-rashmi-red" size={24} />
                 </div>
-                <h3 className="text-xl font-bold mb-2">{advantage.title}</h3>
+                <h3 className="text-xl font-bold mb-3">{advantage.title}</h3>
                 <p className="text-muted-foreground">{advantage.description}</p>
               </motion.div>
             ))}
@@ -304,7 +320,7 @@ const DiFittings = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
-              className="text-3xl md:text-4xl font-display font-bold mb-6"
+              className="text-3xl md:text-4xl font-display font-bold mb-6 text-foreground"
             >
               Technical <span className="text-rashmi-red">Specifications</span>
             </motion.h2>
@@ -324,7 +340,7 @@ const DiFittings = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="bg-card shadow-sm border border-border rounded-xl p-6 md:p-8 mb-12"
+            className="bg-card shadow-md border border-border rounded-xl p-6 md:p-8 mb-12"
           >
             <InteractiveSpecTable 
               data={{
@@ -341,13 +357,17 @@ const DiFittings = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="bg-card border border-border p-6 rounded-lg"
+              className="bg-card border border-border p-8 rounded-lg hover:border-rashmi-red/30 transition-all duration-300 text-foreground"
+              whileHover={{ 
+                y: -5, 
+                boxShadow: "0 15px 30px -10px rgba(0, 0, 0, 0.15)"
+              }}
             >
-              <div className="w-12 h-12 bg-rashmi-red/10 text-rashmi-red flex items-center justify-center rounded-full mb-4">
-                <AlertCircle />
+              <div className="w-14 h-14 bg-rashmi-red/10 text-rashmi-red flex items-center justify-center rounded-full mb-4">
+                <AlertCircle size={24} />
               </div>
-              <h3 className="text-lg font-semibold mb-2">Quality Assurance</h3>
-              <p className="text-muted-foreground text-sm">
+              <h3 className="text-lg font-semibold mb-3">Quality Assurance</h3>
+              <p className="text-muted-foreground">
                 All our fittings undergo rigorous testing and quality checks to ensure durability and perfect fitment.
               </p>
             </motion.div>
@@ -357,13 +377,17 @@ const DiFittings = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="bg-card border border-border p-6 rounded-lg"
+              className="bg-card border border-border p-8 rounded-lg hover:border-rashmi-red/30 transition-all duration-300 text-foreground"
+              whileHover={{ 
+                y: -5, 
+                boxShadow: "0 15px 30px -10px rgba(0, 0, 0, 0.15)"
+              }}
             >
-              <div className="w-12 h-12 bg-rashmi-red/10 text-rashmi-red flex items-center justify-center rounded-full mb-4">
-                <Factory />
+              <div className="w-14 h-14 bg-rashmi-red/10 text-rashmi-red flex items-center justify-center rounded-full mb-4">
+                <Factory size={24} />
               </div>
-              <h3 className="text-lg font-semibold mb-2">Manufacturing Process</h3>
-              <p className="text-muted-foreground text-sm">
+              <h3 className="text-lg font-semibold mb-3">Manufacturing Process</h3>
+              <p className="text-muted-foreground">
                 Manufactured using state-of-the-art technology and precision casting techniques.
               </p>
             </motion.div>
@@ -373,13 +397,17 @@ const DiFittings = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.3 }}
-              className="bg-card border border-border p-6 rounded-lg"
+              className="bg-card border border-border p-8 rounded-lg hover:border-rashmi-red/30 transition-all duration-300 text-foreground"
+              whileHover={{ 
+                y: -5, 
+                boxShadow: "0 15px 30px -10px rgba(0, 0, 0, 0.15)"
+              }}
             >
-              <div className="w-12 h-12 bg-rashmi-red/10 text-rashmi-red flex items-center justify-center rounded-full mb-4">
-                <Layers />
+              <div className="w-14 h-14 bg-rashmi-red/10 text-rashmi-red flex items-center justify-center rounded-full mb-4">
+                <Layers size={24} />
               </div>
-              <h3 className="text-lg font-semibold mb-2">Coating Options</h3>
-              <p className="text-muted-foreground text-sm">
+              <h3 className="text-lg font-semibold mb-3">Coating Options</h3>
+              <p className="text-muted-foreground">
                 Available with various coating options to suit different environmental conditions.
               </p>
             </motion.div>
@@ -387,23 +415,26 @@ const DiFittings = () => {
         </div>
       </section>
       
-      <section className="py-16 bg-muted/30">
+      {/* Manufacturing Process Section */}
+      <FittingsManufacturing />
+      
+      <section className="py-20 bg-muted/30">
         <div className="container mx-auto px-4">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="max-w-5xl mx-auto text-center bg-card border border-border p-10 md:p-16 rounded-2xl relative"
+            className="max-w-5xl mx-auto text-center bg-card border border-border p-12 md:p-16 rounded-2xl relative shadow-lg"
           >
             <div className="absolute top-0 left-0 w-full h-full overflow-hidden rounded-2xl z-0">
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-2xl">
-                <div className="bg-rashmi-red/5 rounded-full w-[600px] h-[600px] blur-[150px] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+                <div className="bg-rashmi-red/5 rounded-full w-[700px] h-[700px] blur-[150px] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
               </div>
             </div>
             
             <div className="relative z-10">
-              <h2 className="text-3xl md:text-4xl font-display font-bold mb-6">
+              <h2 className="text-3xl md:text-4xl font-display font-bold mb-6 text-foreground">
                 Ready to integrate Rashmi DI Fittings into your <span className="text-rashmi-red">water systems?</span>
               </h2>
               <p className="text-muted-foreground text-lg mb-10 max-w-2xl mx-auto">
@@ -412,10 +443,10 @@ const DiFittings = () => {
               
               <motion.a
                 href="#contact"
-                whileHover={{ scale: 1.05 }}
+                whileHover={{ scale: 1.05, backgroundColor: "#d4473f" }}
                 whileTap={{ scale: 0.98 }}
                 transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                className="inline-flex items-center px-6 py-3 bg-rashmi-red text-white font-medium rounded-lg transition-colors hover:bg-rashmi-red/90"
+                className="inline-flex items-center px-8 py-4 font-medium rounded-lg text-white bg-rashmi-red hover:bg-rashmi-red/90"
               >
                 Contact Us Today
               </motion.a>

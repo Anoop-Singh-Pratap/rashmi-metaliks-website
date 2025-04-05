@@ -1,67 +1,174 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
-import { Calendar, Globe, Search, Filter, EyeIcon, Download } from 'lucide-react';
+import { Calendar, Globe, Search, Filter, EyeIcon, Download, AlertCircle } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import RevealText from '../components/ui/RevealText';
+import { getNews, getBrochures, getCertificates } from '../services/cmsService';
 
-// Sample news data - in a real app, this would come from an API or CMS
-const newsData = [
-  {
-    id: 1,
-    title: "Rashmi Group Achieves Record Production Targets",
-    date: "2023-05-15",
-    category: "Achievement",
-    excerpt: "Rashmi Group has achieved record-breaking production targets in the first quarter of 2023, surpassing industry standards.",
-    image: "https://images.unsplash.com/photo-1518640467707-6811f4a6ab73?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nunc sit amet ultricies lacinia, nunc nisl aliquam nisl, eget aliquam nunc nisl sit amet nisl. Sed euismod, nunc sit amet ultricies lacinia, nunc nisl aliquam nisl, eget aliquam nunc nisl sit amet nisl."
-  },
-  {
-    id: 2,
-    title: "New Manufacturing Facility Inaugurated in West Bengal",
-    date: "2023-03-22",
-    category: "Expansion",
-    excerpt: "Rashmi Group has inaugurated a state-of-the-art manufacturing facility in West Bengal, creating over 1000 new jobs.",
-    image: "https://images.unsplash.com/photo-1611284446314-60a58ac0deb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nunc sit amet ultricies lacinia, nunc nisl aliquam nisl, eget aliquam nunc nisl sit amet nisl. Sed euismod, nunc sit amet ultricies lacinia, nunc nisl aliquam nisl, eget aliquam nunc nisl sit amet nisl."
-  },
-  {
-    id: 3,
-    title: "Rashmi Group Receives International Quality Award",
-    date: "2023-02-10",
-    category: "Award",
-    excerpt: "Rashmi Group has been recognized with an International Quality Award for its exceptional product standards and quality control.",
-    image: "https://images.unsplash.com/photo-1607603750909-408f193a2cea?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nunc sit amet ultricies lacinia, nunc nisl aliquam nisl, eget aliquam nunc nisl sit amet nisl. Sed euismod, nunc sit amet ultricies lacinia, nunc nisl aliquam nisl, eget aliquam nunc nisl sit amet nisl."
-  },
-  {
-    id: 4,
-    title: "Sustainable Manufacturing Initiative Launched",
-    date: "2023-01-05",
-    category: "Sustainability",
-    excerpt: "Rashmi Group has launched a groundbreaking sustainability initiative to reduce carbon footprint across all manufacturing processes.",
-    image: "https://images.unsplash.com/photo-1473646590311-c48e1bc1e1d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nunc sit amet ultricies lacinia, nunc nisl aliquam nisl, eget aliquam nunc nisl sit amet nisl. Sed euismod, nunc sit amet ultricies lacinia, nunc nisl aliquam nisl, eget aliquam nunc nisl sit amet nisl."
-  }
-];
+// Interface for news items
+interface NewsItem {
+  id: number;
+  title: string;
+  date: string;
+  category: string;
+  excerpt: string;
+  image: string;
+  content: string;
+}
+
+// Define interfaces for other content types
+interface Brochure {
+  id: number;
+  title: string;
+  category: string;
+  format: string;
+  size: string;
+  lastUpdated: string;
+  thumbnail: string;
+  downloadUrl: string;
+}
+
+interface Certificate {
+  id: number;
+  title: string;
+  issuer: string;
+  issueDate: string;
+  expiryDate: string;
+  description: string;
+  image: string | null;
+  file: string | null;
+}
 
 const Media = () => {
+  // State for content
+  const [news, setNews] = useState<NewsItem[]>([]);
+  const [brochures, setBrochures] = useState<Brochure[]>([]);
+  const [certificates, setCertificates] = useState<Certificate[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [usingCachedData, setUsingCachedData] = useState<boolean>(false);
+  
+  // Filtering and display state
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
-  const [expandedArticle, setExpandedArticle] = useState<number | null>(null);
+  const [activeTab, setActiveTab] = useState<'news' | 'brochures' | 'certificates'>('news');
+  const [expandedNewsId, setExpandedNewsId] = useState<number | null>(null);
   
   const categories = ['All', 'Achievement', 'Expansion', 'Award', 'Sustainability'];
   
-  const filteredNews = newsData.filter(item => 
-    (selectedCategory === 'All' || item.category === selectedCategory) &&
-    (item.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-     item.excerpt.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        // Fetch data based on active tab to improve performance
+        if (activeTab === 'news') {
+          console.log('Fetching news data...');
+          const newsData = await getNews();
+          console.log('News data received:', newsData);
+          setNews(Array.isArray(newsData) ? newsData : []);
+          
+          // Check if we're using cached data 
+          const isUsingCached = localStorage.getItem('rashmi_using_cached_news') === 'true' || !navigator.onLine;
+          if (isUsingCached) {
+            setUsingCachedData(true);
+            const cachedTimestamp = localStorage.getItem('rashmi_cached_news_timestamp');
+            const timestampText = cachedTimestamp 
+              ? new Date(Number(cachedTimestamp)).toLocaleString() 
+              : 'unknown time';
+            setError(`Showing cached data because Strapi CMS is ${!navigator.onLine ? 'offline' : 'unreachable'}. Content was last updated on ${timestampText}.`);
+            
+            // Clear the flag so we don't show this message unnecessarily on subsequent loads when online
+            if (navigator.onLine) {
+              localStorage.removeItem('rashmi_using_cached_news');
+            }
+          } else {
+            setUsingCachedData(false);
+            setError(null);
+          }
+        } else if (activeTab === 'brochures') {
+          const brochuresData = await getBrochures();
+          setBrochures(brochuresData);
+          
+          // Check if we're using cached data
+          const isUsingCached = localStorage.getItem('rashmi_using_cached_brochures') === 'true' || !navigator.onLine;
+          if (isUsingCached) {
+            setUsingCachedData(true);
+            const cachedTimestamp = localStorage.getItem('rashmi_cached_brochures_timestamp');
+            const timestampText = cachedTimestamp 
+              ? new Date(Number(cachedTimestamp)).toLocaleString() 
+              : 'unknown time';
+            setError(`Showing cached data because Strapi CMS is ${!navigator.onLine ? 'offline' : 'unreachable'}. Content was last updated on ${timestampText}.`);
+            
+            // Clear the flag so we don't show this message unnecessarily on subsequent loads when online
+            if (navigator.onLine) {
+              localStorage.removeItem('rashmi_using_cached_brochures');
+            }
+          } else {
+            setUsingCachedData(false);
+            setError(null);
+          }
+        } else if (activeTab === 'certificates') {
+          const certificatesData = await getCertificates();
+          setCertificates(certificatesData);
+          
+          // Check if we're using cached data
+          const isUsingCached = localStorage.getItem('rashmi_using_cached_certificates') === 'true' || !navigator.onLine;
+          if (isUsingCached) {
+            setUsingCachedData(true);
+            const cachedTimestamp = localStorage.getItem('rashmi_cached_certificates_timestamp');
+            const timestampText = cachedTimestamp 
+              ? new Date(Number(cachedTimestamp)).toLocaleString() 
+              : 'unknown time';
+            setError(`Showing cached data because Strapi CMS is ${!navigator.onLine ? 'offline' : 'unreachable'}. Content was last updated on ${timestampText}.`);
+            
+            // Clear the flag so we don't show this message unnecessarily on subsequent loads when online
+            if (navigator.onLine) {
+              localStorage.removeItem('rashmi_using_cached_certificates');
+            }
+          } else {
+            setUsingCachedData(false);
+            setError(null);
+          }
+        }
+      } catch (err) {
+        console.error('Error fetching data:', err);
+        setError('Failed to load content. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [activeTab]);
+
+  // Update category filter when a category button is clicked
+  const handleCategoryFilter = (category: string) => {
+    setSelectedCategory(category);
+    // Reset expanded article when filter changes
+    setExpandedNewsId(null);
+  };
+  
+  // Filter news based on selected category and search term
+  const filteredNews = news.filter(item => {
+    // Check if the item matches the search term
+    const matchesSearch = 
+      searchTerm === '' || 
+      item.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+      item.excerpt.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    // Check if the item matches the selected category
+    const matchesCategory = 
+      selectedCategory === 'All' || 
+      item.category === selectedCategory;
+    
+    // Item must match both conditions to be included
+    return matchesSearch && matchesCategory;
+  });
   
   const toggleArticle = (id: number) => {
-    setExpandedArticle(expandedArticle === id ? null : id);
+    setExpandedNewsId(expandedNewsId === id ? null : id);
   };
   
   return (
@@ -88,12 +195,9 @@ const Media = () => {
             transition={{ duration: 0.6 }}
             className="max-w-4xl mx-auto text-center"
           >
-            <RevealText
-              text="Media & News"
-              as="h1"
-              className="text-4xl md:text-5xl font-display font-bold text-foreground mb-4"
-              staggerDelay={0.08}
-            />
+            <h1 className="text-4xl md:text-5xl font-display font-bold text-foreground mb-4">
+              Media & <span className="text-rashmi-red">News</span>
+            </h1>
             <RevealText
               text="Latest Updates from Rashmi Group"
               as="h2"
@@ -131,7 +235,7 @@ const Media = () => {
                             ${selectedCategory === category 
                               ? 'bg-rashmi-red text-white' 
                               : 'bg-muted hover:bg-muted/80 text-foreground'}`}
-                  onClick={() => setSelectedCategory(category)}
+                  onClick={() => handleCategoryFilter(category)}
                 >
                   {category}
                 </button>
@@ -155,80 +259,154 @@ const Media = () => {
       {/* News Grid Section */}
       <section className="py-16">
         <div className="container mx-auto px-4">
-          {filteredNews.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredNews.map(news => (
-                <motion.article
-                  key={news.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5 }}
-                  className="bg-card border border-border rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col h-full"
-                >
-                  <div className="relative">
-                    <img 
-                      src={news.image} 
-                      alt={news.title}
-                      className="w-full h-48 object-cover"
-                    />
-                    <div className="absolute top-0 right-0 m-2 px-3 py-1 bg-card/80 backdrop-blur-sm text-xs font-medium rounded-full border border-border/40">
-                      {news.category}
-                    </div>
-                  </div>
-                  
-                  <div className="p-6 flex-grow flex flex-col">
-                    <div className="flex items-center text-sm text-muted-foreground mb-3">
-                      <Calendar size={14} className="mr-1" />
-                      {new Date(news.date).toLocaleDateString('en-US', {
-                        year: 'numeric', month: 'long', day: 'numeric'
-                      })}
-                    </div>
-                    
-                    <h3 className="text-xl font-bold mb-2">{news.title}</h3>
-                    <p className="text-muted-foreground mb-4 flex-grow">{news.excerpt}</p>
-                    
-                    <button
-                      onClick={() => toggleArticle(news.id)}
-                      className="inline-flex items-center text-rashmi-red hover:text-rashmi-red/80 transition-colors"
+          {/* Display active filters if any are selected */}
+          {(selectedCategory !== 'All' || searchTerm !== '') && (
+            <div className="mb-6 flex flex-col sm:flex-row items-start sm:items-center gap-2">
+              <span className="text-sm font-medium text-muted-foreground">Active filters:</span>
+              <div className="flex flex-wrap gap-2">
+                {selectedCategory !== 'All' && (
+                  <div className="inline-flex items-center px-3 py-1 rounded-full text-xs bg-rashmi-red/10 border border-rashmi-red/20 text-rashmi-red">
+                    <span>Category: {selectedCategory}</span>
+                    <button 
+                      onClick={() => setSelectedCategory('All')}
+                      className="ml-2 text-rashmi-red/80 hover:text-rashmi-red"
                     >
-                      {expandedArticle === news.id ? 'Read Less' : 'Read More'}
-                      <EyeIcon size={16} className="ml-1" />
+                      ×
                     </button>
-                    
-                    {expandedArticle === news.id && (
-                      <motion.div 
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        transition={{ duration: 0.3 }}
-                        className="mt-4 pt-4 border-t border-border/40"
-                      >
-                        <p className="text-muted-foreground">{news.content}</p>
-                        <div className="mt-4 pt-4 border-t border-border/40 flex justify-between">
-                          <div className="flex items-center text-sm text-muted-foreground">
-                            <Globe size={14} className="mr-1" />
-                            News
-                          </div>
-                          <button className="text-sm inline-flex items-center text-rashmi-red hover:text-rashmi-red/80 transition-colors">
-                            <Download size={14} className="mr-1" />
-                            Download PDF
-                          </button>
-                        </div>
-                      </motion.div>
-                    )}
                   </div>
-                </motion.article>
-              ))}
+                )}
+                {searchTerm !== '' && (
+                  <div className="inline-flex items-center px-3 py-1 rounded-full text-xs bg-rashmi-red/10 border border-rashmi-red/20 text-rashmi-red">
+                    <span>Search: {searchTerm}</span>
+                    <button 
+                      onClick={() => setSearchTerm('')}
+                      className="ml-2 text-rashmi-red/80 hover:text-rashmi-red"
+                    >
+                      ×
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
+          )}
+          
+          {/* Display offline/cached data notification */}
+          {usingCachedData && (
+            <div className="mb-6 p-4 rounded-md bg-amber-50 border border-amber-200 text-amber-800">
+              <div className="flex items-start">
+                <AlertCircle className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5" />
+                <div>
+                  <h3 className="font-medium text-amber-800">Offline Mode</h3>
+                  <p className="text-sm mt-1">
+                    Showing cached content because Strapi CMS is offline. The data was last updated on {
+                      new Date(Number(localStorage.getItem(`rashmi_cached_${activeTab}_timestamp`) || Date.now())).toLocaleString()
+                    }.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          {/* Display error if any */}
+          {error && !usingCachedData && (
+            <div className="mb-6 p-4 rounded-md bg-red-50 border border-red-200 text-red-800">
+              <div className="flex items-start">
+                <AlertCircle className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5" />
+                <div>
+                  <h3 className="font-medium text-red-800">Error</h3>
+                  <p className="text-sm mt-1">{error}</p>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          {/* Loading state */}
+          {loading ? (
+            <div className="flex justify-center items-center py-16">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-rashmi-red"></div>
+            </div>
+          ) : activeTab === 'news' ? (
+            filteredNews.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {filteredNews.map(news => (
+                  <motion.article
+                    key={news.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5 }}
+                    className="bg-card border border-border rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col h-full"
+                  >
+                    <div className="relative">
+                      <img 
+                        src={news.image} 
+                        alt={news.title}
+                        className="w-full h-48 object-cover"
+                      />
+                      <div className="absolute top-0 right-0 m-2 px-3 py-1 bg-card/80 backdrop-blur-sm text-xs font-medium rounded-full border border-border/40">
+                        {news.category}
+                      </div>
+                    </div>
+                    
+                    <div className="p-6 flex flex-col flex-grow">
+                      <div className="flex items-center text-sm text-muted-foreground mb-3">
+                        <Calendar size={14} className="mr-1" />
+                        {new Date(news.date).toLocaleDateString('en-US', {
+                          year: 'numeric', month: 'long', day: 'numeric'
+                        })}
+                      </div>
+                      
+                      <h3 className="text-xl font-bold mb-2">{news.title}</h3>
+                      <p className="text-muted-foreground mb-4 flex-grow">{news.excerpt}</p>
+                      
+                      <button
+                        onClick={() => toggleArticle(news.id)}
+                        className="inline-flex items-center text-rashmi-red hover:text-rashmi-red/80 transition-colors"
+                      >
+                        {expandedNewsId === news.id ? 'Read Less' : 'Read More'}
+                        <EyeIcon size={16} className="ml-1" />
+                      </button>
+                      
+                      {expandedNewsId === news.id && (
+                        <motion.div 
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          transition={{ duration: 0.3 }}
+                          className="mt-4 pt-4 border-t border-border/40"
+                        >
+                          <p className="text-muted-foreground">{news.content}</p>
+                          <div className="mt-4 pt-4 border-t border-border/40 flex justify-between">
+                            <div className="flex items-center text-sm text-muted-foreground">
+                              <Globe size={14} className="mr-1" />
+                              News
+                            </div>
+                            <button className="text-sm inline-flex items-center text-rashmi-red hover:text-rashmi-red/80 transition-colors">
+                              <Download size={14} className="mr-1" />
+                              Download PDF
+                            </button>
+                          </div>
+                        </motion.div>
+                      )}
+                    </div>
+                  </motion.article>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-16">
+                <div className="bg-card border border-border rounded-xl p-10 inline-block">
+                  <Search size={48} className="mx-auto text-muted-foreground mb-4" />
+                  <h3 className="text-xl font-bold mb-2">No results found</h3>
+                  <p className="text-muted-foreground">
+                    Try adjusting your search or filter criteria
+                  </p>
+                </div>
+              </div>
+            )
           ) : (
             <div className="text-center py-16">
-              <div className="bg-card border border-border rounded-xl p-10 inline-block">
-                <Search size={48} className="mx-auto text-muted-foreground mb-4" />
-                <h3 className="text-xl font-bold mb-2">No results found</h3>
-                <p className="text-muted-foreground">
-                  Try adjusting your search or filter criteria
-                </p>
-              </div>
+              <p className="text-muted-foreground">
+                {activeTab === 'brochures' ? 'Brochures' : 'Certificates'} content will be shown here.
+              </p>
             </div>
           )}
         </div>

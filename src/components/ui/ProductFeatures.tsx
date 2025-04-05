@@ -1,3 +1,21 @@
+/**
+ * ProductFeatures Component
+ * 
+ * A visually engaging component for displaying product features with animations and interactive elements.
+ * Designed to highlight key product attributes in a grid layout with visual enhancements.
+ * 
+ * Features:
+ * - Animated entrance of feature items with staggered reveal
+ * - Interactive hover effects for feature cards
+ * - Support for icons or visual indicators for each feature
+ * - Responsive grid layout that adapts to different screen sizes
+ * - Optional animations on scroll into view
+ * - Consistent styling with the design system
+ * - Configurable feature list through props
+ * 
+ * This component is typically used on product detail pages to showcase the main
+ * benefits and features of a product in an attractive, scannable format.
+ */
 
 import React from 'react';
 import { motion } from 'framer-motion';

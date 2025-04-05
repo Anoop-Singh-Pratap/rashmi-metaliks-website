@@ -1,3 +1,23 @@
+/**
+ * Input Component
+ * 
+ * A foundational form control component for text input with consistent styling 
+ * and accessibility features.
+ * 
+ * Features:
+ * - Consistent styling with other form controls in the application
+ * - Support for all native input types (text, email, password, number, etc.)
+ * - Focus states with visual ring indicator for keyboard navigation
+ * - Disabled state styling for inactive inputs
+ * - Placeholder text support with appropriate styling
+ * - File input styling for upload controls
+ * - Proper sizing that works well in forms and responsive layouts
+ * - Customizable through className prop for specific use cases
+ * 
+ * This component serves as the primary text input throughout the application,
+ * used in search fields, forms, filter controls, and anywhere users need to 
+ * enter text or numeric data.
+ */
 import * as React from "react"
 
 import { cn } from "@/lib/utils"

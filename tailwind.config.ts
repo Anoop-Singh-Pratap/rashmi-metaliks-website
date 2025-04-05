@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -132,6 +131,14 @@ export default {
 				'float': 'float 3s ease-in-out infinite',
 				'pulse-slow': 'pulse-slow 3s ease-in-out infinite',
 				'spin-slow': 'spin-slow 8s linear infinite'
+			},
+			backdropBlur: {
+				xs: '2px',
+				sm: '4px',
+				md: '8px',
+				lg: '12px',
+				xl: '16px',
+				'2xl': '24px',
 			}
 		}
 	},

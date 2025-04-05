@@ -1,7 +1,6 @@
-
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, useAnimation, AnimatePresence, useMotionValue } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowDown, CheckCircle, Layers, Shield, Zap, Award, Factory, AlertCircle } from 'lucide-react';
 import Header from '../components/Header';
@@ -10,7 +9,37 @@ import ProductFeatures from '../components/ui/ProductFeatures';
 
 const TmtBar = () => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLDivElement>(null);
   const [activeProcessStep, setActiveProcessStep] = useState(0);
+  
+  // Create proper motion values for smooth animations
+  const scrollYProgress = useMotionValue(0);
+  const backgroundControls = useAnimation();
+  
+  // Track scroll position for parallax effects
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      scrollYProgress.set(currentScrollY);
+      
+      // Control hero background opacity based on scroll
+      if (heroRef.current) {
+        const { top } = heroRef.current.getBoundingClientRect();
+        const opacity = Math.max(0.1, Math.min(0.7, 1 - top / 1000));
+        backgroundControls.start({ opacity });
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll(); // Initialize values
+    
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [backgroundControls, scrollYProgress]);
+  
+  // Parallax values derived from scroll position
+  const parallaxY1 = useTransform(scrollYProgress, [0, 1000], [0, -150]);  // Slower movement
+  const parallaxY2 = useTransform(scrollYProgress, [0, 1000], [0, -250]);  // Faster movement
+  const parallaxOpacity = useTransform(scrollYProgress, [0, 300], [1, 0.2]);
   
   const processSteps = [
     {
@@ -113,21 +142,112 @@ const TmtBar = () => {
     }
   };
 
+  // Particle animation for background effect
+  const particles = Array.from({ length: 15 }).map((_, i) => ({
+    id: i,
+    size: Math.random() * 4 + 1,
+    x: Math.random() * 100,
+    y: Math.random() * 100,
+    duration: Math.random() * 20 + 10,
+  }));
+
   return (
     <div className="min-h-screen bg-background" ref={containerRef}>
       <Helmet>
         <title>TMT Bars - High-Quality Construction Material | Rashmi Metaliks</title>
         <meta name="description" content="Rashmi Metaliks produces world-class TMT Bars with high yield load, ductility & quality for flyovers, dams, bridges and critical infrastructure projects." />
         <meta name="keywords" content="TMT Bars, Construction, Rashmi TMT, Fe 500D, earthquake resistant, fire resistant" />
-        <link rel="canonical" href="https://www.rashmi.com/tmt-bar" />
+        <link rel="canonical" href="https://www.rashmimetaliks.com/tmt-bar" />
+        <meta property="og:title" content="TMT Bars - High-Quality Construction Material | Rashmi Metaliks" />
+        <meta property="og:description" content="World-class TMT Bars with high yield load, ductility & quality for critical infrastructure projects." />
+        <meta property="og:type" content="product" />
+        <meta property="og:url" content="https://www.rashmimetaliks.com/tmt-bar" />
+        <meta property="og:image" content="https://www.rashmimetaliks.com/images/products/tmt-bar.jpg" />
+        <script type="application/ld+json">
+          {`
+            {
+              "@context": "https://schema.org/",
+              "@type": "Product",
+              "name": "TMT Bars",
+              "image": "https://www.rashmimetaliks.com/images/products/tmt-bar.jpg",
+              "description": "Rashmi Metaliks produces world-class TMT Bars with high yield load, ductility & quality for flyovers, dams, bridges and critical infrastructure projects.",
+              "brand": {
+                "@type": "Brand",
+                "name": "Rashmi Metaliks"
+              },
+              "offers": {
+                "@type": "Offer",
+                "url": "https://www.rashmimetaliks.com/tmt-bar",
+                "priceCurrency": "INR",
+                "availability": "https://schema.org/InStock"
+              }
+            }
+          `}
+        </script>
       </Helmet>
       
       <Header />
       
-      {/* Hero Section */}
-      <section className="pt-32 pb-20 relative overflow-hidden">
-        <div className="absolute inset-0 z-0 bg-gradient-to-b from-background to-muted/30">
-          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1587289554328-57cb1a5a3c59?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80')] bg-fixed bg-center bg-cover opacity-10"></div>
+      {/* Enhanced Hero Section with Parallax Effect */}
+      <section ref={heroRef} className="pt-32 pb-20 relative min-h-[80vh] overflow-hidden flex items-center">
+        {/* Parallax Background */}
+        <motion.div 
+          className="absolute inset-0 z-0 bg-cover bg-center bg-fixed"
+          style={{ 
+            backgroundImage: "url('https://images.unsplash.com/photo-1587289554328-57cb1a5a3c59?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80')",
+            y: parallaxY1
+          }}
+          initial={{ opacity: 0.1 }}
+          animate={backgroundControls}
+        >
+          <div className="absolute inset-0 bg-gradient-to-b from-background via-background/60 to-background"></div>
+        </motion.div>
+        
+        {/* Floating particles for depth effect */}
+        <div className="absolute inset-0 z-1 pointer-events-none overflow-hidden">
+          {particles.map((particle) => (
+            <motion.div
+              key={particle.id}
+              className="absolute rounded-full bg-rashmi-red/20 blur-sm"
+              style={{
+                width: particle.size,
+                height: particle.size,
+                left: `${particle.x}%`,
+                top: `${particle.y}%`,
+              }}
+              animate={{
+                x: [0, Math.random() * 50 - 25],
+                y: [0, Math.random() * 50 - 25],
+                opacity: [0.2, 0.5, 0.2],
+              }}
+              transition={{
+                duration: particle.duration,
+                repeat: Infinity,
+                repeatType: "mirror",
+                ease: "easeInOut",
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Moving TMT Bars in background */}
+        <div className="absolute inset-0 z-1 pointer-events-none">
+          <motion.div 
+            className="absolute w-64 h-64 rounded-full bg-rashmi-red/5 filter blur-3xl"
+            style={{ 
+              top: '20%', 
+              left: '10%',
+              y: parallaxY2 
+            }}
+          />
+          <motion.div 
+            className="absolute w-72 h-72 rounded-full bg-rashmi-red/10 filter blur-3xl"
+            style={{ 
+              bottom: '10%', 
+              right: '5%',
+              y: parallaxY1 
+            }}
+          />
         </div>
         
         <div className="container mx-auto px-4 relative z-10">
@@ -137,76 +257,113 @@ const TmtBar = () => {
             transition={{ duration: 0.6 }}
             className="max-w-4xl mx-auto text-center"
           >
-            <h1 className="text-4xl md:text-5xl font-display font-bold mb-6 text-center">
+            <motion.h1 
+              className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-6 text-center"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
               Engineering <span className="text-rashmi-red">Structural Excellence</span>
-              <span className="block text-2xl mt-4 font-medium text-muted-foreground">Premium TMT Steel Bars</span>
-            </h1>
-            <p className="text-muted-foreground text-lg max-w-3xl mx-auto mb-8 text-center">
+              <motion.span 
+                className="block text-2xl mt-4 font-medium text-muted-foreground"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+              >
+                Premium TMT Steel Bars
+              </motion.span>
+            </motion.h1>
+            
+            <motion.p 
+              className="text-muted-foreground text-lg max-w-3xl mx-auto mb-8 text-center"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.3 }}
+            >
               The TMT Bars produced by Rashmi Metaliks are world-class products with high yield load, 
               ductility & quality for infrastructure projects where strength meets precision.
-            </p>
+            </motion.p>
             
             <motion.div 
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
+              transition={{ duration: 0.5, delay: 0.5 }}
               className="grid grid-cols-2 sm:grid-cols-3 gap-6 mt-12 max-w-3xl mx-auto"
             >
               <motion.div 
-                className="bg-card hover:bg-card/90 border border-border p-6 rounded-lg transition-colors duration-300"
-                whileHover={{ y: -5, boxShadow: "0 10px 30px -15px rgba(0, 0, 0, 0.2)" }}
+                className="bg-card/80 backdrop-blur-sm hover:bg-card/90 border border-border p-6 rounded-lg transition-all duration-500 group"
+                whileHover={{ y: -8, boxShadow: "0 15px 30px -15px rgba(0, 0, 0, 0.2)" }}
               >
-                <h3 className="text-2xl font-bold mb-1">4 Lakh</h3>
-                <p className="text-muted-foreground">MTPA Capacity</p>
+                <motion.h3 
+                  className="text-2xl font-bold mb-1 relative"
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.6, duration: 0.5 }}
+                >
+                  <span>4</span> Lakh
+                  <div className="h-0.5 w-0 bg-rashmi-red group-hover:w-full transition-all duration-500 mt-1"></div>
+                </motion.h3>
+                <p className="text-muted-foreground group-hover:text-foreground transition-colors duration-300">MTPA Capacity</p>
               </motion.div>
+              
               <motion.div 
-                className="bg-card hover:bg-card/90 border border-border p-6 rounded-lg transition-colors duration-300"
-                whileHover={{ y: -5, boxShadow: "0 10px 30px -15px rgba(0, 0, 0, 0.2)" }}
+                className="bg-card/80 backdrop-blur-sm hover:bg-card/90 border border-border p-6 rounded-lg transition-all duration-500 group"
+                whileHover={{ y: -8, boxShadow: "0 15px 30px -15px rgba(0, 0, 0, 0.2)" }}
               >
-                <h3 className="text-2xl font-bold mb-1">2009</h3>
-                <p className="text-muted-foreground">Est. Steel Melting</p>
+                <motion.h3 
+                  className="text-2xl font-bold mb-1 relative"
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.7, duration: 0.5 }}
+                >
+                  2009
+                  <div className="h-0.5 w-0 bg-rashmi-red group-hover:w-full transition-all duration-500 mt-1"></div>
+                </motion.h3>
+                <p className="text-muted-foreground group-hover:text-foreground transition-colors duration-300">Est. Steel Melting</p>
               </motion.div>
+              
               <motion.div 
-                className="bg-card hover:bg-card/90 border border-border p-6 rounded-lg transition-colors duration-300 col-span-2 sm:col-span-1"
-                whileHover={{ y: -5, boxShadow: "0 10px 30px -15px rgba(0, 0, 0, 0.2)" }}
+                className="bg-card/80 backdrop-blur-sm hover:bg-card/90 border border-border p-6 rounded-lg transition-all duration-500 col-span-2 sm:col-span-1 group"
+                whileHover={{ y: -8, boxShadow: "0 15px 30px -15px rgba(0, 0, 0, 0.2)" }}
               >
-                <h3 className="text-2xl font-bold mb-1">2010</h3>
-                <p className="text-muted-foreground">Est. Rolling Mill</p>
+                <motion.h3 
+                  className="text-2xl font-bold mb-1 relative"
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.8, duration: 0.5 }}
+                >
+                  2010
+                  <div className="h-0.5 w-0 bg-rashmi-red group-hover:w-full transition-all duration-500 mt-1"></div>
+                </motion.h3>
+                <p className="text-muted-foreground group-hover:text-foreground transition-colors duration-300">Est. Rolling Mill</p>
               </motion.div>
+            </motion.div>
+            
+            {/* Scroll Down Indicator */}
+            <motion.div 
+              className="mt-16 text-center"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1, duration: 0.5 }}
+              style={{ opacity: parallaxOpacity }}
+            >
+              <motion.button
+                onClick={scrollToAdvantages}
+                className="inline-flex flex-col items-center text-sm text-muted-foreground hover:text-foreground transition-colors duration-300 cursor-pointer"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <span className="mb-2">Scroll to explore</span>
+                <motion.div
+                  animate={{ y: [0, 8, 0] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                >
+                  <ArrowDown className="w-5 h-5" />
+                </motion.div>
+              </motion.button>
             </motion.div>
           </motion.div>
         </div>
-        
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.1 }}
-          transition={{ duration: 1, delay: 0.5 }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-5xl pointer-events-none z-[-1]"
-        >
-          <div className="bg-rashmi-red/20 rounded-full w-[600px] h-[600px] blur-[150px] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
-        </motion.div>
-
-<motion.div
-  initial={{ opacity: 0, y: 50 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.8, delay: 0.8 }}
-  className="mt-16 text-center" // Removed absolute positioning
->
-  <motion.button 
-    onClick={scrollToAdvantages}
-    className="flex flex-col items-center mx-auto text-sm text-muted-foreground hover:text-foreground transition-colors duration-300 focus:outline-none"
-    whileHover={{ y: 5 }}
-  >
-    <span className="mb-2">Explore Advantages</span>
-    <motion.div
-      animate={{ y: [0, 10, 0] }}
-      transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
-      className="bg-rashmi-red/90 rounded-full w-8 h-8 flex items-center justify-center"
-    >
-      <ArrowDown size={18} className="text-white" />
-    </motion.div>
-  </motion.button>
-</motion.div>
       </section>
 
       {/* TMT Grades Section */}
@@ -260,292 +417,315 @@ const TmtBar = () => {
         </div>
       </section>
       
-      {/* Advantages Section */}
-      <section id="advantages" className="py-16 relative overflow-hidden">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto mb-16 text-center">
-            <motion.h2 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              className="text-3xl md:text-4xl font-display font-bold mb-6 text-center"
+      {/* Features Section with Parallax */}
+      <section id="advantages" className="py-24 bg-gradient-to-b from-background to-muted/30 relative overflow-hidden">
+        {/* Background parallax element */}
+        <motion.div 
+          className="absolute inset-0 z-0 bg-cover bg-fixed"
+          style={{ 
+            backgroundImage: "url('https://images.unsplash.com/photo-1519919159258-c4f5df3a3987?q=80&w=2942&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')",
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            opacity: 0.05,
+            y: parallaxY1
+          }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/90 to-background/80"></div>
+        </motion.div>
+
+        {/* Animated particles */}
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          {Array.from({ length: 12 }).map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute rounded-full bg-rashmi-red/10"
+              style={{
+                width: Math.random() * 6 + 2,
+                height: Math.random() * 6 + 2,
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+              }}
+              animate={{
+                x: [0, Math.random() * 100 - 50],
+                y: [0, Math.random() * 100 - 50],
+                opacity: [0.1, 0.3, 0.1],
+              }}
+              transition={{
+                duration: Math.random() * 15 + 10,
+                repeat: Infinity,
+                repeatType: "mirror",
+                ease: "easeInOut",
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Decorative elements */}
+        <div className="absolute inset-0 pointer-events-none z-0">
+          <motion.div 
+            className="absolute top-1/4 right-1/4 w-96 h-96 bg-rashmi-red/5 rounded-full filter blur-[100px]"
+            style={{ y: useTransform(scrollYProgress, [0, 500], [0, -50]) }}
+          />
+          <motion.div 
+            className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-rashmi-red/10 rounded-full filter blur-[100px]"
+            style={{ y: useTransform(scrollYProgress, [0, 500], [0, -30]) }}
+          />
+        </div>
+        
+        <div className="container mx-auto px-4 relative z-10">
+          <motion.div 
+            className="text-center max-w-3xl mx-auto mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+          >
+            <motion.div 
+              className="inline-block text-rashmi-red font-medium mb-3 border border-rashmi-red/20 bg-rashmi-red/5 px-4 py-1 rounded-full"
+              whileHover={{ scale: 1.05, backgroundColor: "rgba(235, 89, 81, 0.1)" }}
+              transition={{ duration: 0.2 }}
             >
-              Key <span className="text-rashmi-red">Advantages</span>
-            </motion.h2>
-            <motion.p
+              Premium Quality
+            </motion.div>
+            
+            <motion.h2 
+              className="text-3xl md:text-4xl lg:text-5xl font-display font-bold mb-6 text-foreground"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-muted-foreground text-lg text-center"
             >
-              Our TMT Bars offer significant advantages over conventional reinforcement bars
+              Why Choose Rashmi <span className="text-rashmi-red">TMT Bars</span>
+            </motion.h2>
+            
+            <motion.div
+              className="h-1 w-24 bg-gradient-to-r from-rashmi-red/80 to-rashmi-red/20 rounded-full mx-auto relative overflow-hidden"
+              initial={{ width: 0 }}
+              whileInView={{ width: 120 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+            >
+              {/* Shimmering effect */}
+              <motion.div 
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent"
+                animate={{ x: [-100, 200] }}
+                transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 0.5 }}
+                style={{ opacity: 0.6 }}
+              />
+            </motion.div>
+            
+            <motion.p 
+              className="text-muted-foreground mt-6 max-w-2xl mx-auto"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+            >
+              Our TMT bars exceed international quality standards with superior tensile strength,
+              earthquake resistance, and excellent bendability. Ideal for all your construction needs.
             </motion.p>
-          </div>
+          </motion.div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
             {advantages.map((advantage, index) => (
-              <motion.div
-                key={advantage.title}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                variants={itemVariants}
-                transition={{ delay: index * 0.1 }}
-                whileHover={{ 
-                  y: -10, 
-                  boxShadow: "0 10px 30px -15px rgba(0, 0, 0, 0.2)",
-                  backgroundColor: "hsl(var(--card))"
-                }}
-                className="bg-card border border-border rounded-lg p-6 transition-all duration-300 relative overflow-hidden group"
-              >
-                <div className="absolute -right-12 -bottom-12 w-36 h-36 bg-gradient-to-r from-rashmi-red/5 to-transparent rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                
-                <div className="relative z-10">
-                  <div className="mb-4 bg-rashmi-red/10 w-12 h-12 rounded-full flex items-center justify-center group-hover:bg-rashmi-red/20 transition-colors duration-300">
-                    {React.createElement(advantage.icon, { className: "text-rashmi-red", size: 22 })}
-                  </div>
-                  <h3 className="text-xl font-bold mb-2">{advantage.title}</h3>
-                  <p className="text-muted-foreground">{advantage.description}</p>
-                  
-                  <motion.div 
-                    initial={{ width: 0 }}
-                    whileInView={{ width: "40%" }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.8, delay: index * 0.1 + 0.3 }}
-                    className="h-1 bg-rashmi-red/60 rounded-full mt-4 group-hover:width-[60%] group-hover:bg-rashmi-red transition-all duration-300"
-                  ></motion.div>
-                </div>
-              </motion.div>
+              <FeatureCard 
+                key={index}
+                title={advantage.title}
+                description={advantage.description}
+                icon={<advantage.icon className="w-6 h-6" />}
+                delay={index * 0.1}
+              />
             ))}
           </div>
         </div>
       </section>
       
-      {/* Manufacturing Process */}
-      <section className="py-16 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto mb-16 text-center">
-            <motion.h2 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+      {/* Manufacturing Process with Parallax */}
+      <section className="py-24 bg-background relative overflow-hidden">
+        {/* Subtle parallax background */}
+        <div className="absolute inset-0 bg-gradient-to-b from-muted/30 to-background z-0"></div>
+        
+        {/* Decorative elements with parallax */}
+        <motion.div 
+          className="absolute right-0 top-1/4 w-80 h-80 bg-rashmi-red/5 rounded-full filter blur-[80px] z-0"
+          style={{ x: useTransform(scrollYProgress, [600, 1200], [0, 50]) }}
+        />
+        <motion.div 
+          className="absolute left-0 bottom-1/4 w-96 h-96 bg-rashmi-red/10 rounded-full filter blur-[100px] z-0"
+          style={{ x: useTransform(scrollYProgress, [600, 1200], [0, -50]) }}
+        />
+        
+        <div className="container mx-auto px-4 relative z-10">
+          <motion.div 
+            className="text-center max-w-3xl mx-auto mb-16"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+          >
+            <motion.div 
+              className="inline-block text-rashmi-red font-medium mb-3 border border-rashmi-red/20 bg-rashmi-red/5 px-4 py-1 rounded-full"
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
-              className="text-3xl md:text-4xl font-display font-bold mb-6 text-center"
             >
-              Manufacturing <span className="text-rashmi-red">Process</span>
-            </motion.h2>
-            <motion.p
+              Manufacturing Excellence
+            </motion.div>
+            
+            <motion.h2 
+              className="text-3xl md:text-4xl font-display font-bold mb-6 text-foreground"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-muted-foreground text-lg text-center"
             >
-              Our precision manufacturing process ensures the highest quality TMT Bars
-            </motion.p>
-          </div>
-          
-          <div className="max-w-5xl mx-auto">
-            <div className="flex flex-wrap justify-center mb-8">
-              {processSteps.map((step, index) => (
-                <motion.button
-                  key={step.title}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.3, delay: index * 0.05 }}
-                  onClick={() => setActiveProcessStep(index)}
-                  whileHover={{ scale: activeProcessStep === index ? 1 : 1.05 }}
-                  whileTap={{ scale: 0.98 }}
-                  className={`px-4 py-2 rounded-full text-sm md:text-base font-medium m-1 transition-all ${
-                    activeProcessStep === index 
-                      ? 'bg-rashmi-red text-white shadow-md' 
-                      : 'bg-card border border-border text-foreground hover:bg-muted'
-                  }`}
-                >
-                  Step {index + 1}
-                </motion.button>
-              ))}
-            </div>
+              Our Production <span className="text-rashmi-red">Process</span>
+            </motion.h2>
             
             <motion.div
-              key={activeProcessStep}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.5 }}
-              className="bg-card border border-border rounded-xl p-6 md:p-8"
+              className="h-1 w-24 bg-gradient-to-r from-rashmi-red/80 to-rashmi-red/20 rounded-full mx-auto relative overflow-hidden"
+              initial={{ width: 0 }}
+              whileInView={{ width: 120 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, ease: "easeOut", delay: 0.3 }}
             >
-              <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
-                <div className="flex-shrink-0 bg-gradient-to-br from-rashmi-red/20 to-background border border-border/40 rounded-full w-20 h-20 flex items-center justify-center">
-                  {React.createElement(processSteps[activeProcessStep].icon, { 
-                    className: "text-rashmi-red", 
-                    size: 32
-                  })}
-                </div>
-                
-                <div>
-                  <h3 className="text-xl md:text-2xl font-bold mb-3">
-                    Step {activeProcessStep + 1}: {processSteps[activeProcessStep].title}
-                  </h3>
-                  <p className="text-muted-foreground">{processSteps[activeProcessStep].description}</p>
-                  
-                  <div className="mt-8 flex items-center">
-                    <div className="h-2 bg-muted rounded-full flex-grow">
-                      <motion.div 
-                        initial={{ width: 0 }}
-                        animate={{ width: `${(activeProcessStep + 1) / processSteps.length * 100}%` }}
-                        className="h-full bg-rashmi-red rounded-full"
-                        transition={{ duration: 0.5 }}
-                      ></motion.div>
-                    </div>
-                    <span className="ml-4 text-sm font-medium">
-                      {Math.round((activeProcessStep + 1) / processSteps.length * 100)}%
-                    </span>
-                  </div>
-                </div>
-              </div>
+              {/* Shimmering effect */}
+              <motion.div 
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent"
+                animate={{ x: [-100, 200] }}
+                transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 0.5 }}
+                style={{ opacity: 0.6 }}
+              />
             </motion.div>
+            
+            <motion.p 
+              className="text-muted-foreground mt-6"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+            >
+              We follow a stringent 6-step manufacturing process that ensures the highest quality TMT Bars
+              with exceptional strength, durability, and material properties.
+            </motion.p>
+          </motion.div>
+          
+          <div className="mt-16 max-w-4xl mx-auto">
+            <div className="relative">
+              {/* Process Timeline */}
+              <div className="absolute left-[15px] md:left-1/2 top-0 bottom-0 w-1 bg-border/70 transform md:-translate-x-1/2 z-0"></div>
+              
+              {/* Process Steps */}
+              <div className="space-y-12 md:space-y-24 relative z-10">
+                {processSteps.map((step, index) => (
+                  <ProcessStep
+                    key={index}
+                    index={index}
+                    title={step.title}
+                    description={step.description}
+                    icon={<step.icon className="w-5 h-5" />}
+                    position={index % 2 === 0 ? "left" : "right"}
+                    isActive={activeProcessStep === index}
+                    onClick={() => setActiveProcessStep(index)}
+                  />
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
       
-      {/* Applications Section */}
-      <section className="py-16 relative overflow-hidden">
-        <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      {/* Product Grades Section with Parallax */}
+      <section className="py-24 bg-muted/20 relative overflow-hidden">
+        {/* Parallax background */}
+        <motion.div 
+          className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1581094794329-c8112a89af12?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80')] bg-fixed bg-cover bg-center opacity-5 z-0"
+          style={{ y: useTransform(scrollYProgress, [1200, 2000], [0, -100]) }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-b from-muted/20 to-background"></div>
+        </motion.div>
+        
+        <div className="container mx-auto px-4 relative z-10">
+          <motion.div 
+            className="text-center max-w-3xl mx-auto mb-16"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+          >
+            <motion.h2 
+              className="text-3xl md:text-4xl font-display font-bold mb-6 text-foreground"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+            >
+              Product <span className="text-rashmi-red">Grades</span>
+            </motion.h2>
+            <motion.p 
+              className="text-muted-foreground"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              Our TMT Bars are available in various grades to meet diverse construction requirements
+            </motion.p>
+          </motion.div>
+          
+          <motion.div 
+            className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6 max-w-5xl mx-auto"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
+            {tmtGrades.map((grade, index) => (
               <motion.div
-                initial={{ opacity: 0, x: -50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
+                key={index}
+                className="bg-card/80 backdrop-blur-sm border border-border p-6 rounded-xl text-center transition-all duration-300 group hover:border-rashmi-red/50"
+                variants={itemVariants}
+                whileHover={{ 
+                  y: -10, 
+                  boxShadow: "0 15px 30px -15px rgba(0, 0, 0, 0.2)",
+                  backgroundColor: "rgba(255, 255, 255, 0.05)" 
+                }}
+                transition={{ duration: 0.3 }}
               >
-                <h2 className="text-3xl font-display font-bold mb-6 text-center lg:text-left">
-                  <span className="text-rashmi-red">Applications</span> & Uses
-                </h2>
-                <p className="text-muted-foreground mb-6">
-                  Our TMT Bars have high utility in building flyovers, dams, bridges and other large and 
-                  critical infrastructure projects where we need to marry high yield load with ductility & quality.
-                </p>
-                
-                <div className="space-y-4">
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.4 }}
-                    whileHover={{ 
-                      y: -5,
-                      boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)"
-                    }}
-                    className="flex items-start p-4 bg-card rounded-lg border border-border transition-all duration-300"
-                  >
-                    <CheckCircle className="h-5 w-5 text-rashmi-red mt-0.5 mr-3" />
-                    <div>
-                      <h3 className="font-medium text-lg">Infrastructure Projects</h3>
-                      <p className="text-muted-foreground text-sm mt-1">
-                        Bridges, flyovers, dams and other critical projects
-                      </p>
-                    </div>
-                  </motion.div>
-                  
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.4, delay: 0.1 }}
-                    whileHover={{ 
-                      y: -5,
-                      boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)"
-                    }}
-                    className="flex items-start p-4 bg-card rounded-lg border border-border transition-all duration-300"
-                  >
-                    <CheckCircle className="h-5 w-5 text-rashmi-red mt-0.5 mr-3" />
-                    <div>
-                      <h3 className="font-medium text-lg">Commercial Buildings</h3>
-                      <p className="text-muted-foreground text-sm mt-1">
-                        Shopping centers, offices, and other commercial structures
-                      </p>
-                    </div>
-                  </motion.div>
-                  
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.4, delay: 0.2 }}
-                    whileHover={{ 
-                      y: -5,
-                      boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)"
-                    }}
-                    className="flex items-start p-4 bg-card rounded-lg border border-border transition-all duration-300"
-                  >
-                    <CheckCircle className="h-5 w-5 text-rashmi-red mt-0.5 mr-3" />
-                    <div>
-                      <h3 className="font-medium text-lg">Industrial Structures</h3>
-                      <p className="text-muted-foreground text-sm mt-1">
-                        Factories, warehouses, and industrial complexes
-                      </p>
-                    </div>
-                  </motion.div>
-                </div>
-              </motion.div>
-              
-              <motion.div
-                initial={{ opacity: 0, x: 50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
-                className="relative"
-              >
-                <div className="aspect-square bg-gradient-to-br from-muted to-background rounded-2xl border border-border overflow-hidden shadow-lg">
-                  <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1621354598022-16599af1b8f8?q=80&w=1000')] bg-center bg-cover opacity-20"></div>
-                  
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <motion.div 
-                      whileInView={{ 
-                        scale: [0.8, 1.1, 1],
-                        rotate: [0, 5, 0, -5, 0]
-                      }}
-                      viewport={{ once: true }}
-                      transition={{ 
-                        duration: 2,
-                        times: [0, 0.2, 0.5, 0.8, 1],
-                        repeat: Infinity,
-                        repeatDelay: 3
-                      }}
-                      className="w-48 h-48 rounded-full bg-gradient-to-br from-rashmi-red/20 to-rashmi-red/5 border border-border/50 shadow-lg flex items-center justify-center"
-                    >
-                      <div className="w-36 h-36 rounded-full bg-gradient-to-br from-card to-background border border-border/30 shadow-inner flex items-center justify-center">
-                        <motion.div
-                          animate={{ rotate: 360 }}
-                          transition={{ 
-                            duration: 30,
-                            repeat: Infinity,
-                            ease: "linear"
-                          }}
-                        >
-                          <Shield size={48} className="text-rashmi-red" />
-                        </motion.div>
-                      </div>
-                    </motion.div>
-                  </div>
-                </div>
-                
-                {/* Decorative elements */}
-                <motion.div
+                <motion.p 
+                  className="font-semibold group-hover:text-rashmi-red transition-colors duration-300"
                   initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: index * 0.1 + 0.3 }}
+                >
+                  {grade}
+                </motion.p>
+                
+                <motion.div 
+                  className="w-0 h-0.5 bg-rashmi-red/70 mx-auto mt-3 group-hover:w-full transition-all duration-500"
                   whileInView={{ opacity: 1 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: 0.8 }}
-                  className="absolute -right-4 -bottom-4 w-24 h-24 bg-rashmi-red/10 rounded-full blur-xl"
-                ></motion.div>
+                />
               </motion.div>
-            </div>
-          </div>
+            ))}
+          </motion.div>
+          
+          <motion.div 
+            className="text-center mt-16"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.5 }}
+          >
+            <p className="text-muted-foreground mb-4">Need more information about our TMT Bars?</p>
+            <Link 
+              to="/contact" 
+              className="inline-flex items-center bg-rashmi-red text-white py-3 px-6 rounded-lg hover:bg-rashmi-red/90 transition-colors duration-300"
+            >
+              Contact our technical team
+            </Link>
+          </motion.div>
         </div>
       </section>
       
@@ -589,6 +769,196 @@ const TmtBar = () => {
       </section>
       
       <Footer />
+    </div>
+  );
+};
+
+// Enhanced Feature Card with parallax effects
+interface FeatureCardProps {
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  delay?: number;
+}
+
+const FeatureCard: React.FC<FeatureCardProps> = ({ title, description, icon, delay = 0 }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  
+  return (
+    <motion.div
+      className="bg-card/80 backdrop-blur-sm border border-border/40 p-6 rounded-xl h-full group relative overflow-hidden"
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6, delay: delay }}
+      whileHover={{ 
+        y: -10, 
+        boxShadow: "0 20px 40px -20px rgba(0, 0, 0, 0.1)",
+        borderColor: "rgba(235, 89, 81, 0.3)"
+      }}
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+    >
+      {/* Background gradient */}
+      <div 
+        className="absolute inset-0 bg-gradient-to-br from-rashmi-red/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+      />
+      
+      {/* Icon container with animation */}
+      <div className="mb-4 relative">
+        <div className="w-12 h-12 flex items-center justify-center rounded-full bg-rashmi-red/10 text-rashmi-red mb-2 transition-all duration-300 group-hover:bg-rashmi-red/20 group-hover:shadow-md">
+          <motion.div
+            animate={isHovered ? { 
+              scale: [1, 1.1, 1],
+            } : {}}
+            transition={{ 
+              repeat: isHovered ? Infinity : 0,
+              duration: 1.5
+            }}
+          >
+            {icon}
+          </motion.div>
+        </div>
+        
+        {/* Glow effect on hover */}
+        {isHovered && (
+          <motion.div
+            className="absolute inset-0 bg-rashmi-red/20 rounded-full filter blur-xl"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ 
+              opacity: [0.4, 0.2, 0.4],
+              scale: [1, 1.3, 1]
+            }}
+            transition={{ duration: 2, repeat: Infinity }}
+            style={{ width: '100%', height: '100%' }}
+          />
+        )}
+      </div>
+      
+      {/* Content */}
+      <motion.h3 
+        className="text-lg font-bold mb-2 relative z-10 group-hover:text-rashmi-red transition-colors duration-300"
+      >
+        {title}
+      </motion.h3>
+      
+      <p className="text-muted-foreground text-sm relative z-10 group-hover:text-muted-foreground/90">
+        {description}
+      </p>
+      
+      {/* Bottom line animation */}
+      <motion.div 
+        className="absolute bottom-0 left-0 h-0.5 bg-rashmi-red origin-left"
+        initial={{ scaleX: 0 }}
+        animate={{ scaleX: isHovered ? 1 : 0 }}
+        transition={{ duration: 0.3 }}
+      />
+      
+      {/* Subtle particles on hover */}
+      {isHovered && (
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {[...Array(3)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute w-1.5 h-1.5 rounded-full bg-rashmi-red/60"
+              initial={{ 
+                x: Math.random() * 100, 
+                y: Math.random() * 100,
+                opacity: 0 
+              }}
+              animate={{ 
+                y: [null, -80],
+                opacity: [0, 0.8, 0],
+                scale: [0, 1, 0]
+              }}
+              transition={{ 
+                duration: 1.5 + Math.random(),
+                ease: "easeOut",
+                repeat: Infinity,
+                delay: i * 0.3
+              }}
+            />
+          ))}
+        </div>
+      )}
+    </motion.div>
+  );
+};
+
+// Enhanced ProcessStep component with parallax effects
+interface ProcessStepProps {
+  index: number;
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  position: "left" | "right";
+  isActive: boolean;
+  onClick: () => void;
+}
+
+const ProcessStep: React.FC<ProcessStepProps> = ({ 
+  index, 
+  title, 
+  description, 
+  icon, 
+  position, 
+  isActive, 
+  onClick 
+}) => {
+  const hideMobileOnRight = position === "right" ? "md:block hidden" : "";
+  const hideMobileOnLeft = position === "left" ? "md:block hidden" : "";
+  
+  return (
+    <div className={`flex items-center relative ${position === "right" ? "md:flex-row-reverse text-right" : "flex-row text-left"}`}>
+      {/* Left content (or empty for right position) */}
+      <motion.div 
+        className={`flex-1 pr-8 ${hideMobileOnRight}`}
+        initial={{ opacity: 0, x: position === "left" ? -50 : 0 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.5 }}
+      >
+        {position === "left" && (
+          <div className="md:pr-8">
+            <h3 className="text-xl font-bold mb-2 group-hover:text-rashmi-red">{title}</h3>
+            <p className="text-muted-foreground text-sm">{description}</p>
+          </div>
+        )}
+      </motion.div>
+      
+      {/* Icon circle */}
+      <motion.div 
+        className={`w-8 h-8 rounded-full ${isActive ? 'bg-rashmi-red' : 'bg-card'} border-4 border-background flex items-center justify-center z-10 cursor-pointer transition-all duration-300 hover:scale-110`}
+        onClick={onClick}
+        whileHover={{ scale: 1.2, boxShadow: "0 0 0 4px rgba(235, 89, 81, 0.3)" }}
+        whileTap={{ scale: 0.95 }}
+      >
+        <span className={`text-sm font-bold ${isActive ? 'text-white' : 'text-foreground'}`}>
+          {icon}
+        </span>
+      </motion.div>
+      
+      {/* Right content (or empty for left position) */}
+      <motion.div 
+        className={`flex-1 pl-8 ${hideMobileOnLeft}`}
+        initial={{ opacity: 0, x: position === "right" ? 50 : 0 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.5 }}
+      >
+        {position === "right" && (
+          <div className="md:pl-8">
+            <h3 className="text-xl font-bold mb-2 group-hover:text-rashmi-red">{title}</h3>
+            <p className="text-muted-foreground text-sm">{description}</p>
+          </div>
+        )}
+      </motion.div>
+      
+      {/* Mobile version - always visible and same layout */}
+      <div className="absolute left-0 md:hidden pl-12 pr-4">
+        <h3 className="text-base font-bold mb-1">{title}</h3>
+        <p className="text-muted-foreground text-xs">{description}</p>
+      </div>
     </div>
   );
 };

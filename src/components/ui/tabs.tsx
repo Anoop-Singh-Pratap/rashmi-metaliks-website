@@ -1,3 +1,23 @@
+/**
+ * Tabs Component
+ * 
+ * A tabbed interface component built on Radix UI's Tabs primitive that provides
+ * accessible tab panels for organizing content into sections.
+ * 
+ * Features:
+ * - Accessible keyboard navigation between tabs
+ * - Visual indication of active tab with styling changes
+ * - Smooth transitions between tab content
+ * - Responsive design that adapts to available space
+ * - Semantic HTML structure with proper ARIA roles
+ * - Support for both horizontal and vertical tab layouts
+ * - Proper focus management for keyboard users
+ * - Customizable styling for various visual designs
+ * 
+ * This component is used throughout the application to organize related content
+ * into manageable sections, particularly for settings panels, product details,
+ * specification views, and multi-step forms where content grouping improves usability.
+ */
 import * as React from "react"
 import * as TabsPrimitive from "@radix-ui/react-tabs"
 

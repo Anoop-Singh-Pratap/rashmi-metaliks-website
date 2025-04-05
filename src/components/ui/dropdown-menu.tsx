@@ -1,3 +1,24 @@
+/**
+ * Dropdown Menu Component
+ * 
+ * A comprehensive dropdown menu system built on Radix UI's primitives,
+ * providing accessible, customizable menus for navigation and actions.
+ * 
+ * Features:
+ * - Accessible keyboard navigation and screen reader support
+ * - Multiple item types (normal, checkbox, radio, separator)
+ * - Support for nested submenus with proper positioning
+ * - Keyboard shortcut displays for menu items
+ * - Visual indicators for selected/checked states
+ * - Consistent styling with the application's design system
+ * - Proper focus management and arrow key navigation
+ * - Animation for smooth opening and closing
+ * - Support for context menus and traditional dropdowns
+ * 
+ * This component is used throughout the application for dropdown navigation,
+ * action menus, settings panels, filter selections, and other contexts where
+ * multiple options need to be presented in a space-efficient manner.
+ */
 import * as React from "react"
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu"
 import { Check, ChevronRight, Circle } from "lucide-react"

@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import RevealText from './ui/RevealText';
@@ -44,17 +43,29 @@ const Hero = () => {
     <section className="relative w-full h-screen overflow-hidden">
       {/* Video Background */}
       <div className="absolute inset-0 w-full h-full">
-        <div className="absolute inset-0 bg-gradient-to-r from-rashmi-dark/80 via-rashmi-dark/60 to-rashmi-dark/80 z-10"></div>
+        {/* Subtle gradient for text readability without darkening the video too much */}
+        <div className="absolute inset-0 bg-gradient-to-b from-rashmi-dark/30 to-transparent z-10"></div>
+        
+        {/* Video element with updated source and styling */}
         <video
           ref={videoRef}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover scale-105 transform-gpu" // Scale slightly to avoid white edges during animation
           muted
           loop
           playsInline
           poster="https://images.unsplash.com/photo-1618761299062-ba2dbbcebd92?ixlib=rb-4.0.3&auto=format&fit=crop&q=80"
+          style={{
+            filter: "brightness(1.1) contrast(1.05)",
+            transition: "transform 15s ease-in-out",
+            animationName: "slowZoom",
+            animationDuration: "15s",
+            animationTimingFunction: "ease-in-out",
+            animationIterationCount: "infinite",
+            animationDirection: "alternate"
+          }}
         >
           <source 
-            src="https://player.vimeo.com/external/520434915.sd.mp4?s=c7d7c1ddd90c5b89c831aade33c363f84d0bb5cf&profile_id=165&oauth2_token_id=57447761" 
+            src="https://res.cloudinary.com/dada5hjp3/video/upload/f_auto:video,q_auto/video-hero_d0kgi3" 
             type="video/mp4" 
           />
           Your browser does not support the video tag.
@@ -63,7 +74,7 @@ const Hero = () => {
 
       {/* Hero Content */}
       <div className="container mx-auto px-4 relative z-20 h-full flex flex-col justify-center">
-        <div className="max-w-3xl animate-fade-in">
+        <div className="max-w-3xl animate-fade-in p-6 rounded-lg">
           <RevealText
             text="Excellence in Steel"
             as="h1"

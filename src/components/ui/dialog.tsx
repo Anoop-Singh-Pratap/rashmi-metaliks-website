@@ -1,3 +1,23 @@
+/**
+ * Dialog Component
+ * 
+ * A modal dialog component built on Radix UI's Dialog primitive that provides
+ * accessible overlays for important content and actions.
+ * 
+ * Features:
+ * - Accessible focus management and keyboard interactions
+ * - Smooth animations for entrance and exit
+ * - Responsive design that works on all screen sizes
+ * - Customizable header, content, and footer sections
+ * - Backdrop overlay with click-outside dismissal
+ * - Close button and escape key support
+ * - Proper ARIA attributes for screen readers
+ * - Consistent styling with the application's design system
+ * 
+ * This component is used throughout the application for confirmations, forms,
+ * detailed information views, and other content that requires user attention
+ * without navigating away from the current context.
+ */
 import * as React from "react"
 import * as DialogPrimitive from "@radix-ui/react-dialog"
 import { X } from "lucide-react"

@@ -1,3 +1,23 @@
+/**
+ * Table Component
+ * 
+ * A comprehensive table system for displaying structured data with semantic HTML
+ * and consistent styling.
+ * 
+ * Features:
+ * - Semantic HTML structure using proper table elements (table, thead, tbody, etc.)
+ * - Responsive design with horizontal scrolling for narrow viewports
+ * - Consistent styling for headers, rows, and cells
+ * - Support for captions and footer sections
+ * - Row and cell variants for highlighting and special cases
+ * - Border styling for rows and cells to improve readability
+ * - Proper vertical alignment and padding for content
+ * - Customizable through className props for all subcomponents
+ * 
+ * This component is used throughout the application for data tables, pricing tables,
+ * comparison charts, specifications, and any other tabular data that needs to be
+ * displayed in a structured, readable format.
+ */
 import * as React from "react"
 
 import { cn } from "@/lib/utils"

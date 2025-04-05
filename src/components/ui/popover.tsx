@@ -1,3 +1,24 @@
+/**
+ * Popover Component
+ * 
+ * A floating content container built on Radix UI's Popover primitive that displays
+ * additional content when a trigger element is clicked or activated.
+ * 
+ * Features:
+ * - Contextual display of information or controls related to a trigger element
+ * - Flexible positioning (top, bottom, left, right) with automatic alignment
+ * - Smooth entrance and exit animations
+ * - Focus management for keyboard navigation
+ * - Click outside to dismiss behavior
+ * - Custom width and styling options
+ * - Accessible implementation with proper ARIA attributes
+ * - Keyboard support (Escape to dismiss)
+ * 
+ * Popovers are commonly used for secondary actions, additional information,
+ * quick edit forms, feature tours, or contextual help that doesn't require
+ * a full modal dialog. Unlike tooltips, popovers are interactive and typically
+ * triggered by clicks rather than hover events.
+ */
 import * as React from "react"
 import * as PopoverPrimitive from "@radix-ui/react-popover"
 

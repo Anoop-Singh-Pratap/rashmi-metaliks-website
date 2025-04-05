@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Phone, Mail, MapPin, Facebook, Twitter, Instagram, Youtube, Linkedin, ArrowRight } from 'lucide-react';
@@ -26,7 +25,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div>
             <img 
-              src={theme === 'dark' ? '/lovable-uploads/Rashmi-logo-dark.png' : '/lovable-uploads/Rashmi-logo-light.png'} 
+              src={theme === 'dark' ? '/lovable-uploads/Rashmi-logo-dark.png' : '/lovable-uploads/Rashmi-logo-dark.png'} 
               alt="Rashmi Metaliks" 
               className="h-14 mb-4" 
             />
@@ -37,16 +36,16 @@ const Footer = () => {
               <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-rashmi-red transition-colors">
                 <Facebook size={20} />
               </a>
-              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-rashmi-red transition-colors">
+              <a href="https://twitter.com/rashmi_group" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-rashmi-red transition-colors">
                 <Twitter size={20} />
               </a>
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-rashmi-red transition-colors">
+              <a href="https://www.instagram.com/rashmimetaliksltd/" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-rashmi-red transition-colors">
                 <Instagram size={20} />
               </a>
-              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-rashmi-red transition-colors">
+              <a href="https://youtube.com/@rashmi_metaliks?feature=shared" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-rashmi-red transition-colors">
                 <Youtube size={20} />
               </a>
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-rashmi-red transition-colors">
+              <a href="https://www.linkedin.com/company/rashmi-metaliks-limited/posts/?feedView=all" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-rashmi-red transition-colors">
                 <Linkedin size={20} />
               </a>
             </div>
@@ -167,6 +166,9 @@ const Footer = () => {
             <div className="flex space-x-4">
               <Link to="/privacy-policy" className="text-gray-400 text-sm hover:text-rashmi-red transition-colors">
                 Privacy Policy
+              </Link>
+              <Link to="/terms-and-conditions" className="text-gray-400 text-sm hover:text-rashmi-red transition-colors">
+                Terms & Conditions
               </Link>
               <Link to="/terms-of-service" className="text-gray-400 text-sm hover:text-rashmi-red transition-colors">
                 Terms of Service

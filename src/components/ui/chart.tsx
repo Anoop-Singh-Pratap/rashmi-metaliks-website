@@ -1,3 +1,23 @@
+/**
+ * Chart Component
+ * 
+ * A comprehensive data visualization component built on Recharts that provides
+ * various chart types with theme support and consistent styling.
+ * 
+ * Features:
+ * - Multiple chart types (Area, Bar, Line, Pie, etc.)
+ * - Light and dark theme support with automatic switching
+ * - Customizable colors, labels, and data configuration
+ * - Responsive design that adapts to container size
+ * - Interactive tooltips and legends
+ * - Accessibility features for screen readers
+ * - Compound component pattern for flexible composition
+ * 
+ * This component is used throughout the application to visualize data trends,
+ * metrics, statistics, and comparative information. It provides a consistent
+ * look and feel across all data visualizations while supporting the application's
+ * theming system.
+ */
 import * as React from "react"
 import * as RechartsPrimitive from "recharts"
 

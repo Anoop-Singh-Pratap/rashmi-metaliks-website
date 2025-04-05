@@ -1,3 +1,23 @@
+/**
+ * Form Component
+ * 
+ * A comprehensive form system built on React Hook Form that provides
+ * accessible, type-safe form controls with validation support.
+ * 
+ * Features:
+ * - Deep integration with React Hook Form for validation and state management
+ * - Type-safe form fields with TypeScript support
+ * - Accessible form controls with proper labeling and error states
+ * - Consistent styling for inputs, labels, messages, and descriptions
+ * - Compound component pattern for flexible form layouts
+ * - Support for complex nested fields and array fields
+ * - Error message handling and display
+ * - Field descriptions for additional context
+ * 
+ * This component serves as the foundation for all forms in the application,
+ * providing a consistent user experience across contact forms, search forms,
+ * product filters, and other interactive input areas.
+ */
 import * as React from "react"
 import * as LabelPrimitive from "@radix-ui/react-label"
 import { Slot } from "@radix-ui/react-slot"

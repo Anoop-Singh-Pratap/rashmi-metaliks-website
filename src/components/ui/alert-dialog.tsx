@@ -4,6 +4,28 @@ import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog"
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 
+/**
+ * Alert Dialog Component
+ * 
+ * A modal dialog component built on Radix UI's AlertDialog primitive that interrupts
+ * the user with important content that requires a decision or acknowledgment.
+ * 
+ * Features:
+ * - Accessible implementation with proper focus trapping
+ * - Clear visual hierarchy with title, description, and action buttons
+ * - Backdrop overlay that prevents interaction with the rest of the page
+ * - Smooth entrance and exit animations
+ * - Semantic structure for critical actions (cancel and action buttons)
+ * - Responsive design that works on all screen sizes
+ * - Proper ARIA attributes for screen readers
+ * - Escape key support for dismissal
+ * 
+ * This component is specifically designed for critical confirmation dialogs,
+ * such as destructive actions (delete, remove), important acknowledgments,
+ * or confirmations that require explicit user approval before proceeding.
+ * Unlike the regular Dialog component, the AlertDialog is focused on critical
+ * actions that need clear confirmation.
+ */
 const AlertDialog = AlertDialogPrimitive.Root
 
 const AlertDialogTrigger = AlertDialogPrimitive.Trigger

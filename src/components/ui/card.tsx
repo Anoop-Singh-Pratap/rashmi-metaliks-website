@@ -1,3 +1,20 @@
+/**
+ * Card Component
+ * 
+ * A versatile container component that provides a consistent card layout structure
+ * with support for header, footer, title, description, and content areas.
+ * 
+ * Features:
+ * - Clean, consistent styling with border, shadow, and rounded corners
+ * - Organized structure with dedicated areas for different content types
+ * - Modular subcomponents (Card, CardHeader, CardFooter, etc.) for flexible layouts
+ * - Responsive design that works across different screen sizes
+ * - Easily customizable with additional className props
+ * - Proper ref forwarding for all subcomponents
+ * 
+ * This component is used throughout the application for product cards, feature
+ * highlights, information containers, and other card-based UI elements.
+ */
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
