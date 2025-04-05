@@ -1,14 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, ChevronDown } from 'lucide-react';
-import ThemeToggle from '@/components/ThemeToggle';
+import { Download, FileText, Building, Factory, Leaf, FileCheck, Award, Phone, Briefcase } from 'lucide-react';
+import { ThemeToggle } from './ui/ThemeToggle';
 import { useTheme } from '@/context/ThemeContext';
 import { useScrollTrigger } from '@/hooks/useScrollPosition';
 
-// All icon imports removed for simplicity
-import { Download, FileText, Building, Factory, Leaf, FileCheck, Award, Phone, Briefcase } from 'lucide-react';
-
-// Hook to detect clicks outside
 const useClickOutside = (ref: React.RefObject<HTMLElement>, handler: () => void) => {
   useEffect(() => {
     const listener = (event: MouseEvent | TouchEvent) => {
@@ -35,20 +32,15 @@ const Header = () => {
   const triggerRef = useRef<HTMLDivElement>(null);
   const isScrolledPastTrigger = useScrollTrigger(triggerRef);
 
-  // Determine if header should be visible (visible only when near top or mobile menu open)
   const isHeaderVisible = !isScrolledPastTrigger || mobileMenuOpen;
   
-  // Determine if header should be blurred (blurred when past trigger)
   const shouldBeBlurred = isScrolledPastTrigger;
 
-  // NEW: Determine if header content should be forced white for contrast on hero
   const forceWhiteText = !isScrolledPastTrigger && theme === 'light' && location.pathname === '/';
 
-  // Refs for click outside detection
   const dropdownRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   
-  // Navigation links - unchanged
   const navLinks = [
     { 
       label: 'Our Company', 
@@ -100,13 +92,11 @@ const Header = () => {
     },
   ];
 
-  // Close menu on navigation
   useEffect(() => {
     setMobileMenuOpen(false);
     setActiveDropdown(null);
   }, [location.pathname]);
 
-  // Body scroll lock
   useEffect(() => {
     if (mobileMenuOpen) {
       document.body.style.overflow = 'hidden';
@@ -119,31 +109,26 @@ const Header = () => {
     };
   }, [mobileMenuOpen]);
 
-  // Handle clicks outside dropdown
   useClickOutside(dropdownRef, () => {
     if (activeDropdown) {
       setActiveDropdown(null);
     }
   });
 
-  // Toggle dropdowns
   const toggleDropdown = (label: string) => {
     setActiveDropdown(activeDropdown === label ? null : label);
   };
 
-  // Check active links
   const isLinkActive = (href: string) => {
     return location.pathname === href;
   };
 
-  // Check if a parent link should be highlighted (any child is active)
   const isParentActive = (items: {href: string}[]) => {
     return items.some(item => location.pathname === item.href);
   };
 
   return (
     <>
-      {/* Invisible trigger element */}
       <div ref={triggerRef} style={{ position: 'absolute', top: '1px', height: '1px', width: '1px' }} aria-hidden="true"></div>
 
       <header 
@@ -151,7 +136,6 @@ const Header = () => {
           isHeaderVisible ? 'translate-y-0' : '-translate-y-full'
         }`}
       >
-        {/* Main Header background/blur container */}
         <div 
           className={`w-full ${shouldBeBlurred ? 'shadow-md' : ''}`} 
           style={{
@@ -162,9 +146,7 @@ const Header = () => {
           }}
         >
           <div className="container mx-auto px-4">
-            {/* Header Content: Logo, Nav, etc. */}
             <div className="flex items-center justify-between h-16 md:h-20">
-              {/* Logo */}
               <Link to="/" className="flex items-center">
                 <img 
                   src={ (theme === 'dark' || forceWhiteText) ? '/lovable-uploads/Rashmi-logo-dark.png' : '/lovable-uploads/Rashmi-logo-light.png' } 
@@ -173,7 +155,6 @@ const Header = () => {
                 />
               </Link>
 
-              {/* Desktop Navigation */}
               <div ref={dropdownRef} className="hidden md:flex items-center space-x-3">
                 {navLinks.map((link) => (
                   <div key={link.label} className="relative">
@@ -230,7 +211,6 @@ const Header = () => {
                 <ThemeToggle />
               </div>
 
-              {/* Mobile Menu Button */}
               <div className="flex items-center md:hidden space-x-2">
                 <ThemeToggle />
                 <button 
@@ -246,14 +226,12 @@ const Header = () => {
           </div>
         </div>
 
-        {/* Mobile Menu - Note: this doesn't auto-hide with scroll, it's controlled by mobileMenuOpen */}
         {mobileMenuOpen && (
           <div 
             ref={mobileMenuRef}
             className="md:hidden fixed inset-0 z-50 glass-effect overflow-y-auto"
           >
             <div className="px-4 pt-4 pb-6">
-              {/* Mobile Menu Header */}
               <div className="flex items-center justify-between mb-6">
                 <Link 
                   to="/" 
@@ -276,7 +254,6 @@ const Header = () => {
                 </button>
               </div>
               
-              {/* Mobile Menu Links */}
               <div className="space-y-2">
                 {navLinks.map((link) => (
                   <div 
@@ -334,7 +311,6 @@ const Header = () => {
                 ))}
               </div>
               
-              {/* Close Button */}
               <div className="mt-8">
                 <button
                   className="w-full py-3 px-4 bg-muted rounded-lg text-foreground flex items-center justify-center"

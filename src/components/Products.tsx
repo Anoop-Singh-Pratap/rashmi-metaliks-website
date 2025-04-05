@@ -94,7 +94,6 @@ const Products = () => {
   const rotateY = useTransform(mouseX, [-300, 300], [-10, 10]);
   const productControls = useAnimation();
   
-  // Handle mouse move for 3D effect
   const handleMouseMove = (e: React.MouseEvent) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left - rect.width / 2;
@@ -103,14 +102,12 @@ const Products = () => {
     mouseY.set(y);
   };
   
-  // Handle mouse leave to reset 3D effect
   const handleMouseLeave = () => {
     mouseX.set(0);
     mouseY.set(0);
     setAutoplayEnabled(true);
   };
   
-  // Setup autoplay
   useEffect(() => {
     if (!autoplayEnabled) return;
     
@@ -123,7 +120,6 @@ const Products = () => {
     };
   }, [autoplayEnabled]);
   
-  // Pause autoplay on hover
   const handleMouseEnter = () => setAutoplayEnabled(false);
   
   const nextProduct = () => {
@@ -134,7 +130,7 @@ const Products = () => {
     });
     setActiveIndex((prev) => (prev + 1) % productData.length);
     setAutoplayEnabled(false);
-    setTimeout(() => setAutoplayEnabled(true), 10000); // Resume autoplay after 10 seconds
+    setTimeout(() => setAutoplayEnabled(true), 10000);
   };
   
   const prevProduct = () => {
@@ -145,7 +141,7 @@ const Products = () => {
     });
     setActiveIndex((prev) => (prev - 1 + productData.length) % productData.length);
     setAutoplayEnabled(false);
-    setTimeout(() => setAutoplayEnabled(true), 10000); // Resume autoplay after 10 seconds
+    setTimeout(() => setAutoplayEnabled(true), 10000);
   };
 
   const goToProduct = (index: number) => {
@@ -156,20 +152,18 @@ const Products = () => {
     });
     setActiveIndex(index);
     setAutoplayEnabled(false);
-    setTimeout(() => setAutoplayEnabled(true), 10000); // Resume autoplay after 10 seconds
+    setTimeout(() => setAutoplayEnabled(true), 10000);
   };
   
   const handleViewDetails = () => {
     if (activeProduct.link) {
       navigate(activeProduct.link);
-      // Scroll to top after navigation
       window.scrollTo(0, 0);
     }
   };
 
   const activeProduct = productData[activeIndex];
 
-  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -189,7 +183,6 @@ const Products = () => {
     }
   };
 
-  // Particle animation for the 3D effect
   const particles = Array.from({ length: 30 }).map((_, i) => ({
     id: i,
     size: Math.random() * 4 + 1,
@@ -200,7 +193,6 @@ const Products = () => {
 
   return (
     <section id="products" className="py-20 md:py-32 bg-muted/30 relative overflow-hidden">
-      {/* Background particles */}
       <div className="absolute inset-0 z-0">
         {particles.map((particle) => (
           <motion.div
@@ -247,7 +239,6 @@ const Products = () => {
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
-          {/* 3D Product Viewer */}
           <motion.div 
             className="order-2 lg:order-1 perspective-1000"
             whileInView={{ opacity: [0, 1], scale: [0.9, 1] }}
@@ -274,7 +265,6 @@ const Products = () => {
                 productName={activeProduct.name} 
               />
               
-              {/* 3D floating elements around the product */}
               {[...Array(5)].map((_, i) => (
                 <motion.div
                   key={i}
@@ -300,7 +290,6 @@ const Products = () => {
               ))}
             </motion.div>
             
-            {/* Loading progress indicator */}
             <div className="mt-6 w-full max-w-lg mx-auto bg-muted h-1 rounded-full overflow-hidden">
               <motion.div
                 key={activeIndex}
@@ -312,7 +301,6 @@ const Products = () => {
             </div>
           </motion.div>
           
-          {/* Product Information */}
           <div className="order-1 lg:order-2">
             <div className="relative min-h-[380px]">
               <AnimatePresence mode="wait">
@@ -375,7 +363,6 @@ const Products = () => {
                       >
                         <span className="relative z-10 font-medium">Learn More</span>
                         
-                        {/* Moving particles on hover */}
                         <motion.div 
                           className="absolute inset-0 z-0"
                           initial={{ opacity: 0 }}
@@ -404,7 +391,6 @@ const Products = () => {
                           ))}
                         </motion.div>
                         
-                        {/* Arrow animation */}
                         <motion.div
                           className="relative z-10 flex items-center justify-center"
                           initial={{ x: 0 }}
@@ -420,7 +406,6 @@ const Products = () => {
                           <ChevronRight size={18} className="transition-all duration-300" />
                         </motion.div>
                         
-                        {/* Shine effect */}
                         <motion.div
                           className="absolute inset-0 z-0"
                           initial={{ 
@@ -459,7 +444,6 @@ const Products = () => {
                       >
                         <span className="relative z-10 font-medium">Get Specifications</span>
                         
-                        {/* Moving particles on hover */}
                         <motion.div 
                           className="absolute inset-0 z-0"
                           initial={{ opacity: 0 }}
@@ -488,7 +472,6 @@ const Products = () => {
                           ))}
                         </motion.div>
                         
-                        {/* Shine effect */}
                         <motion.div
                           className="absolute inset-0 z-0"
                           initial={{ 
@@ -509,7 +492,6 @@ const Products = () => {
               </AnimatePresence>
             </div>
             
-            {/* Product Navigation */}
             <div className="flex justify-between items-center mt-12">
               <div className="flex space-x-2">
                 {productData.map((_, index) => (
