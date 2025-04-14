@@ -5,7 +5,7 @@ import Footer from '@/components/Footer';
 import RevealText from '@/components/ui/RevealText';
 import ExploreButton from '@/components/ui/ExploreButton';
 import { motion, Variants, animate, useMotionValue, useTransform } from 'framer-motion';
-import { Award, Factory, Check, MapPin, FileText, Briefcase, Clock, Users, Globe, Target, Lightbulb, Rocket, BadgeCheck, Leaf, ChevronDown, CheckCircle2 } from 'lucide-react';
+import { Award, Factory, Check, MapPin, FileText, Briefcase, Clock, Users, Globe, Target, Lightbulb, Rocket, BadgeCheck, Leaf, ChevronDown, CheckCircle2, TrendingUp, CheckSquare } from 'lucide-react';
 import { throttle } from 'lodash'; // Add this import
 import { Link } from 'react-router-dom';
 
@@ -341,19 +341,26 @@ const AboutRashmi = () => {
       <main>
         {/* Hero Section with Video Background */}
         <section className="relative h-screen overflow-hidden pt-20">
-          {/* Video Background with better background loading management */}
+          {/* Cloudinary Video Background */}
           <div className="absolute inset-0 w-full h-full z-0">
-            <video 
-              className="absolute inset-0 w-full h-full object-cover"
-              autoPlay 
-              muted 
-              loop 
-              playsInline
-              poster="/lovable-uploads/video-poster.jpg" // Add poster for faster initial display
-              preload="auto"
-            >
-              <source src="https://res.cloudinary.com/dada5hjp3/video/upload/v1742562309/t59iovtx6npe9ccbwzsj.mp4" type="video/mp4" />
-            </video>
+            <div style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden' }}>
+              <video
+                autoPlay
+                muted
+                loop
+                playsInline
+                style={{ 
+                  position: 'absolute', 
+                  width: '100%', 
+                  height: '100%', 
+                  objectFit: 'cover',
+                  top: 0, 
+                  left: 0 
+                }}
+                src="https://res.cloudinary.com/dada5hjp3/video/upload/f_auto:video,q_auto/v1/VLFP_Fittings/gmhimvhvgusli6syp6pk"
+                title="Rashmi Metaliks Video Presentation"
+              />
+            </div>
             {/* Dark overlay for better text visibility */}
             <div className="absolute inset-0 bg-black opacity-60"></div>
           </div>
@@ -1914,7 +1921,7 @@ const AboutRashmi = () => {
                   description: "Rashmi Metaliks Limited was incorporated as one of the flagship companies of Rashmi Group.",
                   icon: <Briefcase className="w-5 h-5" />,
                   position: "left",
-                  image: "/lovable-uploads/about/timeline/founding.jpg"
+                  image: "https://res.cloudinary.com/dada5hjp3/image/upload/f_auto,q_auto/v1/default%20metaliks/wpzp68xhqdbjndolgbnj"
                 },
                 {
                   year: "2008",
@@ -1922,7 +1929,7 @@ const AboutRashmi = () => {
                   description: "Expanded operations with State-Of-The-Art Integrated Steel manufacturing facilities.",
                   icon: <Factory className="w-5 h-5" />,
                   position: "right",
-                  image: "/lovable-uploads/about/timeline/expansion.jpg"
+                  image: "https://res.cloudinary.com/dada5hjp3/image/upload/f_auto,q_auto/v1/default%20metaliks/wwuusfebg30hq3y1u1bl"
                 },
                 {
                   year: "2012",
@@ -1930,7 +1937,7 @@ const AboutRashmi = () => {
                   description: "Started production of Ductile Iron Pipes with initial capacity of 2,00,000 MT.",
                   icon: <Factory className="w-5 h-5" />,
                   position: "left",
-                  image: "/lovable-uploads/about/timeline/pipes.jpg"
+                  image: "https://res.cloudinary.com/dada5hjp3/image/upload/f_auto,q_auto/v1/default%20metaliks/yvlz3hucfxlwjrvy602x"
                 },
                 {
                   year: "2015",
@@ -1938,31 +1945,31 @@ const AboutRashmi = () => {
                   description: "Recognized by the Government of West Bengal for industrial contribution.",
                   icon: <Award className="w-5 h-5" />,
                   position: "right",
-                  image: "/lovable-uploads/about/timeline/award.jpg"
+                  image: "https://res.cloudinary.com/dada5hjp3/image/upload/f_auto,q_auto/v1/default%20metaliks/lofyrwjm6dwe6kzyao9o"
                 },
                 {
                   year: "2018",
-                  title: "ISO Certification",
-                  description: "Achieved ISO 9001:2015 certification for Quality Management System.",
-                  icon: <Award className="w-5 h-5" />,
-                  position: "left",
-                  image: "/lovable-uploads/about/timeline/certification.jpg"
-                },
-                {
-                  year: "2020",
                   title: "Production Milestone",
                   description: "Reached 5,00,000 MT annual production capacity for DI pipes.",
-                  icon: <Clock className="w-5 h-5" />,
-                  position: "right",
-                  image: "/lovable-uploads/about/timeline/milestone.jpg"
+                  icon: <TrendingUp className="w-5 h-5" />,
+                  position: "left",
+                  image: "https://res.cloudinary.com/dada5hjp3/image/upload/f_auto,q_auto/v1/default%20metaliks/lv8qg5wg0dxgzn7vcv1a"
                 },
                 {
-                  year: "2024",
-                  title: "Global Leadership",
-                  description: "Became 2nd largest global manufacturer with 7,70,000 MT annual capacity.",
-                  icon: <Users className="w-5 h-5" />,
+                  year: "2019",
+                  title: "Global Certification",
+                  description: "Received international quality standards certification for products and processes.",
+                  icon: <CheckSquare className="w-5 h-5" />,
+                  position: "right",
+                  image: "https://res.cloudinary.com/dada5hjp3/image/upload/f_auto,q_auto/v1/default%20metaliks/vwr1almvxtpk37s4arow"
+                },
+                {
+                  year: "2023",
+                  title: "Global Leadership in Manufacturing",
+                  description: "Positioned as a global leader in steel manufacturing with exports to over 30 countries.",
+                  icon: <Globe className="w-5 h-5" />,
                   position: "left",
-                  image: "/lovable-uploads/about/timeline/leadership.jpg"
+                  image: "https://res.cloudinary.com/dada5hjp3/image/upload/f_auto,q_auto/v1/default%20metaliks/fs1wxrp9fxjhaikzunrr"
                 }
               ].map((item, index) => {
                 const isEven = index % 2 === 0;
@@ -2050,22 +2057,19 @@ const AboutRashmi = () => {
                       <motion.div 
                         whileHover={{ y: -5, boxShadow: "0 12px 30px -10px rgba(0, 0, 0, 0.1)" }}
                         transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                        className="bg-card border border-border rounded-lg overflow-hidden shadow-md transition-all duration-300"
-                        style={{ willChange: "transform, box-shadow" }}
+                        className="bg-card overflow-hidden rounded-xl border border-border/40 shadow-sm"
+                        style={{ willChange: "transform" }}
                       >
-                        {/* Image Display */}
-                        <div className="h-48 overflow-hidden relative">
-                          <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent z-10"></div>
-                          <motion.img
-                            src={item.image}
-                            alt={item.title}
-                            className="w-full h-full object-cover"
-                            initial={{ scale: 1 }}
-                            whileHover={{ scale: 1.05 }}
-                            transition={{ duration: 0.4 }}
-                            style={{ willChange: "transform" }}
+                        {/* Image container with aspect ratio */}
+                        <div className="relative w-full h-64 md:h-80 overflow-hidden">
+                          <img 
+                            src={item.image} 
+                            alt={item.title} 
+                            className="w-full h-full object-cover object-center transition-transform duration-700 hover:scale-110"
                             loading="lazy"
                           />
+                          {/* Add subtle overlay for better text readability */}
+                          <div className="absolute inset-0 bg-gradient-to-t from-background/50 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-500"></div>
                         </div>
                         
                         <div className="p-6">

@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#E53935" />
     <title>Rashmi Metaliks - World's 2nd Largest DI Pipe Manufacturer | Premium Steel Products</title>
     <meta name="description" content="Rashmi Metaliks - World's 2nd largest DI pipe manufacturer with 770,000 MT annual capacity. Leading producer of high-quality steel products including DI Pipes, TMT Bars, Pig Iron, and more." />
@@ -22,8 +22,13 @@
     <style>
       html, body {
         height: 100%;
-        overflow-y: auto !important;
-        position: relative;
+        overflow-y: auto;
+      }
+      
+      @media (min-width: 769px) {
+        html, body {
+          position: relative;
+        }
       }
       
       iframe {
@@ -51,9 +56,6 @@
     <script>
       // Fix iframe scroll issues
       document.addEventListener('DOMContentLoaded', function() {
-        // Ensure body is scrollable
-        document.body.style.overflowY = 'auto';
-        
         // Find all iframes and add event listeners to prevent scroll capture
         const iframes = document.querySelectorAll('iframe');
         iframes.forEach(iframe => {
@@ -65,6 +67,20 @@
             document.body.style.overflow = 'auto';
           });
         });
+        
+        // Apply mobile fix only for mobile devices
+        const applyMobileFixes = () => {
+          if (window.innerWidth <= 768) {
+            // Mobile-specific fixes
+            document.documentElement.classList.add('mobile');
+          } else {
+            document.documentElement.classList.remove('mobile');
+          }
+        };
+        
+        // Apply fixes on load and resize
+        applyMobileFixes();
+        window.addEventListener('resize', applyMobileFixes);
       });
     </script>
   </head>

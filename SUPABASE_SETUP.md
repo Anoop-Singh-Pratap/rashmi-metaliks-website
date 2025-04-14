@@ -1,94 +1,98 @@
-# Supabase Integration Setup Guide
+# Supabase Setup Guide
 
-This guide will help you set up the Supabase integration for the Rashmi Metaliks website, specifically for the job application form.
+This guide will help you set up the Supabase backend required for this application.
 
 ## Prerequisites
 
-1. A Supabase account (sign up at [supabase.com](https://supabase.com) if you don't have one)
-2. A new or existing Supabase project
+1. A Supabase account (create one at [supabase.com](https://supabase.com))
+2. A new Supabase project
 
 ## Setup Steps
 
-### 1. Install Dependencies
+### 1. Database Tables
 
-Make sure you have the Supabase JavaScript client installed:
+The application requires the following tables:
+- `job_listings`: For storing job openings
+- `job_applications`: For storing job applications
 
-```bash
-npm install @supabase/supabase-js
+You can create these tables using one of these methods:
+
+#### Option 1: Run the complete schema.sql
+
+1. Go to your Supabase dashboard
+2. Navigate to the SQL Editor
+3. Create a new query
+4. Copy and paste the entire contents of `supabase/schema.sql`
+5. Click "Run"
+
+#### Option 2: Run individual migrations
+
+1. Go to your Supabase dashboard
+2. Navigate to the SQL Editor
+3. Create a new query
+4. Copy and paste the contents of `supabase/migrations/20240727_job_listings.sql`
+5. Click "Run"
+
+### 2. Update Environment Variables
+
+After setting up your Supabase project, update your environment variables:
+
+1. Open the `.env` file in your project
+2. Update the Supabase URL and anon key with your project values:
+
+```
+VITE_SUPABASE_URL=your_project_url
+VITE_SUPABASE_ANON_KEY=your_anon_key
 ```
 
-### 2. Environment Variables
+You can find these values in your Supabase dashboard under Project Settings > API.
 
-Create a `.env` file in the root of your project (copying from `.env.example`) and add your Supabase credentials:
+## Common Issues
 
-```
-VITE_SUPABASE_URL=https://your-project-id.supabase.co
-VITE_SUPABASE_ANON_KEY=your-anon-key
-```
+### "relation 'public.job_listings' does not exist" Error
 
-You can find these values in your Supabase project dashboard under Settings > API.
+If you see this error, it means the database table hasn't been created:
 
-### 3. Database Schema Setup
+1. Follow the steps above to run the SQL migration files
+2. Restart your application
 
-Execute the SQL script found in `supabase/schema.sql` in your Supabase SQL editor to create:
+### Authentication Issues
 
-- The `job_applications` table
-- Row Level Security (RLS) policies
-- Storage bucket for resume files
-- Notification trigger for new applications
+If you experience authentication issues:
 
-You can run this script in the Supabase Dashboard by going to the SQL Editor section.
+1. Check that your Supabase URL and anon key are correct
+2. Ensure Row Level Security (RLS) policies are properly set up in your database
 
-### 4. Storage Setup
+## Testing Your Setup
 
-1. Go to the Storage section in your Supabase dashboard
-2. Create a new bucket named `resumes` if it doesn't exist already
-3. Set the bucket's privacy settings according to your requirements (private is recommended for resumes)
+After completing the setup:
 
-### 5. Authentication (Optional)
+1. Start your application
+2. Navigate to the Careers page
+3. You should see the sample job listings that were created during migration
 
-If you want users to be able to log in and track their job applications:
+If the job listings appear, your Supabase setup is working correctly!
 
-1. Configure authentication providers in the Supabase Authentication settings
-2. Update the RLS policies as needed
+## Advanced Configuration
 
-### 6. Test Your Setup
+### Email Notifications
 
-1. Run the application locally with `npm run dev`
-2. Navigate to the application form
-3. Submit a test application
-4. Verify that the data is stored in the Supabase database and the resume file is uploaded to storage
+To set up email notifications for job applications:
 
-## Schema Information
+1. Configure Supabase Edge Functions (refer to Supabase documentation)
+2. Create a function to send emails when new applications are submitted
 
-### Job Applications Table
+### Storage Setup
 
-| Column | Type | Description |
-|--------|------|-------------|
-| id | UUID | Primary key, auto-generated |
-| first_name | TEXT | Applicant's first name |
-| last_name | TEXT | Applicant's last name |
-| email | TEXT | Applicant's email address |
-| phone | TEXT | Applicant's phone number |
-| position | TEXT | Position applying for |
-| department | TEXT | Department (optional) |
-| experience | TEXT | Years of experience (optional) |
-| education | TEXT | Highest education level (optional) |
-| resume_url | TEXT | URL to the uploaded resume file |
-| cover_letter | TEXT | Cover letter content (optional) |
-| source | TEXT | How the applicant heard about the job (optional) |
-| created_at | TIMESTAMP | When the application was submitted |
-| status | TEXT | Application status (default: 'pending') |
+For resume uploads:
 
-## Troubleshooting
+1. Go to Storage in your Supabase dashboard
+2. Create a new bucket named "resumes"
+3. Configure access policies (these are also defined in schema.sql)
 
-- **File Upload Issues:** Ensure that the storage bucket permissions are correctly set and that the bucket exists
-- **Database Connection Issues:** Verify your environment variables are correct
-- **RLS Policy Issues:** Check the RLS policies if data isn't being inserted or retrieved properly
+## Support
 
-## Additional Resources
-
-- [Supabase Documentation](https://supabase.com/docs)
-- [Supabase JavaScript Client](https://supabase.com/docs/reference/javascript/introduction)
-- [Supabase Storage Guide](https://supabase.com/docs/guides/storage)
-- [Supabase Row Level Security](https://supabase.com/docs/guides/auth/row-level-security) 
+If you encounter any issues, please check:
+1. Supabase logs in your dashboard
+2. Application console logs
+3. Network requests in browser developer tools 

@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
 import { FileText, Download, Eye, ArrowRight, FileIcon } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import SEO from '../components/SEO';
+import { organizationSchema, generateBreadcrumbSchema } from '../lib/schema';
 
 interface BrochureItem {
   id: string;
@@ -96,12 +97,24 @@ const Brochures = () => {
     ? brochures 
     : brochures.filter(item => item.category === activeCategory);
 
+  // Create breadcrumb schema for the Brochures page
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: "Home", url: "/" },
+    { name: "Downloads", url: "/brochures" }
+  ]);
+
+  // Combined schemas
+  const schemas = [organizationSchema, breadcrumbSchema];
+
   return (
     <div className="min-h-screen bg-background">
-      <Helmet>
-        <title>Brochures & Downloads | Rashmi Group</title>
-        <meta name="description" content="Download brochures, technical specifications, and product catalogs from Rashmi Group." />
-      </Helmet>
+      <SEO
+        title="Brochures & Downloads | Rashmi Metaliks Technical Resources"
+        description="Download product brochures, technical specifications, and catalogs for Rashmi Metaliks' premium DI pipes, fittings, and other steel products."
+        keywords="Rashmi Metaliks brochures, DI pipes PDF, ductile iron technical specifications, steel product catalogs, RASHMI-LOCK jointing system"
+        canonicalUrl="/brochures"
+        schema={schemas}
+      />
 
       <Header />
 

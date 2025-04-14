@@ -1,8 +1,36 @@
-@import "../styles/globals.css";
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .legal-content {
+    @apply text-base leading-relaxed;
+  }
+  
+  .legal-content h2 { 
+    @apply font-serif text-2xl sm:text-3xl text-red-600 dark:text-amber-400 mb-6 mt-12; 
+  }
+  
+  .legal-content h3 { 
+    @apply font-semibold text-slate-800 dark:text-slate-200 text-xl mb-4; 
+  }
+  
+  .legal-content p { 
+    @apply mb-4 leading-relaxed; 
+  }
+  
+  .legal-content ul { 
+    @apply list-disc pl-6 mb-6 space-y-2; 
+  }
+  
+  .legal-content a { 
+    @apply text-red-600 dark:text-amber-400 hover:underline; 
+  }
+  
+  .legal-content strong { 
+    @apply text-red-600 dark:text-amber-400 font-medium; 
+  }
+}
 
 @layer base {
   :root {
@@ -434,4 +462,72 @@ main {
   flex: 1;
   position: relative;
   z-index: 1;
+}
+
+/* Mobile viewport and touch improvements */
+@media (max-width: 768px) {
+  /* Prevent fixed elements from getting cut off */
+  .fixed, 
+  [class*="fixed"] {
+    position: fixed;
+    /* Use safe area insets for notched devices */
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+
+  /* Prevent content from being hidden under fixed headers */
+  .pt-header {
+    padding-top: 4rem; /* Adjust based on your header height */
+  }
+  
+  /* Improve finger-friendly touch targets */
+  button, 
+  a,
+  [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Prevent iOS overscroll bounce which can reveal background */
+  html, 
+  body {
+    position: fixed;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+  }
+  
+  /* Create a scrollable container for the page content */
+  #root {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  /* Fix z-index stacking issues */
+  .z-high {
+    z-index: 20 !important;
+  }
+  
+  .z-higher {
+    z-index: 30 !important;
+  }
+  
+  .z-highest {
+    z-index: 40 !important;
+  }
+  
+  /* Force hardware acceleration for smoother animations */
+  .transform-gpu {
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
 }

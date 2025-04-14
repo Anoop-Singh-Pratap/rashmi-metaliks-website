@@ -1,11 +1,11 @@
 import { createClient } from '@supabase/supabase-js';
 
-// These environment variables need to be set in your project's .env file
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
-
 // Create a single supabase client for interacting with your database
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Using hardcoded values directly since the environment variables aren't loading correctly
+export const supabase = createClient(
+  'https://kpoiglmmrwohcudsgufg.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtwb2lnbG1tcndvaGN1ZHNndWZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM2ODI1MjEsImV4cCI6MjA1OTI1ODUyMX0.PSQ3vIQB_qMG1OJLiHDO4Srx-q9h3V5LfLpYKnZz9bo'
+);
 
 // Create a function to upload a file to Supabase storage
 export const uploadFile = async (file: File, bucket: string, folder: string) => {

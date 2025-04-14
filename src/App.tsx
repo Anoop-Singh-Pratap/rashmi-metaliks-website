@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import './App.css';
 import { ThemeProvider } from './context/ThemeContext';
@@ -36,6 +36,18 @@ import VendorRegistration from './pages/VendorRegistration';
 import RashmiLockRedesigned from './pages/RashmiLockRedesigned';
 
 function App() {
+  // Add useEffect to set the viewport meta tag for better mobile handling
+  useEffect(() => {
+    // Ensure viewport meta tag is set correctly for mobile
+    const viewportMeta = document.querySelector('meta[name="viewport"]');
+    if (viewportMeta) {
+      viewportMeta.setAttribute(
+        'content',
+        'width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1'
+      );
+    }
+  }, []);
+
   return (
     <ThemeProvider>
       <Router>

@@ -230,6 +230,17 @@ const Header = () => {
           <div 
             ref={mobileMenuRef}
             className="md:hidden fixed inset-0 z-50 glass-effect overflow-y-auto"
+            style={{ 
+              backgroundColor: 'hsl(var(--background) / 0.97)',
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              height: '100dvh', // Use dynamic viewport height for better mobile support
+              width: '100%',
+              overflowY: 'auto'
+            }}
           >
             <div className="px-4 pt-4 pb-6">
               <div className="flex items-center justify-between mb-6">

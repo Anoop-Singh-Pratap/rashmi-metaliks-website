@@ -57,6 +57,29 @@ export const diPipesSchema = {
   "award": "Manufactured by the World's 2nd largest DI pipe producer"
 };
 
+// Schema for DI Fittings page
+export const diFittingsSchema = {
+  "@context": "https://schema.org/",
+  "@type": "Product",
+  "name": "Ductile Iron Fittings",
+  "image": "/lovable-uploads/compressed/di-fittings-hero.webp",
+  "description": "Premium Ductile Iron Fittings manufactured by Rashmi Metaliks for water distribution systems, offering superior strength, corrosion resistance, and durability.",
+  "brand": {
+    "@type": "Brand",
+    "name": "Rashmi Metaliks"
+  },
+  "manufacturer": {
+    "@type": "Organization",
+    "name": "Rashmi Metaliks Ltd."
+  },
+  "offers": {
+    "@type": "Offer",
+    "url": "https://www.rashmimetaliks.com/di-fittings",
+    "priceCurrency": "INR",
+    "availability": "https://schema.org/InStock"
+  }
+};
+
 // Generate FAQ Schema
 export const generateFAQSchema = (faqs: Array<{question: string, answer: string}>) => {
   return {

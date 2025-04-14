@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
 import { Briefcase, MapPin, Filter, Search, Building, Heart, Award, Clock, Users, ChevronDown, ChevronUp, Loader2 } from 'lucide-react';
 import Header from '../components/Header';
@@ -7,6 +6,8 @@ import Footer from '../components/Footer';
 import RevealText from '../components/ui/RevealText';
 import { Link } from 'react-router-dom';
 import { fetchJobListings, JobListing } from '../services/jobService';
+import SEO from '../components/SEO';
+import { organizationSchema, generateBreadcrumbSchema } from '../lib/schema';
 
 const Careers = () => {
   const [selectedDepartment, setSelectedDepartment] = useState('All');
@@ -95,14 +96,52 @@ const Careers = () => {
       description: "Welcome to the Rashmi team!"
     }
   ];
+
+  // Generate the careers page breadcrumb schema
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: "Home", url: "/" },
+    { name: "Careers", url: "/careers" }
+  ]);
+
+  // Create a JobPosting schema
+  const createJobPostingSchema = () => {
+    return {
+      "@context": "https://schema.org",
+      "@type": "JobPosting",
+      "title": "Multiple Career Opportunities",
+      "description": "Explore career opportunities at Rashmi Group, a global leader in steel manufacturing",
+      "datePosted": new Date().toISOString().split('T')[0],
+      "hiringOrganization": {
+        "@type": "Organization",
+        "name": "Rashmi Metaliks Limited",
+        "sameAs": "https://www.rashmimetaliks.com"
+      },
+      "jobLocation": {
+        "@type": "Place",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Kolkata",
+          "addressRegion": "West Bengal",
+          "addressCountry": "IN"
+        }
+      },
+      "employmentType": "FULL_TIME",
+      "workHours": "Monday to Friday, 9:00 AM - 5:00 PM"
+    };
+  };
+
+  // Combined schemas
+  const schemas = [organizationSchema, breadcrumbSchema, createJobPostingSchema()];
   
   return (
     <div className="min-h-screen bg-background">
-      <Helmet>
-        <title>Careers at Rashmi Group | Join Our Team</title>
-        <meta name="description" content="Join the Rashmi Group team and be part of a global leader in steel manufacturing. Explore current opportunities and apply for positions across multiple departments." />
-        <meta name="keywords" content="Rashmi Group careers, steel industry jobs, manufacturing careers, metallurgy jobs, India steel careers" />
-      </Helmet>
+      <SEO
+        title="Careers at Rashmi Group | Join Our Global Steel Manufacturing Team"
+        description="Join the Rashmi Group team and be part of a global leader in steel manufacturing. Explore current opportunities and apply for positions across engineering, manufacturing, sales, and corporate departments."
+        keywords="Rashmi Group careers, steel industry jobs, manufacturing careers, metallurgy jobs, India steel careers, engineering jobs, DI pipe manufacturing careers"
+        canonicalUrl="/careers"
+        schema={schemas}
+      />
       <Header />
       <main>
         {/* Hero Section with Video Background */}

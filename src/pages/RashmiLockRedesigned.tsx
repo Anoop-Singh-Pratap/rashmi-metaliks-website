@@ -4,8 +4,9 @@ import { motion, useAnimation, useInView, useScroll, useTransform } from 'framer
 import { Helmet } from 'react-helmet';
 import { Badge } from 'antd';
 import { useHover } from '@mantine/hooks';
-import { IconLock, IconDroplet, IconShield, IconChecks, IconArrowDown, IconArrowRight, IconBolt, IconAdjustments } from '@tabler/icons-react';
+import { IconLock, IconDroplet, IconShield, IconChecks, IconArrowDown, IconArrowRight, IconBolt, IconAdjustments, IconSunHigh, IconMoon } from '@tabler/icons-react';
 import { cn } from '../utils/cn';
+import { useTheme } from '../context/ThemeContext';
 
 // Import components from the original file
 import Header from '../components/Header';
@@ -149,7 +150,7 @@ const AdvantageCard = ({ icon: Icon, title, description }) => {
 const RashmiLockRedesigned = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [activeTab, setActiveTab] = useState('dimensions');
-  const [darkMode, setDarkMode] = useState(false);
+  const { theme, toggleTheme } = useTheme();
   
   // Refs for sections
   const containerRef = useRef(null);
@@ -190,20 +191,25 @@ const RashmiLockRedesigned = () => {
   // Initialize dark mode based on user preference
   useEffect(() => {
     // Check for user preference in localStorage or system preference
-    const isDarkMode = localStorage.getItem('darkMode') === 'true' || 
-      (!('darkMode' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    const isDarkMode = localStorage.getItem('rashmi-theme') === 'dark' || 
+      (!('rashmi-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
     
-    setDarkMode(isDarkMode);
+    // No need to set local state anymore as we're using theme context
     
+    /* Remove this code as it's handled by ThemeContext
     if (isDarkMode) {
       document.documentElement.classList.add('dark');
     } else {
       document.documentElement.classList.remove('dark');
     }
+    */
   }, []);
 
-  // Function to toggle dark mode
+  // Function to toggle dark mode - use theme context's toggle
   const toggleDarkMode = () => {
+    toggleTheme(); // Use the global context method
+    
+    /* Remove this code as it's handled by ThemeContext
     const newDarkMode = !darkMode;
     setDarkMode(newDarkMode);
     
@@ -214,6 +220,7 @@ const RashmiLockRedesigned = () => {
       document.documentElement.classList.remove('dark');
       localStorage.setItem('darkMode', 'false');
     }
+    */
   };
 
   useEffect(() => {
@@ -354,12 +361,8 @@ const RashmiLockRedesigned = () => {
           }
         `}</style>
         <script>{`
-          // Dark mode toggle functionality
-          if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-          } else {
-            document.documentElement.classList.remove('dark');
-          }
+          // Dark mode toggle functionality is handled by ThemeContext component
+          // This script is no longer needed
         `}</script>
       </Helmet>
       
@@ -836,6 +839,19 @@ const RashmiLockRedesigned = () => {
       </section>
       
       <Footer />
+
+      {/* Apply button or toggle in the UI that uses toggleDarkMode */}
+      <button 
+        className="fixed bottom-4 right-4 p-3 bg-card border border-border rounded-full shadow-lg z-50 hover:bg-muted transition-colors duration-300"
+        onClick={toggleTheme}
+        aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+      >
+        {theme === 'dark' ? (
+          <IconSunHigh size={20} className="text-foreground" />
+        ) : (
+          <IconMoon size={20} className="text-foreground" />
+        )}
+      </button>
     </div>
   );
 };

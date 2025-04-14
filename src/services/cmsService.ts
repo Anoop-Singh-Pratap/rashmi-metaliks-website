@@ -15,7 +15,7 @@ declare global {
 }
 
 // Base URL for the CMS API - replace with your actual CMS endpoint when deployed
-const API_URL = window.ENV?.REACT_APP_CMS_API_URL || 'http://localhost:1337';
+const API_URL = window.ENV?.REACT_APP_CMS_API_URL || '';
 
 /**
  * Fetch news articles from the CMS
@@ -23,6 +23,12 @@ const API_URL = window.ENV?.REACT_APP_CMS_API_URL || 'http://localhost:1337';
  */
 export async function getNews() {
   try {
+    // If API_URL is empty, immediately return fallback data
+    if (!API_URL) {
+      console.log('CMS API URL not configured, using fallback data');
+      return getFallbackNewsData();
+    }
+
     // Try to detect if we're offline first to avoid unnecessary fetch attempts
     if (!navigator.onLine) {
       throw new Error('Browser is offline');
@@ -163,27 +169,32 @@ export async function getNews() {
     }
     
     // If no cached data or error occurred, return fallback data
-    return [
-      {
-        id: 1,
-        title: "Rashmi Group Achieves Record Production Targets",
-        date: "2023-05-15",
-        category: "Achievement",
-        excerpt: "Rashmi Group has achieved record-breaking production targets in the first quarter of 2023, surpassing industry standards.",
-        image: "https://images.unsplash.com/photo-1518640467707-6811f4a6ab73?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-        content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nunc sit amet ultricies lacinia, nunc nisl aliquam nisl, eget aliquam nunc nisl sit amet nisl."
-      },
-      {
-        id: 2,
-        title: "Rashmi Metaliks Launches New Sustainability Initiative",
-        date: "2023-04-10",
-        category: "Sustainability",
-        excerpt: "Our new sustainability program aims to reduce carbon emissions by 30% over the next five years.",
-        image: "https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-        content: "Rashmi Metaliks is proud to announce our ambitious new sustainability initiative..."
-      }
-    ];
+    return getFallbackNewsData();
   }
+}
+
+// Helper function to return fallback news data
+function getFallbackNewsData() {
+  return [
+    {
+      id: 1,
+      title: "Rashmi Group Achieves Record Production Targets",
+      date: "2023-05-15",
+      category: "Achievement",
+      excerpt: "Rashmi Group has achieved record-breaking production targets in the first quarter of 2023, surpassing industry standards.",
+      image: "https://images.unsplash.com/photo-1518640467707-6811f4a6ab73?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nunc sit amet ultricies lacinia, nunc nisl aliquam nisl, eget aliquam nunc nisl sit amet nisl."
+    },
+    {
+      id: 2,
+      title: "Rashmi Metaliks Launches New Sustainability Initiative",
+      date: "2023-04-10",
+      category: "Sustainability",
+      excerpt: "Our new sustainability program aims to reduce carbon emissions by 30% over the next five years.",
+      image: "https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      content: "Rashmi Metaliks is proud to announce our ambitious new sustainability initiative..."
+    }
+  ];
 }
 
 /**

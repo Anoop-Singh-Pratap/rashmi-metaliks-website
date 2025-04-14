@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { motion, useScroll, useTransform, useAnimation, useInView } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowDown, Check, Ruler, Pipette, Waves, ShieldCheck, ChevronDown, BookOpen, ArrowRight, MapPin, Award, Users, Settings } from 'lucide-react';
+import { ArrowDown, Check, Ruler, Pipette, Waves, ShieldCheck, ChevronDown, BookOpen, ArrowRight, MapPin, Award, Users, Settings, AlertCircle } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import ProductViewer from '../components/ui/ProductViewer';
@@ -14,6 +14,8 @@ import PipeViewer3D from '../components/ui/PipeViewer3D';
 import SpecComparisonTool from '../components/ui/SpecComparisonTool';
 import ProjectCalculator from '../components/ui/ProjectCalculator';
 import BenefitsSection from '../components/ui/BenefitsSection';
+import SpecificationTable from '../components/ui/SpecificationTable';
+import { useTheme } from '../context/ThemeContext';
 
 // Custom styles component to avoid @import rule issues
 const DiPipesStyles = () => {
@@ -79,6 +81,256 @@ const arrowVariants = {
       ease: "easeInOut" 
     }
   }
+};
+
+// Enhanced version of the specification table with improved styling and functionality
+interface TableRow {
+  [key: string]: string | number | undefined;
+}
+
+interface EnhancedSpecTableProps {
+  headers: string[];
+  rows: TableRow[];
+  className?: string;
+}
+
+const EnhancedSpecTable: React.FC<EnhancedSpecTableProps> = ({ headers, rows, className = '' }) => {
+  const { theme } = useTheme();
+  
+  // Optional: Add sorting capability
+  const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' }>({ 
+    key: headers[0], 
+    direction: 'asc' 
+  });
+  
+  const handleSort = (header: string) => {
+    setSortConfig(prevConfig => ({
+      key: header,
+      direction: prevConfig.key === header && prevConfig.direction === 'asc' ? 'desc' : 'asc'
+    }));
+  };
+  
+  const sortedRows = useMemo(() => {
+    return [...rows].sort((a, b) => {
+      const aValue = a[sortConfig.key];
+      const bValue = b[sortConfig.key];
+      
+      // Handle undefined or null values
+      if (aValue === undefined || aValue === null) return 1;
+      if (bValue === undefined || bValue === null) return -1;
+      
+      // Convert to numbers for numeric comparison if needed
+      const aNum = typeof aValue === 'string' ? parseFloat(aValue as string) : aValue;
+      const bNum = typeof bValue === 'string' ? parseFloat(bValue as string) : bValue;
+      
+      if (!isNaN(aNum as number) && !isNaN(bNum as number)) {
+        return sortConfig.direction === 'asc' 
+          ? (aNum as number) - (bNum as number)
+          : (bNum as number) - (aNum as number);
+      }
+      
+      // String comparison
+      return sortConfig.direction === 'asc'
+        ? String(aValue).localeCompare(String(bValue))
+        : String(bValue).localeCompare(String(aValue));
+    });
+  }, [rows, sortConfig]);
+  
+  // Numerical column detection for alignment and colorization
+  const isNumericalColumn = (header: string): boolean => {
+    return ['C25', 'C30', 'C40', 'C50', 'C64', 'C100', 'K7', 'K9'].includes(header) ||
+           header.includes('mm') || 
+           header.includes('Limit');
+  };
+
+  // Function to determine cell background color based on value (for thickness values)
+  const getCellBackgroundColor = (header: string, value: string | number | undefined): string => {
+    if (!value || typeof value !== 'number') return '';
+    
+    if (['C25', 'C30', 'C40', 'C50', 'C64', 'C100', 'K7', 'K9'].includes(header)) {
+      // Color scale from light to dark based on wall thickness - increased opacity
+      if (value < 6) return 'bg-blue-100/80 dark:bg-blue-900/50';
+      if (value < 10) return 'bg-green-100/80 dark:bg-green-900/50';
+      if (value < 15) return 'bg-yellow-100/80 dark:bg-yellow-900/50';
+      if (value < 20) return 'bg-orange-100/80 dark:bg-orange-900/50';
+      return 'bg-red-100/80 dark:bg-red-900/50';
+    }
+    
+    return '';
+  };
+
+  // Get tooltip content based on header
+  const getTooltipContent = (header: string): string => {
+    switch (header) {
+      case 'DN (mm)': return 'Nominal Diameter in millimeters';
+      case 'DE (mm)': return 'External Diameter in millimeters';
+      case 'Limit Deviation (mm)': return 'Allowed deviation from nominal dimensions';
+      case 'C25': return 'Class 25 pressure rating - Wall thickness in mm';
+      case 'C30': return 'Class 30 pressure rating - Wall thickness in mm';
+      case 'C40': return 'Class 40 pressure rating - Wall thickness in mm';
+      case 'C50': return 'Class 50 pressure rating - Wall thickness in mm';
+      case 'C64': return 'Class 64 pressure rating - Wall thickness in mm';
+      case 'C100': return 'Class 100 pressure rating - Wall thickness in mm';
+      case 'As Per BS EN 598 (PresurePipe)': return 'British Standard for ductile iron pipes';
+      case 'K7': return 'K7 classification - Wall thickness in mm';
+      case 'K9': return 'K9 classification - Wall thickness in mm';
+      default: return header;
+    }
+  };
+
+  // Function to generate a heat map color for numerical cells
+  const getHeatMapColor = (header: string, value: number): string => {
+    if (!['C25', 'C30', 'C40', 'C50', 'C64', 'C100', 'K7', 'K9'].includes(header)) {
+      return '';
+    }
+    
+    // Maximum value used for normalization
+    const maxValue = 28;
+    const normalizedValue = Math.min(value / maxValue, 1);
+    
+    if (theme === 'dark') {
+      return `rgba(229, 57, 53, ${normalizedValue * 0.5})`;
+    } else {
+      return `rgba(229, 57, 53, ${normalizedValue * 0.15})`;
+    }
+  };
+  
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.98 }}
+      animate={{ opacity: 1, scale: 1 }}
+      className={`rounded-xl shadow-md overflow-hidden border border-border ${className}`}
+    >
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse">
+          <thead className="bg-gradient-to-r from-rashmi-red/20 via-card to-rashmi-red/10 dark:from-rashmi-red/30 dark:via-card/80 dark:to-rashmi-red/20">
+            <tr>
+              {headers.map((header, idx) => (
+                <th
+                  key={header}
+                  onClick={() => handleSort(header)}
+                  className={`px-4 py-3.5 text-left text-sm font-semibold select-none cursor-pointer transition-colors hover:bg-rashmi-red/10 relative group ${
+                    idx === 0 ? 'sticky left-0 z-10 backdrop-blur-sm' : ''
+                  } ${
+                    isNumericalColumn(header) ? 'text-right' : ''
+                  }`}
+                  style={{
+                    background: idx === 0 ? 'inherit' : undefined,
+                    backdropFilter: idx === 0 ? 'blur(8px)' : undefined
+                  }}
+                >
+                  <div className="flex items-center gap-1 justify-between">
+                    <span className="relative">
+                      {header}
+                      {/* Tooltip */}
+                      <span className="absolute left-1/2 -translate-x-1/2 bottom-full mb-1 w-max max-w-[200px] px-2 py-1 bg-foreground dark:bg-neutral-800 text-background dark:text-neutral-200 text-xs rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity z-20 whitespace-normal text-center">
+                        {getTooltipContent(header)}
+                      </span>
+                    </span>
+                    {sortConfig.key === header && (
+                      <span className="text-rashmi-red bg-white/20 dark:bg-black/20 rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                        {sortConfig.direction === 'asc' ? '↑' : '↓'}
+                      </span>
+                    )}
+                  </div>
+                  {/* Bottom gradient bar for active sort */}
+                  {sortConfig.key === header && (
+                    <motion.div 
+                      initial={{ width: 0 }}
+                      animate={{ width: '100%' }}
+                      transition={{ duration: 0.3 }}
+                      className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-rashmi-red/70 via-rashmi-red to-rashmi-red/70"
+                    />
+                  )}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          
+          <tbody className="divide-y divide-border">
+            {sortedRows.map((row, rowIdx) => (
+              <motion.tr
+                key={rowIdx}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: rowIdx * 0.03 }}
+                className={`hover:bg-rashmi-red/5 dark:hover:bg-rashmi-red/10 transition-all duration-300 ${
+                  rowIdx % 2 === 1 ? 'bg-muted/20 dark:bg-muted/5' : ''
+                }`}
+              >
+                {headers.map((header, colIdx) => {
+                  const value = row[header];
+                  const isNumeric = typeof value === 'number';
+                  
+                  return (
+                    <td
+                      key={`${rowIdx}-${colIdx}`}
+                      className={`px-4 py-3 text-sm border-r border-border/20 last:border-r-0 ${
+                        colIdx === 0 ? 'sticky left-0 font-medium bg-inherit backdrop-blur-sm z-10' : ''
+                      } ${
+                        isNumericalColumn(header) ? 'text-right font-mono' : ''
+                      } ${
+                        getCellBackgroundColor(header, value)
+                      } relative group`}
+                    >
+                      {value !== undefined ? (
+                        <>
+                          <span className="relative">
+                            {value}
+                            {/* Show hover indicator for numerical values */}
+                            {isNumeric && ['C25', 'C30', 'C40', 'C50', 'C64', 'C100', 'K7', 'K9'].includes(header) && (
+                              <span className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-2 py-1 bg-foreground dark:bg-neutral-800 text-background dark:text-neutral-200 text-xs rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity z-20">
+                                {header}: {value}mm thickness
+                              </span>
+                            )}
+                          </span>
+                          {/* Visual indicator bar for thickness */}
+                          {isNumeric && ['C25', 'C30', 'C40', 'C50', 'C64', 'C100', 'K7', 'K9'].includes(header) && (
+                            <div className="absolute bottom-0 left-0 w-full h-full opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                              <div 
+                                className="absolute bottom-0 left-0 h-1 bg-rashmi-red/40 dark:bg-rashmi-red/60"
+                                style={{ width: `${Math.min((value as number) / 30 * 100, 100)}%` }}
+                              ></div>
+                            </div>
+                          )}
+                        </>
+                      ) : (
+                        <span className="text-muted-foreground/50 italic">—</span>
+                      )}
+                    </td>
+                  );
+                })}
+              </motion.tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      
+      {/* Legend for thickness values */}
+      <div className="py-3 px-4 bg-muted/20 dark:bg-muted/10 border-t border-border flex flex-wrap gap-4 text-xs">
+        <div className="flex items-center gap-1">
+          <div className="w-3 h-3 rounded-sm bg-blue-100/80 dark:bg-blue-900/50 border border-blue-200 dark:border-blue-800"></div>
+          <span>&lt; 6 mm</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <div className="w-3 h-3 rounded-sm bg-green-100/80 dark:bg-green-900/50 border border-green-200 dark:border-green-800"></div>
+          <span>6-10 mm</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <div className="w-3 h-3 rounded-sm bg-yellow-100/80 dark:bg-yellow-900/50 border border-yellow-200 dark:border-yellow-800"></div>
+          <span>10-15 mm</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <div className="w-3 h-3 rounded-sm bg-orange-100/80 dark:bg-orange-900/50 border border-orange-200 dark:border-orange-800"></div>
+          <span>15-20 mm</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <div className="w-3 h-3 rounded-sm bg-red-100/80 dark:bg-red-900/50 border border-red-200 dark:border-red-800"></div>
+          <span>&gt; 20 mm</span>
+        </div>
+      </div>
+    </motion.div>
+  );
 };
 
 const DiPipes = () => {
@@ -251,15 +503,14 @@ const DiPipes = () => {
         schema={schemas}
       />
 
-      <div className="relative z-50">
-        <Header />
-      </div>
+      {/* Remove the fixed header wrapper div with z-index 999 and just use the Header component directly */}
+      <Header />
       
       {/* Hero Section with Enhanced Parallax Effects */}
       <section 
         id="overview" 
         ref={heroRef}
-        className="relative pt-28 md:pt-36 pb-24 min-h-[90vh] flex items-center overflow-hidden perspective-container"
+        className="relative pt-32 md:pt-40 pb-24 md:pb-32 min-h-[90vh] md:min-h-[85vh] lg:min-h-[90vh] flex items-center overflow-hidden perspective-container"
         style={{ position: 'relative' }}
       >
         {/* Background pattern overlay */}
@@ -441,19 +692,32 @@ const DiPipes = () => {
           </motion.div>
         </div>
         
-        {/* Scroll indicator with fixed position */}
+        {/* Scroll indicator with responsive positioning */}
         <motion.div 
-          className="fixed bottom-8 left-1/2 transform -translate-x-1/2 animate-float z-50"
+          className="absolute bottom-12 sm:bottom-16 left-1/2 transform -translate-x-1/2 flex flex-col items-center justify-center cursor-pointer z-20"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 1 }}
           style={{ opacity: scrollIndicatorOpacity }}
+          onClick={() => scrollToSection('features')}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
         >
-          <div className="flex flex-col items-center text-muted-foreground">
-            <span className="text-sm mb-2">Scroll to explore</span>
-            <div className="w-6 h-10 border-2 border-muted-foreground/30 rounded-full flex justify-center">
-              <div className="w-1.5 h-3 bg-rashmi-red rounded-full mt-2 animate-bounce"></div>
-            </div>
+          <div className="bg-black/30 backdrop-blur-sm px-4 py-2 rounded-full text-white/90 hover:text-white transition-colors duration-300 flex flex-col items-center shadow-lg">
+            <span className="text-sm font-medium mb-1">Scroll to explore</span>
+            <motion.div
+              animate={{ 
+                y: [0, 5, 0],
+                opacity: [0.5, 1, 0.5] 
+              }}
+              transition={{ 
+                duration: 1.5, 
+                repeat: Infinity,
+                ease: "easeInOut" 
+              }}
+            >
+              <ArrowDown size={16} />
+            </motion.div>
           </div>
         </motion.div>
       </section>
@@ -830,46 +1094,41 @@ const DiPipes = () => {
                     Available Dimensions & Sizes
                   </h3>
                   <div className="overflow-x-auto">
-                    <table className="w-full border-collapse">
-                      <thead>
-                        <tr className="bg-rashmi-dark/10 dark:bg-rashmi-red/20 text-left">
-                          <th className="p-3 border border-border rounded-tl-lg">Nominal Size (DN)</th>
-                          <th className="p-3 border border-border">Outside Diameter (mm)</th>
-                          <th className="p-3 border border-border">Wall Thickness (mm)</th>
-                          <th className="p-3 border border-border rounded-tr-lg">Weight (kg/m)</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {[
-                          {size: 80, diameter: 98, thickness: 6.0, weight: 14.0},
-                          {size: 100, diameter: 118, thickness: 6.0, weight: 17.0},
-                          {size: 150, diameter: 170, thickness: 6.0, weight: 25.0},
-                          {size: 200, diameter: 222, thickness: 6.3, weight: 34.0},
-                          {size: 300, diameter: 326, thickness: 7.2, weight: 58.0}
-                        ].map((item, index) => (
-                          <motion.tr 
-                            key={item.size}
-                            className={`${index % 2 === 1 ? 'bg-rashmi-dark/5 dark:bg-rashmi-red/5' : ''} hover:bg-rashmi-red/5`}
-                            whileHover={{ x: 5 }}
-                            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                          >
-                            <td className="p-3 border border-border">
-                              <div className="flex items-center gap-2">
-                                <div className="w-2 h-2 rounded-full bg-rashmi-red"></div>
-                                {item.size}
-                              </div>
-                            </td>
-                            <td className="p-3 border border-border">{item.diameter}</td>
-                            <td className="p-3 border border-border">{item.thickness}</td>
-                            <td className="p-3 border border-border">{item.weight}</td>
-                          </motion.tr>
-                        ))}
-                      </tbody>
-                    </table>
+                    <EnhancedSpecTable
+                      headers={['DN (mm)', 'DE (mm)', 'Limit Deviation (mm)', 'C25', 'C30', 'C40', 'C50', 'C64', 'C100', 'As Per BS EN 598 (PresurePipe)', 'K7', 'K9']}
+                      rows={[
+                        { 'DN (mm)': 80, 'DE (mm)': 98, 'Limit Deviation (mm)': '+1/-2.7', 'C40': 4.4, 'C50': 4.4, 'C64': 4.4, 'C100': 4.8, 'As Per BS EN 598 (PresurePipe)': 4.8, 'K7': 5.0, 'K9': 6.0 },
+                        { 'DN (mm)': 100, 'DE (mm)': 118, 'Limit Deviation (mm)': '+1/-2.8', 'C40': 4.4, 'C50': 4.4, 'C64': 4.4, 'C100': 5.5, 'As Per BS EN 598 (PresurePipe)': 4.8, 'K7': 5.0, 'K9': 6.0 },
+                        { 'DN (mm)': 125, 'DE (mm)': 144, 'Limit Deviation (mm)': '+1/-2.8', 'C40': 4.5, 'C50': 4.5, 'C64': 4.8, 'C100': 6.5, 'As Per BS EN 598 (PresurePipe)': 4.8, 'K7': 5.0, 'K9': 6.0 },
+                        { 'DN (mm)': 150, 'DE (mm)': 170, 'Limit Deviation (mm)': '+1/-2.9', 'C40': 4.5, 'C50': 4.5, 'C64': 5.3, 'C100': 7.4, 'As Per BS EN 598 (PresurePipe)': 4.8, 'K7': 5.0, 'K9': 6.0 },
+                        { 'DN (mm)': 200, 'DE (mm)': 222, 'Limit Deviation (mm)': '+1/-3.0', 'C40': 4.7, 'C50': 5.4, 'C64': 6.5, 'C100': 9.2, 'As Per BS EN 598 (PresurePipe)': 4.9, 'K7': 5.0, 'K9': 6.3 },
+                        { 'DN (mm)': 250, 'DE (mm)': 274, 'Limit Deviation (mm)': '+1/-3.1', 'C40': 5.5, 'C50': 6.4, 'C64': 7.8, 'C100': 11.1, 'As Per BS EN 598 (PresurePipe)': 5.3, 'K7': 5.3, 'K9': 6.8 },
+                        { 'DN (mm)': 300, 'DE (mm)': 326, 'Limit Deviation (mm)': '+1/-3.3', 'C30': 5.1, 'C40': 6.2, 'C50': 7.4, 'C64': 8.9, 'C100': 12.9, 'As Per BS EN 598 (PresurePipe)': 5.6, 'K7': 5.6, 'K9': 7.2 },
+                        { 'DN (mm)': 350, 'DE (mm)': 378, 'Limit Deviation (mm)': '+1/-3.4', 'C25': 5.1, 'C30': 6.3, 'C40': 7.1, 'C50': 8.4, 'C64': 10.2, 'C100': 14.8, 'As Per BS EN 598 (PresurePipe)': 6.0, 'K7': 6.0, 'K9': 7.7 },
+                        { 'DN (mm)': 400, 'DE (mm)': 429, 'Limit Deviation (mm)': '+1/-3.5', 'C25': 5.5, 'C30': 6.5, 'C40': 7.8, 'C50': 9.3, 'C64': 11.3, 'C100': 16.5, 'As Per BS EN 598 (PresurePipe)': 6.3, 'K7': 6.3, 'K9': 8.1 },
+                        { 'DN (mm)': 450, 'DE (mm)': 480, 'Limit Deviation (mm)': '+1/-3.6', 'C25': 6.1, 'C30': 6.9, 'C40': 8.6, 'C50': 10.3, 'C64': 12.6, 'C100': 18.4, 'As Per BS EN 598 (PresurePipe)': 6.7, 'K7': 6.6, 'K9': 8.6 },
+                        { 'DN (mm)': 500, 'DE (mm)': 532, 'Limit Deviation (mm)': '+1/-3.8', 'C25': 6.5, 'C30': 7.5, 'C40': 9.3, 'C50': 11.2, 'C64': 13.7, 'C100': 20.2, 'As Per BS EN 598 (PresurePipe)': 7.0, 'K7': 7.0, 'K9': 9.0 },
+                        { 'DN (mm)': 600, 'DE (mm)': 635, 'Limit Deviation (mm)': '+1/-4.0', 'C25': 7.6, 'C30': 8.7, 'C40': 10.9, 'C50': 13.1, 'C64': 16.1, 'C100': 23.8, 'As Per BS EN 598 (PresurePipe)': 7.7, 'K7': 7.7, 'K9': 9.9 },
+                        { 'DN (mm)': 700, 'DE (mm)': 738, 'Limit Deviation (mm)': '+1/-4.3', 'C25': 8.8, 'C30': 9.9, 'C40': 12.4, 'C50': 15.0, 'C64': 18.5, 'C100': 27.5, 'As Per BS EN 598 (PresurePipe)': 9.6, 'K7': 8.4, 'K9': 10.8 },
+                        { 'DN (mm)': 750, 'DE (mm)': 790, 'Limit Deviation (mm)': 1, 'K7': 8.8, 'K9': 11.3 },
+                        { 'DN (mm)': 800, 'DE (mm)': 842, 'Limit Deviation (mm)': '+1/-4.5', 'C25': 9.6, 'C30': 11.1, 'C40': 14.0, 'C50': 16.9, 'C64': 21.0, 'As Per BS EN 598 (PresurePipe)': 10.4, 'K7': 9.1, 'K9': 11.7 },
+                        { 'DN (mm)': 900, 'DE (mm)': 945, 'Limit Deviation (mm)': '+1/-4.8', 'C25': 10.6, 'C30': 12.3, 'C40': 15.5, 'C50': 18.8, 'C64': 23.4, 'As Per BS EN 598 (PresurePipe)': 11.2, 'K7': 9.8, 'K9': 12.6 },
+                        { 'DN (mm)': 1000, 'DE (mm)': 1048, 'Limit Deviation (mm)': '+1/-5.0', 'C25': 11.6, 'C30': 13.4, 'C40': 17.1, 'C50': 20.7, 'As Per BS EN 598 (PresurePipe)': 12.0, 'K7': 10.5, 'K9': 13.5 },
+                        { 'DN (mm)': 1100, 'DE (mm)': 1152, 'Limit Deviation (mm)': '+1/-6.0', 'C25': 12.6, 'C30': 14.6, 'C40': 18.6, 'C50': 22.6, 'As Per BS EN 598 (PresurePipe)': 14.4, 'K7': 11.2, 'K9': 14.4 },
+                        { 'DN (mm)': 1200, 'DE (mm)': 1255, 'Limit Deviation (mm)': '+1/-6.2', 'C25': 13.6, 'C30': 15.8, 'C40': 20.2, 'C50': 24.5, 'As Per BS EN 598 (PresurePipe)': 15.3, 'K7': 11.9, 'K9': 15.3 }
+                      ]}
+                      className="mb-6"
+                    />
                   </div>
-                  <p className="text-muted-foreground mt-4">
-                    Additional sizes available from DN 80 to DN 1600. Contact our technical team for detailed specifications for your specific project requirements.
-                  </p>
+                  <div className="bg-rashmi-red/10 p-4 rounded-lg border border-rashmi-red/20">
+                    <h4 className="text-lg font-semibold mb-2 flex items-center gap-2">
+                      <AlertCircle className="text-rashmi-red" size={18} />
+                      Note About Wall Thickness
+                    </h4>
+                    <p className="text-sm text-muted-foreground">
+                      All dimensions are in millimeters. Wall thickness values shown in the table represent minimum requirements based on different pressure classes (C25-C100) and standard specifications (K7, K9). The full range of DI pipes from DN 80 to DN 1200 is available. Contact our technical team for detailed specifications for your specific project requirements.
+                    </p>
+                  </div>
                 </div>
               )}
               

@@ -4,7 +4,9 @@ import { Map, Mail, Phone, Building, Globe, MapPin, Check, ChevronDown, X } from
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Link } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
+import SEO from '../components/SEO';
+import { organizationSchema, generateBreadcrumbSchema } from '../lib/schema';
 
 const contactOffices = [
   {
@@ -133,13 +135,36 @@ const ContactUs = () => {
     setMessage('');
   };
 
+  // Generate the contact page breadcrumb schema
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: "Home", url: "/" },
+    { name: "Contact Us", url: "/contact-us" }
+  ]);
+
+  // Create a contact page specific schema
+  const contactPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    "name": "Contact Rashmi Metaliks",
+    "description": "Contact information for Rashmi Metaliks, world's 2nd largest DI pipe manufacturer with global offices and manufacturing plants.",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https://www.rashmimetaliks.com/contact-us"
+    }
+  };
+
+  // Combined schemas
+  const schemas = [organizationSchema, breadcrumbSchema, contactPageSchema];
+
   return (
     <div className="min-h-screen bg-background">
-      <Helmet>
-        <title>Contact Us - Rashmi Metaliks</title>
-        <meta name="description" content="Contact Rashmi Metaliks for inquiries about our premium steel products and solutions. Get in touch with our global offices and manufacturing plants." />
-        <meta name="keywords" content="Rashmi Metaliks contact, steel company contact, DI pipes contact, TMT bars inquiry" />
-      </Helmet>
+      <SEO
+        title="Contact Us - Rashmi Metaliks | Global Offices & Customer Support"
+        description="Contact Rashmi Metaliks for inquiries about our premium steel products and solutions. Get in touch with our global offices and manufacturing plants across India, UAE, UK and Singapore."
+        keywords="Rashmi Metaliks contact, steel company contact, DI pipes contact, TMT bars inquiry, global steel offices, steel manufacturing plants"
+        canonicalUrl="/contact-us"
+        schema={schemas}
+      />
       
       <Header />
       
