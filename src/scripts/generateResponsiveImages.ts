@@ -1,71 +1,53 @@
-// This is a script you would run during build time or as needed
-// Example usage: node generateResponsiveImages.js
-
-import fs from 'fs';
-import path from 'path';
+import { glob } from 'glob';
 import sharp from 'sharp';
-import glob from 'glob';
+import fs from 'fs/promises';
+import path from 'path';
 
-const sourceDir = path.join(process.cwd(), 'public/lovable-uploads');
-const outputDir = sourceDir;
+const imageSizes = [400, 800, 1200]; // Define the sizes you want to generate
+const inputDir = 'public/lovable-uploads'; // Your input directory
+const outputDir = 'public/lovable-uploads/compressed'; // Your output directory
 
-// Widths for responsive images
-const widths = [300, 600, 900];
-
-async function processImage(filePath) {
-  const filename = path.basename(filePath);
-  const baseName = path.basename(filePath, path.extname(filePath));
-  const ext = path.extname(filePath).substring(1);
-
-  // Skip videos and non-images
-  const imageExts = ['jpg', 'jpeg', 'png', 'webp'];
-  if (!imageExts.includes(ext.toLowerCase())) return;
-
-  // Skip if already processed
-  if (baseName.includes('-300w') || baseName.includes('-600w') || baseName.includes('-900w')) return;
-
-  console.log(`Processing ${filename}...`);
-
+async function generateResponsiveImages() {
   try {
-    // Create responsive versions
-    for (const width of widths) {
-      const outputPath = path.join(outputDir, `${baseName}-${width}w.${ext}`);
-      
-      // Skip if already exists
-      if (fs.existsSync(outputPath)) continue;
-      
-      await sharp(filePath)
-        .resize(width)
-        .toFile(outputPath);
-      
-      console.log(`Created ${baseName}-${width}w.${ext}`);
+    // Ensure the output directory exists
+    await fs.mkdir(outputDir, { recursive: true });
+
+    // Use glob to find all images in the input directory
+    const files = await glob(`${inputDir}/**/*.{jpg,jpeg,png,webp}`);
+
+    for (const file of files) {
+      const parsed = path.parse(file);
+      const imageName = parsed.name;
+      const imageExt = parsed.ext.slice(1); // Remove the dot
+
+      for (const size of imageSizes) {
+        const outputFilePath = path.join(outputDir, `${imageName}-${size}.${imageExt}`);
+
+        // Check if the file already exists
+        try {
+          await fs.access(outputFilePath);
+          console.log(`File ${outputFilePath} already exists. Skipping.`);
+          continue; // Skip to the next size if the file exists
+        } catch (e) {
+          // File does not exist, so proceed with processing
+        }
+
+        try {
+          await sharp(file)
+            .resize(size)
+            .toFile(outputFilePath);
+
+          console.log(`Generated ${outputFilePath}`);
+        } catch (error) {
+          console.error(`Error processing ${file} for size ${size}:`, error);
+        }
+      }
     }
-    
-    // Create WebP version
-    const webpOutputPath = path.join(outputDir, `${baseName}.webp`);
-    if (!fs.existsSync(webpOutputPath)) {
-      await sharp(filePath)
-        .webp({ quality: 80 })
-        .toFile(webpOutputPath);
-      
-      console.log(`Created ${baseName}.webp`);
-    }
+
+    console.log('All images processed!');
   } catch (error) {
-    console.error(`Error processing ${filename}:`, error);
+    console.error('An error occurred:', error);
   }
 }
 
-// Find all images in the directory
-glob(`${sourceDir}/**/*.{jpg,jpeg,png}`, async (err, files) => {
-  if (err) {
-    console.error('Error finding files:', err);
-    return;
-  }
-
-  // Process files
-  for (const file of files) {
-    await processImage(file);
-  }
-
-  console.log('All images processed');
-}); 
+generateResponsiveImages();
